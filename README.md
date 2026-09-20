@@ -85,6 +85,7 @@ Full specification, in Portuguese, in `docs/`:
 | `02-dicionario-de-dados.md` | Column-by-column dictionary, keys, domains, integrity rules, full SQL DDL |
 | `03-ferramentas.md` | Tooling inventory |
 | `04-especificacao-tecnica.md` | Architecture, algorithm, interface, output tables, export, tests, publication |
+| `05-relatorio-de-divergencias.md` | Where and why the calculator differs from the i3ET spreadsheet, and what to adjust there |
 
 The specification is written to be sufficient on its own: someone should be able to
 rebuild this program from `docs/` alone, without reading the source. That claim is

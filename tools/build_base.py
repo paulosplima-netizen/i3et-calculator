@@ -211,6 +211,32 @@ P20n = [{"IDBMd": r["IDBMd"], "IDGG": r["IDGG"], "IDM": r["IDM"],
 note("P20: coluna BMshare renomeada BMshareGG; %d colunas residuais removidas"
      % sum(1 for c in h20 if c is None))
 
+# ---- P06/P08 : correcoes conferidas contra o M1 do i3ET --------------------
+# O confronto parametro a parametro com o modulo M1 revelou exatamente duas
+# divergencias em 43 subgrupos. Ambas no tanque de combustivel (IDSG 26):
+# a massa de referencia estava zerada, o que fazia o subgrupo desaparecer de
+# todo veiculo a combustao, e o grupo GREET apontava para o sistema auxiliar de
+# celula a combustivel em vez do trem de forca.
+CORR_P06 = {26: {"MR": 15.0}}
+CORR_P08 = {26: {"IDGG": "D"}}
+_n = 0
+for r in P06:
+    fix = CORR_P06.get(r["IDSG"])
+    if fix:
+        for k, v in fix.items():
+            if r.get(k) != v:
+                note("P06: IDSG %s %s corrigido de %s para %s (valor do i3ET)"
+                     % (r["IDSG"], k, r.get(k), v))
+                r[k] = v; _n += 1
+for r in P08:
+    fix = CORR_P08.get(r["IDSG"])
+    if fix:
+        for k, v in fix.items():
+            if r.get(k) != v:
+                note("P08: IDSG %s %s corrigido de %s para %s (valor do i3ET)"
+                     % (r["IDSG"], k, r.get(k), v))
+                r[k] = v; _n += 1
+
 # ---- P08 : aplicabilidade do subgrupo por trem de forca (regra do i3ET, M1 col AB)
 sgname = {r["IDSG"]: (r.get("DsSG") or "") for r in P02}
 EXCL = {}

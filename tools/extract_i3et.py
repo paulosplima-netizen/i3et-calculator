@@ -60,6 +60,7 @@ M1_ROW_CONFIG_CODE = 6
 M1_ROWS_SUBGROUPS = range(8, 60)
 M1_COL_SUBGROUP_ID = 16       # "IDS"
 M1_OFFSET_MASS = 1            # block is: Tamanho, Peso Calc., Peso GREET, fator LM
+M1_OFFSET_FLM = 3             # the lightweighting factor of module M5
 
 EF_SHEET = "Emission Factors GREET and BR"
 EF_COL_ID = 29                # AC
@@ -135,9 +136,18 @@ def main() -> int:
           f"{len(codes)} em ambas")
 
     # --- subgroup rows in M1 -------------------------------------------------
-    subgroup_rows = [(r, int(m1[(r, M1_COL_SUBGROUP_ID)]))
-                     for r in M1_ROWS_SUBGROUPS
-                     if isinstance(m1.get((r, M1_COL_SUBGROUP_ID)), int)]
+    # In M1 the subgroup identifier is merged across two rows in one case: the
+    # gearbox and the hybrid combination module share IDS 23. The base keeps
+    # them apart, so the second occurrence is mapped to its own subgroup.
+    SECOND_ROW_IDSG = {23: 43}
+    subgroup_rows, seen = [], set()
+    for r in M1_ROWS_SUBGROUPS:
+        raw = m1.get((r, M1_COL_SUBGROUP_ID))
+        if not isinstance(raw, int):
+            continue
+        idsg = SECOND_ROW_IDSG.get(raw, raw) if raw in seen else raw
+        seen.add(raw)
+        subgroup_rows.append((r, idsg))
 
     configs = {}
     for code in codes:
@@ -151,8 +161,7 @@ def main() -> int:
         for r, idsg in subgroup_rows:
             v = num(m1.get((r, c1 + M1_OFFSET_MASS)))
             if v is not None:
-                me.setdefault(idsg, 0.0)
-                me[idsg] += v            # two spreadsheet rows share one IDSG
+                me[idsg] = v
         groups = {g: num(m2.get((r, c2)))
                   for g, r in zip(GROUP_ORDER, M2_ROWS_GROUP_MASS)}
         expected = {

@@ -674,6 +674,9 @@ Aplicando a diretriz D11 (prevalece o i3ET), registram-se as seguintes divergên
 | 21 | `D03` × i3ET | Os veículos `BP01`–`BP12` da base do simulador e as colunas homônimas do i3ET divergiam em 12 a 19 dos 33 parâmetros comparáveis: comprimento, largura, altura, aro, potência, tanque, capacidade de bateria | Dois instantâneos que se separaram | `D03` sincronizada a partir do i3ET (§16.6). Valores anteriores na aba `D03_antes_da_sincronizacao` |
 | 22 | Emissão da bateria | Um único caminho, por composição de materiais | Dois caminhos, escolhidos por condicional sobre o prefixo do identificador | Coluna `P19.GHGMethod`, com a escolha ancorada na existência do dado (§11.5) |
 
+| 23 | Módulo híbrido em FCV | — | A condicional do i3ET zera o módulo para `ICEV`, `BEV`, `SHEV`, `SPHEV`, `HFCEV` e `EFCEV`, mas as configurações usam o rótulo `FCV`, ausente da lista: o módulo recebe massa num veículo que não o possui | A calculadora atribui o módulo apenas a `HEV` e `PHEV`. Divergência de 36,09 kg em cinco configurações, registrada no Relatório de Divergências |
+| 24 | `IDVP 15` e `IDVP 18` | Equações fixas | Valores armazenados divergem das próprias fórmulas: a potência combinada foi da soma para o máximo, e o arranque de constante embutida para parâmetro configurável | O valor informado prevalece sobre a equação; a equação vale para veículos criados pelo usuário (§16.7) |
+
 ### 16.1 Divergências que exigem decisão sua
 
 As três abaixo **não** foram resolvidas pela regra D11 sem ressalva, porque aplicá-la muda resultados. Foram implementadas conforme o i3ET e estão sinalizadas na aba `Verificacao` do Documento 3.
@@ -805,6 +808,24 @@ Os parâmetros endógenos divergiam em todos os doze, mas por consequência: der
 A sincronização trouxe consigo dois modelos de bateria que a base não tinha — `PBP-BEV-LFP` e `PBP-HEV-NMC811` — e com eles o segundo caminho de cálculo descrito em §11.5.
 
 **Verificação após a sincronização:** 276 parâmetros exógenos conferem com o i3ET sem uma única diferença; a massa da bateria e a emissão pelo caminho gravimétrico coincidem nos nove veículos até a precisão da máquina.
+
+---
+
+## 16.7 Política de divergência com o i3ET
+
+**O i3ET em Excel não será alterado.** Ele é a referência publicada, e a estabilidade dele vale mais do que a correção pontual de um detalhe. Isso cria uma tensão com a diretriz D11, que manda o i3ET prevalecer, e a resolução é a seguinte:
+
+| Situação | Conduta |
+|---|---|
+| O i3ET e a documentação inicial divergem numa **regra de cálculo** | Prevalece o i3ET (D11) |
+| O i3ET apresenta **inconsistência interna** — uma fórmula que contradiz a si mesma ou um caso não previsto | A calculadora adota a regra coerente e registra a divergência |
+| O i3ET traz um **valor informado** que difere da sua própria fórmula | O valor informado prevalece; a equação fica como padrão para veículos novos |
+
+O terceiro caso não é anomalia, é evolução: parâmetros que começaram como constante embutida na fórmula tornaram-se configuráveis, e os valores armazenados refletem o estado do modelo no momento em que foram lançados. A calculadora respeita o dado e documenta a diferença.
+
+**Toda divergência material é publicada** no *Relatório de Divergências — Calculadora × i3ET*, gerado por `tools/report_divergences.py`, que explica a origem de cada uma e sugere, quando cabe, o ajuste correspondente na planilha. Diferenças da ordem do ruído de ponto flutuante não são relatadas: listá-las esconderia as que importam.
+
+> **Tema em aberto.** A potência combinada (`IDVP 15`) não é nem a soma nem o máximo das potências do motor a combustão e do motor elétrico. O i3ET passou de uma para a outra, e nenhuma das duas descreve corretamente o comportamento de um híbrido. O tratamento adequado é trabalho futuro, registrado aqui para não se perder.
 
 ---
 
