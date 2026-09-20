@@ -203,9 +203,6 @@ def _secao_emissoes(w, ghg):
                 for g in aux if g["config"].startswith("BP")}
     razao_g = {round(g["aux_i3et_por_kg"] / g["aux_nossa_por_kg"], 6)
                for g in aux if not g["config"].startswith("BP")}
-    carro = sorted(((g["carro_nossa"] - g["carro_i3et"]) / g["carro_i3et"], g)
-                   for g in ghg if g["carro_i3et"])
-
     w("## 6. Emissões: fluidos e baterias")
     w("")
     w(f"Em {len(ghg)} configurações da família de referência — aquelas cujas receitas "
@@ -242,35 +239,92 @@ def _secao_emissoes(w, ghg):
           "auxiliar entre as duas famílias de colunas. É uma inconsistência interna da "
           "planilha, não uma divergência com a calculadora.")
         w("")
-    w("## 7. Emissões: composição dos materiais do veículo — **em aberto**")
-    w("")
-    w("Esta é a única divergência de emissões ainda não resolvida, e é a mais "
-      "importante deste relatório.")
+    w("## 7. Emissões: composição dos materiais do veículo — **duas causas identificadas**")
     w("")
     w("A **massa** do veículo reproduz o i3ET exatamente. A **distribuição dessa "
-      "massa entre materiais**, não: para a mesma receita (`BISD2` em `BP01`, por "
-      "exemplo, que é a receita que a própria planilha declara usar), a base põe "
-      "cerca de 143 kg a menos de aço e 68 kg a mais de plástico médio, além de "
-      "separar o alumínio em chapa e extrudado onde o i3ET usa uma única entrada. "
-      "Como os fatores de emissão diferem entre esses materiais, o total de emissões "
-      "dos materiais do veículo diverge.")
+      "massa entre materiais** diverge em alguns grupos, e a investigação de "
+      "20/09/2026 separou duas causas independentes. Nenhuma delas é erro de "
+      "cálculo; as duas são de dados, e cada uma pede uma decisão diferente.")
     w("")
-    w("| Configuração | Trem de força | Calculadora (kg CO₂e) | i3ET (kg CO₂e) | Dif. |")
-    w("|---|---|---:|---:|---:|")
-    for rel, g in carro[:3] + carro[-3:]:
+    w("### 7.1 Duas receitas com o mesmo nome (apenas ICEV)")
+    w("")
+    w("O i3ET guarda as receitas de materiais em colunas nomeadas, no próprio "
+      "módulo M2 (bloco `T8:DD281`), e cada configuração escolhe a sua pela "
+      "linha 9. Existem, lado a lado, **duas colunas para a mesma receita**:")
+    w("")
+    w("| Grupo A (carroceria) | `ICEV-BISD2` | `ICEV-PBP_BISD2` |")
+    w("|---|---:|---:|")
+    w("| Aço | 0,652777058 | 0,802318776 |")
+    w("| Plástico médio | 0,216746989 | 0,110750895 |")
+    w("| Cobre/latão | 0,018986306 | 0,000000000 |")
+    w("| Alumínio forjado | 0,030699147 | 0,006139829 |")
+    w("")
+    w("A base da calculadora traz `ICEV-BISD2` — **idêntica à coluna do i3ET até "
+      "a nona casa decimal**, o que descarta a hipótese de deriva entre duas "
+      "cópias. As configurações `BP01` e `BP02`, porém, apontam para "
+      "`ICEV-PBP_BISD2`, e `BP03` para `ICEV-PBP_BISD3`. São escolhas de coluna, "
+      "não versões diferentes do mesmo dado.")
+    w("")
+    w("O efeito, em `BP01`: **−126,8 kg de aço** (−90,4 no grupo A, −36,4 no "
+      "grupo B), +56,4 kg de plástico médio, +36,9 kg de alumínio fundido. A "
+      "massa total não muda — muda a quem ela é atribuída. Em emissões: +223 kg "
+      "CO₂e no grupo A e +217 kg no grupo B.")
+    w("")
+    w("**As variantes `PBP_` só diferem para ICEV.** Para `HEV-PBP_BISD6`, "
+      "`PHEV-PBP_BISD8` e `BEV-PBP_BISD12` as colunas são iguais às `BISD` "
+      "correspondentes — e, de fato, `BP04` a `BP12` não apresentam nenhuma "
+      "diferença de composição.")
+    w("")
+    w("**Decisão pendente:** adotar as receitas `PBP_` para `BISD2` e `BISD3`, "
+      "que é o que o i3ET usa nos veículos do projeto (diretriz D11), ou manter "
+      "as `BISD`. Convém, antes, saber o que distingue as duas na origem.")
+    w("")
+    w("### 7.2 Participações pequenas perdidas na transcrição")
+    w("")
+    w("A base traz **zero** em participações que o i3ET tem como não nulas. São "
+      "valores de 2 × 10⁻⁵ a 4 × 10⁻⁴ — platina no grupo D, níquel, náilon, "
+      "resina fenólica, mica, zinco e óxido de zinco nos grupos C e G, além da "
+      "linha `Others` em B e D. A normalização das receitas redistribuiu o peso "
+      "dessas ausências entre os demais materiais, o que explica as diferenças "
+      "de quarta casa decimal em aço e alumínio.")
+    w("")
+    w("Uma delas não é pequena no resultado: **a platina**. A participação é de "
+      "2 × 10⁻⁵ nos ICEV e 1 × 10⁻⁵ nos híbridos, mas o fator de emissão da "
+      "versão BR23 é de 69.670 kg CO₂e/kg. Em `BP01` isso vale **265 kg CO₂e** e "
+      "em `BP07`, **152 kg** — de 3% a 6% do veículo, vindos de um número que a "
+      "base arredondou para zero. É o caso exemplar do princípio da diretriz "
+      "D13: em uma tabela de fatores com cinco ordens de grandeza de amplitude, "
+      "não existe participação desprezível a priori.")
+    w("")
+    w("*Nota lateral:* a mesma platina tem fator **126,5** kg CO₂e/kg nas "
+      "versões G22/G23/G24 e **69.670** na BR23 — 550 vezes maior. Com os "
+      "fatores G22, que são os das avaliações do projeto, a participação perdida "
+      "vale meio quilo de CO₂e. A discrepância entre versões merece verificação "
+      "na aba de fatores do i3ET.")
+    w("")
+    w("**Correção proposta:** importar as participações do bloco de receitas do "
+      "i3ET, restaurando as que a base perdeu. Não é mudança de critério, é "
+      "recuperar a precisão da própria fonte de registro — mas desloca os "
+      "resultados, então entra em commit próprio, com os testes de regressão "
+      "recongelados na mesma mudança.")
+    w("")
+    w("### 7.3 Efeito combinado nos doze veículos do projeto")
+    w("")
+    w("Nos ICEV as duas causas têm sinais opostos e se cancelam em parte; nos "
+      "híbridos e elétricos só a segunda atua, e ela é toda platina — nos `BEV` "
+      "nem isso, porque não há catalisador.")
+    w("")
+    w("| Configuração | Trem de força | Calculadora (kg CO₂e) | i3ET (kg CO₂e) | Dif. | Causa dominante |")
+    w("|---|---|---:|---:|---:|---|")
+    causa = {"ICEV": "§7.1 e §7.2", "HEV": "§7.2 (platina)",
+             "PHEV": "§7.2 (platina)", "BEV": "resíduo"}
+    for _rel, g in sorted((-abs((g["carro_nossa"] - g["carro_i3et"]) / g["carro_i3et"]), g)
+                          for g in ghg if g["carro_i3et"] and g["config"].startswith("BP")):
+        rel = (g["carro_nossa"] - g["carro_i3et"]) / g["carro_i3et"]
         w(f"| `{g['config']}` | {g['powertrain']} | {g['carro_nossa']:,.1f} | "
-          f"{g['carro_i3et']:,.1f} | {rel:+.2%} |")
+          f"{g['carro_i3et']:,.1f} | {rel:+.2%} | {causa.get(g['powertrain'], '')} |")
     w("")
-    w("A origem é conhecida: as receitas `P16` vêm da planilha "
-      "`LVManufacturingMassGHGSimulator`, e o i3ET usa as suas próprias tabelas de "
-      "composição por grupo GREET. São dois instantâneos da mesma tabela que se "
-      "separaram — o mesmo tipo de problema já encontrado em `D03` e resolvido pela "
-      "sincronização com as colunas `BP`.")
-    w("")
-    w("**Decisão pendente.** Pela diretriz **D11** prevalece o i3ET, o que implicaria "
-      "reconstruir `P16` a partir das tabelas de composição da planilha. É uma "
-      "mudança que desloca todos os resultados de emissões e merece decisão "
-      "explícita antes de ser feita. Enquanto não for tomada, o teste "
+    w("Enquanto as duas decisões não são tomadas, o teste "
       "`test_car_materials_stay_within_the_documented_gap` trava a distância no "
       "patamar atual, de modo que ela não possa crescer despercebida.")
     w("")
