@@ -1,0 +1,5 @@
+﻿IDAPV;DsAPV;DateIDAPV;Method;FixedGHGPerVehicle;Status;IDEFVdefault;SourceAPV
+A-EF;Montagem lida da tabela de fatores (IDM 99), conforme a versao IDEFV;2026-09-19;from_EF;;recommended;;P11, IDM 99 'A - Assembling', EFBasis=vehicle. E como o i3ET faz (M2 linha 510). Cobre automaticamente todas as versoes de fatores
+A-G22;Montagem por processo - GREET 2022 (detalhamento);2022-12-31;process;;recommended;G22;"GREET 2022, Vehi_Input (via aba ADR do LCA_LV_i3ET). Decomposicao por processo e combustivel; deve reconciliar com P11 IDM 99 da versao G22"
+A-G23;Montagem por processo - GREET 2023 (detalhamento);2023-12-31;process;;recommended;G23;"GREET 2023; mesma repartic. energetica do GREET 2022 - confirmar contra a planilha"
+i3ET-BR23;Montagem agregada do i3ET (legado, em conflito com o GREET);2023-12-31;fixed;227.284;legacy;;"LCA_LV_i3ET, M2 linha 510 como constante. Nao consta de P11 em nenhuma versao; mantido apenas para reproduzir resultados anteriores"

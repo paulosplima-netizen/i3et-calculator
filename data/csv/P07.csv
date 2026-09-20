@@ -1,0 +1,42 @@
+﻿IDVP;DsVP;utVP;ParamClass;GCEquation;AppliesTo
+2;ICE - Internal Combustion Engine Power;kW;Exo;;ICEV,HEV,PHEV,SHEV,SPHEV
+3;EE - Electric Engine Power;kW;Exo;;HEV,PHEV,BEV,SHEV,SPHEV,FCEV
+4;Utilities Battery;kWh;Exo;;
+5;Energy Battery;kWh;Exo;;HEV,PHEV,BEV,SHEV,SPHEV,FCEV
+6;Wheel Size;inchs;Exo;;
+7;Car length;m;Exo;;
+8;Car width;m;Exo;;
+9;Car area (length X width);m2 (*1);End;GC(9) = GC(7) * GC(8);
+10;Number of doors and lids;un (*2);Exo;;
+11;Number of airbags and seat belts;un (*3);Exo;;
+12;Number of seats positions;un (*4);Exo;;
+13;Windows and windshields area;m2;Exo;;
+14;fT = 2WT (1,0) or 4WT (1,2);fT;Exo;;
+15;Combined Power;kW;End;"GC(15) = GC(3) se IDVPT em {SHEV,SPHEV}; senao MAX(GC(2),GC(3))";
+16;fR = Robustness (PowerXCarAreaXfT);KW*m2*fT (*5);End;GC(16) = GC(15) * GC(9) * GC(14) * GC(29);
+17;Air Conditioning;BTU;Exo;;
+18;Electric Starter Engine;kW;End;GC(18) = 0.04 * GC(2);
+19;Liquid Fuel Tank;liters;Exo;;ICEV,HEV,PHEV,SHEV,SPHEV
+20;Fuel Cell Power;kW;Exo;;FCEV
+21;Hydrogen Fuel Tank;kg;Exo;;FCEV
+22;Instrumentation Complexity (de 1 a 5);nível (1 a 5);Exo;;
+23;Onboard Battery Charger;kW;Exo;;PHEV,BEV
+24;Power Battery;kW;Exo;;HEV,FCEV
+25;Vehicle weight (without driver and fuel);kg;Res;GC(25) = C12.MassIDV  (resultado do modulo de massa);
+26;Fluidos;kg;Exo;;
+27;Height;m;Exo;;
+28;fB = Body Size (CarAreaXHeight);m2*m (*7);End;GC(28) = GC(9) * GC(27);
+29;fH = Hybrid Complexity;fH;Exo;;
+30;Combined Power with Hybrid Complexity;kW;End;GC(30) = GC(25) * GC(29);
+31;Generator;kW;Exo;;HEV,PHEV,SHEV,SPHEV
+32;Battery ID;;Exo;;HEV,PHEV,BEV,SHEV,SPHEV,FCEV
+33;Battery Power Density;kg/kW;End;"GC(33) = P19.PowerDensity(GC(32)); 'ND' se ausente";
+34;Battery Energy Density;kg/kWh;End;"GC(34) = P19.EnergyDensity(GC(32)); 'ND' se ausente";
+35;Battery Weight;kg;End;"se GC(33)='ND': (se GC(34)='ND' -> 0; senao GC(34)*GC(5)); senao: (se GC(24)>0 -> GC(33)*GC(24); senao GC(33)*GC(3))";
+36;Battery Reference Energy Capacity;kWh;End;GC(36) = P19.RefEnergy(GC(32));
+37;ICE Power/fH;kW;End;GC(37) = GC(2) / GC(29);
+38;Fuel Economy (Urban);km/LGE;Res;modulo M3 - fora do escopo bercoo-ao-portao;
+39;Fuel Economy (Road);km/LGE;Res;modulo M3 - fora do escopo bercoo-ao-portao;
+40;Energy Consumption;MJ/km;Res;modulo M3 - fora do escopo bercoo-ao-portao;
+41;Hybrid Combination Existence;1 or 0;Exo;;
+42;Hybrid Combination Parameter;kW;End;GC(42) = GC(41) * GC(15);

@@ -1,0 +1,10 @@
+# Runtime dependencies. Versions are pinned on purpose: a result is only
+# reproducible if the environment is too. Bumping them is a deliberate change,
+# made in its own commit, with the regression tests confirming no number moved.
+streamlit==1.41.1
+pandas==2.2.3
+numpy==2.2.1
+openpyxl==3.1.5
+altair==5.5.0
+jinja2==3.1.5
+weasyprint==63.1

@@ -1,0 +1,141 @@
+﻿IDTable;ColumnName;ColumnOrder;SQLType;KeyRole;FKTarget;Unit;ParamClass;Required;Domain;DsColumnName;ColumnCalculationFormula;TableName
+P02;IDSG;1;INTEGER;PK;;;Idx;1;1..43;identificacao do subgrupo;;Vehicle Subgroup List
+P02;DsSG;2;TEXT;-;;;Dsc;1;;nome do subgrupo;;Vehicle Subgroup List
+P03;IDG;1;INTEGER;PK;;;Idx;1;1..9;identificacao do grupo generico;;Generic Groups List
+P03;DsG;2;TEXT;-;;;Dsc;1;;nome do grupo;;Generic Groups List
+P04;IDGG;1;TEXT;PK;;;Idx;1;A,B,C,D,E,F,G,H,Iaux,Iprinc,J,K;grupo GREET;;GREET Group List
+P04;DsGG;2;TEXT;-;;;Dsc;1;;nome do grupo;;GREET Group List
+P04;IsBattery;3;INTEGER;-;;;Dsc;1;0,1;1 para grupos de bateria;;GREET Group List
+P05;IDMPV;1;INTEGER;PK;;;Idx;1;;versao dos parametros de massa;;Mass Parameters List
+P05;DsMPV;2;TEXT;-;;;Dsc;1;;nome da versao;;Mass Parameters List
+P05;DateIDMPV;3;DATE;-;;;Dsc;1;;data de referencia;;Mass Parameters List
+P05;SourceMPV;4;TEXT;-;;;Dsc;0;;origem;;Mass Parameters List
+P06;IDMPV;1;INTEGER;PK;P05.IDMPV;;Idx;1;;versao dos parametros;;Mass Estimation Parameters
+P06;IDSG;2;INTEGER;PK;P02.IDSG;;Idx;1;;subgrupo;;Mass Estimation Parameters
+P06;Beta;3;REAL;-;;;Exo;1;>=0;expoente da lei de escala;;Mass Estimation Parameters
+P06;GCR;4;REAL;-;;conf. utGCR;Exo;1;>0;parametro de referencia;;Mass Estimation Parameters
+P06;utGCR;5;TEXT;-;;;Dsc;1;;unidade de GCR;;Mass Estimation Parameters
+P06;MR;6;REAL;-;;kg;Exo;1;>=0;massa de referencia;;Mass Estimation Parameters
+P06;fLM;7;REAL;-;;;Exo;1;>0;"fator de leveza (M5); 1,0 nesta versao";;Mass Estimation Parameters
+P06;Reference;8;TEXT;-;;;Dsc;0;;fonte;;Mass Estimation Parameters
+P07;IDVP;1;INTEGER;PK;;;Idx;1;2..42;parametro do veiculo;;Vehicle Parameters List
+P07;DsVP;2;TEXT;-;;;Dsc;1;;nome;;Vehicle Parameters List
+P07;utVP;3;TEXT;-;;;Dsc;1;;unidade;;Vehicle Parameters List
+P07;ParamClass;4;TEXT;-;;;Dsc;1;Exo,End,Res;classificacao;;Vehicle Parameters List
+P07;GCEquation;5;TEXT;-;;;Dsc;0;;equacao quando End ou Res;;Vehicle Parameters List
+P07;AppliesTo;6;TEXT;-;;;Dsc;0;;trens de forca aplicaveis;;Vehicle Parameters List
+P08;IDSG;1;INTEGER;PK;P02.IDSG;;Idx;1;;subgrupo;;Group and subgroup correlation
+P08;IDVP;2;INTEGER;FK;P07.IDVP;;Idx;1;;parametro dimensionador;;Group and subgroup correlation
+P08;IDG;3;INTEGER;FK;P03.IDG;;Idx;1;;grupo generico;;Group and subgroup correlation
+P08;IDGG;4;TEXT;FK;P04.IDGG;;Idx;1;;grupo GREET;;Group and subgroup correlation
+P08;ExcludedVPT;5;TEXT;-;;;Dsc;0;;trens de forca em que o subgrupo nao existe;GC = 0 e ME = 0;Group and subgroup correlation
+P09;IDM;1;INTEGER;PK;;;Idx;1;;material;;Material List
+P09;DsM;2;TEXT;-;;;Dsc;1;;nome;;Material List
+P09;Mspec;3;TEXT;-;;;Dsc;0;;especificacao;;Material List
+P09;EFBasis;4;TEXT;-;;;Dsc;1;mass,energy,vehicle;base de aplicacao do fator;;Material List
+P09;EFBasisParam;5;INTEGER;FK;P07.IDVP;;Dsc;0;;IDVP que fornece a base;;Material List
+P09;IsProcess;6;INTEGER;-;;;Dsc;1;0,1;1 para pseudo-material de processo;;Material List
+P09;ShareRole;7;TEXT;-;;;Dsc;1;material,process,breakdown;papel na soma das receitas;apenas 'material' entra no fechamento = 1;Material List
+P10;IDEFV;1;TEXT;PK;;;Idx;1;;versao dos fatores;;Emission Factors Version List
+P10;DsEFV;2;TEXT;-;;;Dsc;1;;nome;;Emission Factors Version List
+P10;DateIDEFV;3;DATE;-;;;Dsc;1;;data;;Emission Factors Version List
+P10;GWPSet;4;TEXT;-;;;Dsc;1;AR6-100;conjunto de GWP;;Emission Factors Version List
+P10;SourceEFV;5;TEXT;-;;;Dsc;1;;fonte;;Emission Factors Version List
+P10;LicenseEFV;6;TEXT;-;;;Dsc;0;;condicoes de redistribuicao;;Emission Factors Version List
+P11;IDM;1;INTEGER;PK;P09.IDM;;Idx;1;;material;;Emission Factors values list
+P11;IDEFV;2;TEXT;PK;P10.IDEFV;;Idx;1;;versao;;Emission Factors values list
+P11;EF;3;REAL;-;;conf. P09.EFBasis;Exo;1;>=0;fator de emissao;;Emission Factors values list
+P11;EFnotes;4;TEXT;-;;;Dsc;0;;observacoes;;Emission Factors values list
+P12;IDVPT;1;TEXT;PK;;;Idx;1;ICEV,HEV,PHEV,BEV,SHEV,SPHEV,FCEV;trem de forca;;Power Train List
+P12;DsVPT;2;TEXT;-;;;Dsc;1;;descricao;;Power Train List
+P13;IDVDT;1;TEXT;PK;;;Idx;1;;tipo de carroceria;;Design List
+P13;DsVDT;2;TEXT;-;;;Dsc;1;;descricao;;Design List
+P14;IDVS;1;TEXT;PK;;;Idx;1;;porte;;Size List
+P14;DsVS;2;TEXT;-;;;Dsc;1;;descricao;;Size List
+P15;IDVMR;1;TEXT;PK;;;Idx;1;;receita de materiais;;Vehicle Material Recipe List
+P15;IDVPT;2;TEXT;FK;P12.IDVPT;;Idx;1;;trem de forca tipico;;Vehicle Material Recipe List
+P15;IDVDT;3;TEXT;FK;P13.IDVDT;;Idx;0;;carroceria tipica;;Vehicle Material Recipe List
+P15;IDVS;4;TEXT;FK;P14.IDVS;;Idx;0;;porte tipico;;Vehicle Material Recipe List
+P15;DsVMR;5;TEXT;-;;;Dsc;1;;descricao;;Vehicle Material Recipe List
+P16;IDVMR;1;TEXT;PK;P15.IDVMR;;Idx;1;;receita;;Vehicle Material Recipe per GREET group
+P16;IDGG;2;TEXT;PK;P04.IDGG;;Idx;1;;grupo GREET;;Vehicle Material Recipe per GREET group
+P16;IDM;3;INTEGER;PK;P09.IDM;;Idx;1;;material;;Vehicle Material Recipe per GREET group
+P16;MshareGG;4;REAL;-;;fracao;Exo;1;0..1;participacao massica;soma = 1 por (IDVMR,IDGG);Vehicle Material Recipe per GREET group
+P17;IDBTy;1;TEXT;PK;;;Idx;1;;tipo de bateria;;Battery Types
+P17;DsBTy;2;TEXT;-;;;Dsc;1;;descricao;;Battery Types
+P18;IDBTe;1;TEXT;PK;;;Idx;1;;tecnologia;;Battery Technologies per Type
+P18;IDBTy;2;TEXT;FK;P17.IDBTy;;Idx;1;;tipo;;Battery Technologies per Type
+P18;DsBTe;3;TEXT;-;;;Dsc;1;;descricao;;Battery Technologies per Type
+P19;IDBMd;1;TEXT;PK;;;Idx;1;;"modelo de bateria; 'NA' = sem bateria";;Battery Models Parameters
+P19;IDEFV;2;TEXT;FK;P10.IDEFV;;Idx;0;;versao de fatores de origem;;Battery Models Parameters
+P19;IDVPT;3;TEXT;FK;P12.IDVPT;;Idx;0;;trem de forca de destino;;Battery Models Parameters
+P19;IDBTe;4;TEXT;FK;P18.IDBTe;;Idx;0;;tecnologia;;Battery Models Parameters
+P19;RefRange;5;REAL;-;;km;Exo;1;>=0;autonomia de referencia;;Battery Models Parameters
+P19;RefEnergy;6;REAL;-;;kWh;Exo;1;>=0;capacidade de referencia;;Battery Models Parameters
+P19;RefPower;7;REAL;-;;kW;Exo;1;>=0;potencia de referencia;;Battery Models Parameters
+P19;RefWeight;8;REAL;-;;kg;End;1;>=0;massa de referencia;"HEV: RefPower*PowerDensity; demais: RefEnergy*EnergyDensity";Battery Models Parameters
+P19;RefGHGIDBMd;9;REAL;-;;kg CO2e;End;1;>=0;emissao de referencia;"HEV: RefWeight*GravimetricGHGDensity; demais: RefEnergy*EnergyGHGDensity";Battery Models Parameters
+P19;EnergyDensity;10;REAL;-;;kg/kWh;Exo/End;1;;densidade de energia;HEV: RefWeight/RefEnergy;Battery Models Parameters
+P19;PowerDensity;11;REAL;-;;kg/kW;Exo;1;;densidade de potencia;;Battery Models Parameters
+P19;GravimetricEnergyDensity;12;REAL;-;;kWh/kg;End;0;;1/EnergyDensity;divisao protegida;Battery Models Parameters
+P19;GravimetricPowerDensity;13;REAL;-;;kW/kg;End;0;;1/PowerDensity;divisao protegida;Battery Models Parameters
+P19;GravimetricGHGDensity;14;REAL;-;;kg CO2e/kg;Exo/End;0;;;demais: RefGHGIDBMd/RefWeight;Battery Models Parameters
+P19;EnergyGHGDensity;15;REAL;-;;kg CO2e/kWh;Exo/End;0;;;HEV: RefGHGIDBMd/RefEnergy;Battery Models Parameters
+P19;DsBMd;16;TEXT;-;;;Dsc;0;;descricao;;Battery Models Parameters
+P20;IDBMd;1;TEXT;PK;P19.IDBMd;;Idx;1;;modelo de bateria;;Battery Material Recipe per Model
+P20;IDGG;2;TEXT;PK;P04.IDGG;;Idx;1;;grupo GREET;;Battery Material Recipe per Model
+P20;IDM;3;INTEGER;PK;P09.IDM;;Idx;1;;material;;Battery Material Recipe per Model
+P20;BMshareGG;4;REAL;-;;fracao;Exo;1;0..1;participacao massica;renomeada de BMshare;Battery Material Recipe per Model
+P21;IDAP;1;INTEGER;PK;;;Idx;1;;processo de montagem;;Assembly Process List
+P21;DsAP;2;TEXT;-;;;Dsc;1;;nome do processo;;Assembly Process List
+P22;IDAPV;1;TEXT;PK;P23.IDAPV;;Idx;1;;versao dos parametros de montagem;;Assembly Energy and Fuel Shares
+P22;IDAP;2;INTEGER;PK;P21.IDAP;;Idx;1;;processo;;Assembly Energy and Fuel Shares
+P22;IDFuel;3;TEXT;PK;P24.IDFuel;;Idx;1;;portador de energia;;Assembly Energy and Fuel Shares
+P22;EnergyPerVehicle;4;REAL;-;;MJ/veiculo;Exo;1;>=0;energia do processo por veiculo;;Assembly Energy and Fuel Shares
+P22;FuelShare;5;REAL;-;;fracao;Exo;1;0..1;participacao do portador;soma = 1 por (IDAPV,IDAP);Assembly Energy and Fuel Shares
+P23;IDAPV;1;TEXT;PK;;;Idx;1;;versao dos parametros de montagem;;Assembly Parameters Version List
+P23;DsAPV;2;TEXT;-;;;Dsc;1;;nome;;Assembly Parameters Version List
+P23;DateIDAPV;3;DATE;-;;;Dsc;1;;data;;Assembly Parameters Version List
+P23;FixedGHGPerVehicle;4;REAL;-;;kg CO2e/veiculo;Exo;0;>=0;valor agregado quando Method='fixed';;Assembly Parameters Version List
+P23;Status;5;TEXT;-;;;Dsc;1;recommended,legacy;situacao da versao;;Assembly Parameters Version List
+P23;Method;6;TEXT;-;;;Dsc;1;from_EF,process,fixed;de onde vem o valor da montagem;;Assembly Parameters Version List
+P23;IDEFVdefault;7;TEXT;FK;P10.IDEFV;;Idx;0;;versao de fatores a que corresponde;;Assembly Parameters Version List
+P23;SourceAPV;8;TEXT;-;;;Dsc;1;;fonte;;Assembly Parameters Version List
+P24;IDFuel;1;TEXT;PK;;;Idx;1;;portador de energia;;Energy Carrier List
+P24;DsFuel;2;TEXT;-;;;Dsc;1;;descricao;;Energy Carrier List
+P25;IDFuel;1;TEXT;PK;P24.IDFuel;;Idx;1;;portador;;Fuel Emission Factors
+P25;IDEFV;2;TEXT;PK;P10.IDEFV;;Idx;1;;versao;;Fuel Emission Factors
+P25;EFfuel;3;REAL;-;;g CO2e/MJ;Exo;1;;fator de emissao;;Fuel Emission Factors
+P25;EFfuelNotes;4;TEXT;-;;;Dsc;0;;rastreabilidade;;Fuel Emission Factors
+D04;IDEFV;1;TEXT;PK;;;Idx;1;;"versao criada pelo usuario; nao pode colidir com P10";;User Emission Factor Version List
+D04;DsEFV;2;TEXT;-;;;Dsc;1;;nome;;User Emission Factor Version List
+D04;DateIDEFV;3;DATE;-;;;Dsc;1;;data;;User Emission Factor Version List
+D04;GWPSet;4;TEXT;-;;;Dsc;1;;conjunto de GWP;;User Emission Factor Version List
+D04;SourceEFV;5;TEXT;-;;;Dsc;1;;fonte declarada pelo usuario;;User Emission Factor Version List
+D04;LicenseEFV;6;TEXT;-;;;Dsc;0;;licenca declarada pelo usuario;;User Emission Factor Version List
+D04;BasedOnIDEFV;7;TEXT;FK;P10.IDEFV;;Idx;0;;versao base herdada para os IDM nao informados;;User Emission Factor Version List
+D05;IDM;1;TEXT;PK;P09.IDM;;Idx;1;;material;;User Emission Factors
+D05;IDEFV;2;TEXT;PK;D04.IDEFV;;Idx;1;;versao do usuario;;User Emission Factors
+D05;EF;3;REAL;-;;conf. P09.EFBasis;Exo;1;>=0;fator informado pelo usuario;;User Emission Factors
+D05;EFnotes;4;TEXT;-;;;Dsc;0;;origem do valor;;User Emission Factors
+D01;IDV;1;INTEGER;PK;;;Idx;1;;veiculo;;Vehicle List
+D01;DsV;2;TEXT;-;;;Dsc;1;;nome;;Vehicle List
+D01;IDVPT;3;TEXT;FK;P12.IDVPT;;Idx;1;;trem de forca;;Vehicle List
+D01;IDVDT;4;TEXT;FK;P13.IDVDT;;Idx;1;;carroceria;;Vehicle List
+D01;IDVS;5;TEXT;FK;P14.IDVS;;Idx;1;;porte;;Vehicle List
+D01;IDLR;6;TEXT;-;;;Idx;1;Regular,Luxury;classificacao;;Vehicle List
+D01;IsUserDefined;7;INTEGER;-;;;Dsc;1;0,1;1 se criado pelo usuario;;Vehicle List
+D01;NotesIDV;8;TEXT;-;;;Dsc;0;;observacoes;;Vehicle List
+D02;IDV;1;INTEGER;PK;D01.IDV;;Idx;1;;veiculo;;Vehicle Evaluation Criteria
+D02;IDEA;2;INTEGER;PK;;;Idx;1;;alternativa de avaliacao;;Vehicle Evaluation Criteria
+D02;IDMPV;3;INTEGER;FK;P05.IDMPV;;Idx;1;;versao de parametros de massa;;Vehicle Evaluation Criteria
+D02;IDVMR;4;TEXT;FK;P15.IDVMR;;Idx;1;;receita de materiais (prevalece sobre P15);;Vehicle Evaluation Criteria
+D02;IDEFV;5;TEXT;FK;P10.IDEFV;;Idx;1;;versao de fatores de emissao;;Vehicle Evaluation Criteria
+D02;IDAPV;6;TEXT;FK;P23.IDAPV;;Idx;1;;versao de parametros de montagem;;Vehicle Evaluation Criteria
+D02;Boundary;7;TEXT;-;;;Idx;1;MAT,MAT_ASM;fronteira do sistema;;Vehicle Evaluation Criteria
+D02;NotesIDEA;8;TEXT;-;;;Dsc;0;;observacoes;;Vehicle Evaluation Criteria
+D03;IDV;1;INTEGER;PK;D01.IDV;;Idx;1;;veiculo;;Vehicle Parameters Values
+D03;IDVP;2;INTEGER;PK;P07.IDVP;;Idx;1;;parametro;;Vehicle Parameters Values
+D03;GC;3;REAL;-;;conf. P07.utVP;Exo/End;1;;valor do parametro;conforme P07.GCEquation quando IsCalculated=1;Vehicle Parameters Values
+D03;GCText;4;TEXT;-;;;Exo;0;;valor textual (apenas IDVP 32);;Vehicle Parameters Values
+D03;IsCalculated;5;INTEGER;-;;;Dsc;1;0,1;1 se endogeno;;Vehicle Parameters Values

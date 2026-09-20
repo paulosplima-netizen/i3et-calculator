@@ -1,0 +1,13 @@
+﻿IDV;DsV;IDVPT;IDVDT;IDVS;IDLR;IsUserDefined;NotesIDV
+1;BP01;ICEV;Hatchback;Midsize;Regular;0;
+2;BP02;ICEV;SUV;Midsize;Regular;0;
+3;BP03;ICEV;SUV;Midsize;Regular;0;
+4;BP04;BEV;Hatchback;Midsize;Regular;0;
+5;BP05;BEV;Sedan;Midsize;Regular;0;
+6;BP06;BEV;SUV;Midsize;Regular;0;
+7;BP07;HEV;Hatchback;Midsize;Regular;0;
+8;BP08;HEV;Sedan;Midsize;Regular;0;
+9;BP09;HEV;SUV;Midsize;Regular;0;
+10;BP10;PHEV;Hatchback;Midsize;Regular;0;
+11;BP11;PHEV;Sedan;Midsize;Regular;0;
+12;BP12;PHEV;SUV;Midsize;Regular;0;

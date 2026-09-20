@@ -1,0 +1,21 @@
+﻿IDFuel;IDEFV;EFfuel;EFfuelNotes
+ResidOil;G22;96.3639;GREET 2022 - aba ADR do i3ET
+ResidOil;BR25BR;96.3639;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+ResidOil;BR25m;96.3639;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+ResidOil;BR25GLO;96.3639;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Diesel;G22;89.079;GREET 2022 - aba ADR do i3ET
+Diesel;BR25BR;89.079;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Diesel;BR25m;89.079;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Diesel;BR25GLO;89.079;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+NaturalGas;G22;69.2923;GREET 2022 - aba ADR do i3ET
+NaturalGas;BR25BR;69.2923;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+NaturalGas;BR25m;69.2923;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+NaturalGas;BR25GLO;69.2923;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Coal;G22;100.528;GREET 2022 - aba ADR do i3ET
+Coal;BR25BR;100.528;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Coal;BR25m;100.528;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Coal;BR25GLO;100.528;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Electricity;G22;129.5837;GREET 2022 - aba ADR do i3ET
+Electricity;BR25BR;25.64;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Electricity;BR25m;25.64;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"
+Electricity;BR25GLO;25.64;"eletricidade: rede BR (EPE/ANEEL/ONS, 25,64 g CO2e/MJ); demais: GREET - a substituir pelos fatores do Projeto Berco ao Portao"

@@ -1,0 +1,13 @@
+﻿IDGG;DsGG;IsBattery
+A;Body: including BIW, interior, exterior, and glass;0
+B;Chassis (w/o battery);0
+C;Traction Motor;0
+D;Powertrain System (Including BOP);0
+E;Transmission System/Gearbox;0
+F;Generator;0
+G;Electronic Controller;0
+H;Fuel Cell Auxiliary System;0
+Iaux;Battery Lead Acid;1
+Iprinc;Battery Ion Lithium;1
+J;Onboard Charger;0
+K;Fluids;0

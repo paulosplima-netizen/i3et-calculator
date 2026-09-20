@@ -1,0 +1,9 @@
+# System libraries required by WeasyPrint (PDF export) on Streamlit Community Cloud.
+# If these fail to install, HTML export still works and the PDF can be produced by
+# the browser's own "print to PDF" -- the print stylesheet is already in place.
+# The calculation never depends on them.
+libpango-1.0-0
+libpangoft2-1.0-0
+libharfbuzz0b
+libcairo2
+libgdk-pixbuf-2.0-0

@@ -1,0 +1,105 @@
+﻿IDM;DsM;Mspec;EFBasis;EFBasisParam;IsProcess;ShareRole
+1;Steel;;mass;;0;material
+2;Stainless Steel;;mass;;0;material
+3;Cast Iron;;mass;;0;material
+4;Wrought Aluminum;;mass;;0;material
+4a;Aluminum Sheet (Automotive);;mass;;0;material
+4b;Aluminum Extrusion (Automotive);;mass;;0;material
+5;Cast Aluminum;;mass;;0;material
+6;Copper/Brass;;mass;;0;material
+7;Zinc;;mass;;0;material
+8;Magnesium;;mass;;0;material
+9;Glass;;mass;;0;material
+10;Average Plastic;;mass;;0;material
+11;Rubber;;mass;;0;material
+12;Carbon Fiber-Reinforced Plastic for General Use;;mass;;0;material
+13;Carbon Fiber-Reinforced Plastic for High Pressure Vessels;;mass;;0;material
+14;Glass Fiber-Reinforced Plastic;;mass;;0;material
+15;Nickel;;mass;;0;material
+16;PFSA;;mass;;0;material
+17;Carbon Paper;;mass;;0;material
+18;PTFE;;mass;;0;material
+19;Carbon & PFSA Suspension;;mass;;0;material
+20;Platinum;;mass;;0;material
+21;Silicon;;mass;;0;material
+22;Carbon;;mass;;0;material
+23;Nd(Dy)FeB magnet;;mass;;0;material
+24;Phenolic resin;;mass;;0;material
+25;Enamel;;mass;;0;material
+26;PET: Polyethylene terephthalate;;mass;;0;material
+27;PBT: Polybutylene terephthalate;;mass;;0;material
+28;Mica;;mass;;0;material
+29;Glass fiber;;mass;;0;material
+30;Silicone;;mass;;0;material
+31;Epoxy resin;;mass;;0;material
+32;Nylon;;mass;;0;material
+33;Methacrylate ester resin;;mass;;0;material
+34;Paint/Varnish;;mass;;0;material
+35;Alumina;;mass;;0;material
+36;Gold;;mass;;0;material
+37;Polypropylene;;mass;;0;material
+38;Polyurethane;;mass;;0;material
+39;Zinc oxide;;mass;;0;material
+40;Others;;mass;;0;material
+41;Active Material;;mass;;0;material
+42;Graphite/Carbon;;mass;;0;material
+43;Silicon;;mass;;0;material
+44;Binder;;mass;;0;material
+45;não utilizado;;mass;;0;material
+46;não utilizado;;mass;;0;material
+46a;não utilizado;;mass;;0;material
+46b;não utilizado;;mass;;0;material
+47;não utilizado;;mass;;0;material
+48;Electrolyte: LiPF6;;mass;;0;material
+49;Electrolyte: Ethylene Carbonate;;mass;;0;material
+50;Electrolyte: Dimethyl Carbonate;;mass;;0;material
+51;não utilizado;;mass;;0;material
+52;Plastic: Polyethylene;;mass;;0;material
+53;não utilizado;;mass;;0;material
+54;não utilizado;;mass;;0;material
+55;não utilizado;;mass;;0;material
+56;não utilizado;;mass;;0;material
+57;não utilizado;;mass;;0;material
+58;Thermal Insulation;;mass;;0;material
+59;Coolant: Glycol;;mass;;0;material
+60;Electronic Parts;;mass;;0;material
+61;não utilizado;;mass;;0;material
+62;não utilizado;;mass;;0;material
+63;não utilizado;;mass;;0;material
+64;não utilizado;;mass;;0;material
+65;não utilizado;;mass;;0;material
+66;Cobalt;;mass;;0;material
+67;não utilizado;;mass;;0;material
+68;Rare Earth Metals;;mass;;0;material
+69;não utilizado;;mass;;0;material
+70;não utilizado;;mass;;0;material
+71;não utilizado;;mass;;0;material
+72;Lead;;mass;;0;material
+73;Sulfuric Acid;;mass;;0;material
+74;Fiberglass;;mass;;0;material
+75;Water;;mass;;0;material
+76;Others;;mass;;0;material
+77;Engine Oil;;mass;;0;material
+78;Power Steering Fluid;;mass;;0;material
+79;Brake Fluid;;mass;;0;material
+80;Transmission Fluid;;mass;;0;material
+81;Powertrain Coolant;;mass;;0;material
+82;Windshield Fluid;;mass;;0;material
+83;Adhesives;;mass;;0;material
+84;Lead Acid Battery Assembly  (kg CO2e/kg);;mass;;1;process
+85;Ni MH Battery Assembly (kg CO2e/kg);;mass;;1;process
+86;Lithium Ion Battery Assembly (kg CO2e/kWh);;energy;5;1;process
+87;LFP;;mass;;0;breakdown
+88;LMO;;mass;;0;breakdown
+89;LMO-LTO;;mass;;0;breakdown
+90;NCA;;mass;;0;breakdown
+91;Ni-MH;;mass;;0;breakdown
+92;NMC111;;mass;;0;breakdown
+93;NMC532;;mass;;0;breakdown
+94;NMC622;;mass;;0;breakdown
+95;NMC811;;mass;;0;breakdown
+96;NMC95;;mass;;0;breakdown
+97;NMP;;mass;;0;breakdown
+98;não utilizado;;mass;;0;material
+99;A - Assembling;;vehicle;;1;process
+100;DR - Disposal and Recycling;;vehicle;;1;process

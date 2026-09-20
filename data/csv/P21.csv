@@ -1,0 +1,8 @@
+﻿IDAP;DsAP;IncludedInA;NotesAP
+1;Paint Production;0;"producao da tinta: energia de producao de material, ja contabilizada via IDM da tinta; fora do agregado A do i3ET"
+2;Vehicle Assembly - Painting;1;
+3;Vehicle Assembly - HVAC & Lighting;1;
+4;Vehicle Assembly - Heating;1;
+5;Vehicle Assembly - Material Handling;1;
+6;Vehicle Assembly - Welding;1;
+7;Vehicle Assembly - Compressed Air;1;

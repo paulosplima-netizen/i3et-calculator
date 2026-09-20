@@ -216,3 +216,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- i3ET Calculator ---
+# User project files: each one holds someone's scenarios and results.
+projeto_*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+# Exported reports
+Resultados_*.xlsx
+Resultados_*.zip
+relatorio.html
+relatorio.pdf
