@@ -227,3 +227,7 @@ Resultados_*.xlsx
 Resultados_*.zip
 relatorio.html
 relatorio.pdf
+
+# Saidas geradas: reproduziveis por tools/export_results.py
+saidas/
+relatorio_preview.html

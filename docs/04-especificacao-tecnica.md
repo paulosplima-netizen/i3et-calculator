@@ -275,14 +275,25 @@ Ao criar um veículo, o programa:
 | `R02` | Parâmetros do veículo | `D03 ⋈ P07` | `IDV`, `IDVP` |
 | `R03` | Massa por subgrupo, com `Beta`, `GCR`, `MR`, `GC`, `fLM` | `C01 ⋈ P02 ⋈ P06` | `IDV`, `IDEA`, `IDSG` |
 | `R04` | Massa por grupo GREET | `C02 ⋈ P04` | `IDV`, `IDEA`, `IDGG` |
-| `R05` | Massa e GEE por material e grupo, com `MshareGG` e `EF` | `C09 ⋈ P09 ⋈ P16 ⋈ P11` | `IDV`, `IDEA`, `IDGG`, `IDM` |
-| `R06` | Massa e GEE da bateria por material, com `BMshareGG` e `EF` | `C08 ⋈ P09 ⋈ P20 ⋈ P11` | `IDV`, `IDEA`, `IDBMd`, `IDGG`, `IDM` |
+| `R05` | Massa e GEE por material e grupo, com `MshareGG` e `EF` | `C03 ⋈ P04 ⋈ P09` | `IDV`, `IDEA`, `IDGG`, `IDM` |
+| `R06` | Massa e GEE da bateria por material, com `BMshareGG` e `EF` | `C07 ⋈ P04 ⋈ P09` | `IDV`, `IDEA`, `IDBMd`, `IDGG`, `IDM` |
 | `R07` | Massa e GEE por grupo | `C10 ⋈ P04` | `IDV`, `IDEA`, `IDGG` |
 | `R08` | Massa e GEE por material | `C11 ⋈ P09` | `IDV`, `IDEA`, `IDM` |
 | `R09` | GEE da montagem por processo | `C13 ⋈ P21` | `IDV`, `IDEA`, `IDAP` |
 | `R10` | **Total berço ao portão** | `C14` | `IDV`, `IDEA` |
 | `R11` | Log de validação | `M02` | — |
 | `R20`–`R44` | Fotografia das tabelas de parâmetros efetivamente usadas (`P01` a `P25`) | `P*` | conforme cada tabela |
+
+`C03` e `C07` já trazem massa e emissão na mesma tabela — o que a numeração
+original do i3ET separava em `C08`/`C09`. A correspondência está declarada em
+`core/report.py`, e as tabelas de montagem completam a faixa: `R39`=`P21`,
+`R40`=`P22`, `R41`=`P23`, `R42`=`P24`, `R43`=`P25`.
+
+O corte de "apenas as linhas utilizadas" aplica-se onde o cenário nomeia uma
+chave: versão de parâmetros de massa, receita, versão de fatores, versão de
+montagem e modelo de bateria. As tabelas de dimensão que nenhum cenário
+seleciona — dicionário de dados, lista de materiais, listas de grupos — viajam
+inteiras: são pequenas, e cortá-las deixaria descrições órfãs.
 
 `R27` (versões de fatores de emissão) traz `P10` e `D04` na mesma tabela, com uma coluna `IsUserDefined` — quem recebe o arquivo vê imediatamente quais fatores vieram da base e quais foram criados por quem fez a análise.
 
@@ -367,7 +378,18 @@ R00..R44  ──►  modelo HTML (Jinja2)  ──►  relatorio.html  ──► 
 
 O relatório narrado traz, nesta ordem: identificação da execução e versões usadas; resultado do berço ao portão por veículo; decomposição por grupo GREET e por material; a etapa de montagem; o resultado da validação; e as tabelas completas em anexo. Diferente do XLSX, que é uma coleção de tabelas, o HTML e o PDF são um **documento que se lê** — e por isso cada seção traz a equação aplicada, para manter a função didática fora da aplicação.
 
-**Nota de implementação.** O WeasyPrint depende de bibliotecas de sistema (Pango, Cairo), que no Streamlit Community Cloud são declaradas em `packages.txt`. Se a instalação falhar no ambiente de publicação, o HTML continua disponível e o PDF é gerado sob demanda pelo próprio navegador (imprimir para PDF), com o CSS de impressão já previsto. O núcleo não depende de nenhum dos dois: quem gera HTML e PDF é `core/report.py`, e a ausência da biblioteca degrada o recurso, nunca o cálculo.
+**Nota de implementação.** O WeasyPrint depende de bibliotecas de sistema (Pango, Cairo), que no Streamlit Community Cloud são declaradas em `packages.txt`. Se a instalação falhar no ambiente de publicação, o HTML continua disponível e o PDF é gerado sob demanda pelo próprio navegador (imprimir para PDF), com o CSS de impressão já previsto. O núcleo não depende de nenhum dos dois: quem escreve arquivos é `core/export.py` — `core/report.py` só monta tabelas, e `core/charts.py` só devolve SVG como texto — e a ausência da biblioteca degrada o recurso, nunca o cálculo.
+
+**Os gráficos.** São SVG embutido, gerado por `core/charts.py`: sem biblioteca de
+plotagem, sem imagem externa, sem requisição. Duas formas, para as duas
+perguntas que o relatório responde — barras horizontais de série única para o
+total por veículo (rótulo direto em cada barra, sem legenda, porque o título já
+nomeia a série) e barras empilhadas para a composição por grupo GREET (legenda
+sempre presente, 2 px de superfície entre segmentos, valor de cada segmento ao
+passar o cursor). As cores vêm de uma paleta categórica validada para
+daltonismo, em ordem fixa, declarada como variáveis CSS uma única vez: a partir
+da oitava categoria não há tom novo, o excedente vira “Outros”. Os dois modos,
+claro e escuro, são escolhidos — o escuro não é uma inversão automática.
 
 Nome do arquivo: `Resultados_<projeto>_<AAAAMMDD><letra>.xlsx`, seguindo a diretriz D6. A letra avança automaticamente quando já existe um arquivo do mesmo dia.
 
@@ -389,6 +411,7 @@ Os números são exportados com a precisão completa do `float64`. Arredondament
 | Regressão | Resultados congelados: qualquer mudança numérica precisa ser deliberada | `tests/test_regression.py` |
 | Aderência (emissões) | Fluidos, baterias e materiais, onde a massa já coincide | `tests/test_ghg_reference.py` |
 | Borda | Veículo sem bateria, `GC = 0`, `Beta = 0`, receita incompleta, `EF` ausente | `tests/test_edge_cases.py` |
+| Saídas | Tabelas `R`, reconciliação com os totais, XLSX, CSV, HTML e os gráficos | `tests/test_report.py` |
 
 Os testes de aderência separam massa de emissões de propósito. A massa é o
 módulo M1: 39 configurações exatas, 28 explicadas pelo fator de leveza (M5, fora
@@ -408,6 +431,7 @@ python -m pytest -q              # a suite inteira, poucos segundos
 python tools/validate_core.py    # o quadro de aceitação contra o i3ET
 python tools/report_divergences.py   # regenera o Documento 5
 python tools/freeze_regression.py    # recongela os resultados (mudança deliberada)
+python tools/export_results.py       # gera XLSX, CSV, HTML e PDF em saidas/
 ```
 
 O mesmo conjunto roda a cada `push` no GitHub, por `.github/workflows/tests.yml`.

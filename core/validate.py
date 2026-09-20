@@ -86,21 +86,25 @@ def check_base(base, log: Log) -> bool:
     return ok
 
 
-def check_result(result: dict, log: Log) -> bool:
-    """I12 and I13 — mass and emissions must close."""
+def check_result(result: dict, log: Log, context: str | None = None) -> bool:
+    """I12 and I13 — mass and emissions must close.
+
+    `context` names the vehicle and scenario, so a failing line in the exported
+    log says which result it belongs to rather than only which rule broke.
+    """
     ok = True
     mass_total = float(result["totals"]["MassIDV"])
     by_material = float(result["C11"]["MassIDM"].sum())
     if not _close(by_material, mass_total):
         log.error("I12", f"massa por material {by_material:.9f} != "
-                         f"massa do veiculo {mass_total:.9f}")
+                         f"massa do veiculo {mass_total:.9f}", context)
         ok = False
     ghg_total = float(result["totals"]["GHGIDV"])
     ghg_material = float(result["C11"]["GHGIDM"].sum())
     ghg_group = float(result["C10"]["GHGIDGG"].sum())
     if not _close(ghg_material, ghg_total) or not _close(ghg_group, ghg_total):
         log.error("I13", f"emissoes nao fecham: por material {ghg_material:.6f}, "
-                         f"por grupo {ghg_group:.6f}, total {ghg_total:.6f}")
+                         f"por grupo {ghg_group:.6f}, total {ghg_total:.6f}", context)
         ok = False
     return ok
 
