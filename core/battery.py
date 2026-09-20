@@ -31,11 +31,28 @@ def by_material(p19: pd.DataFrame, p20: pd.DataFrame, p09: pd.DataFrame,
     empty = pd.DataFrame(columns=["IDBMd", "IDGG", "IDM", "DsM", "BMshareGG",
                                   "MassIDMpGGB", "Quantity", "EF", "GHGIDMpGGB",
                                   "HasFactor", "CountsAsMass"])
+    mass_total = float(gc.get(IDVP_BATTERY_MASS, 0.0) or 0.0)
     model = model_of(p19, battery_id)
     if model is None:
-        return empty
+        if battery_id in (None, "", "-", "NA"):
+            return empty
+        # The vehicle declares a battery the base does not describe. Returning
+        # nothing would charge it zero emissions, which is the one thing this
+        # project does not do with missing data: the mass is kept, the factor
+        # is declared absent, and the coverage report counts it.
+        if log is not None:
+            log.warn("C07", f"modelo de bateria {battery_id} ausente de P19; "
+                            f"{mass_total:.3f} kg entram no total de massa sem "
+                            f"fator de emissao")
+        if mass_total == 0:
+            return empty
+        return pd.DataFrame([{
+            "IDBMd": battery_id, "IDGG": IPRINC, "IDM": None,
+            "DsM": f"Bateria de tracao {battery_id} (modelo ausente da base)",
+            "BMshareGG": 1.0, "MassIDMpGGB": mass_total, "Quantity": mass_total,
+            "EF": None, "GHGIDMpGGB": 0.0, "HasFactor": 0, "CountsAsMass": 1,
+        }])
 
-    mass_total = float(gc.get(IDVP_BATTERY_MASS, 0.0) or 0.0)
     method = model.get("GHGMethod") or "composition"
 
     if method == "none" or mass_total == 0:

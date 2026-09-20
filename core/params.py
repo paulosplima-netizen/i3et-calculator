@@ -92,8 +92,10 @@ def resolve(gc: dict[int, float], *, powertrain: str, battery_id, p19: pd.DataFr
     # 33, 34, 36 — battery densities and reference capacity
     power_density = None if bat is None else bat["PowerDensity"]
     energy_density = None if bat is None else bat["EnergyDensity"]
-    g[33] = float(power_density) if power_density not in (None, 0) and not _isnan(power_density) else 0.0
-    g[34] = float(energy_density) if energy_density not in (None, 0) and not _isnan(energy_density) else 0.0
+    g[33] = (float(power_density)
+             if power_density not in (None, 0) and not _isnan(power_density) else 0.0)
+    g[34] = (float(energy_density)
+             if energy_density not in (None, 0) and not _isnan(energy_density) else 0.0)
     ref_energy = None if bat is None else bat["RefEnergy"]
     g[36] = float(ref_energy) if ref_energy is not None and not _isnan(ref_energy) else 0.0
 

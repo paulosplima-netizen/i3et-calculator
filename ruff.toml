@@ -1,0 +1,17 @@
+# O linter serve ao projeto, nao o contrario.
+#
+# `core` e `tests` sao o produto: ali a regra e estrita, porque e o codigo que
+# outra pessoa vai ler para entender o calculo. `tools` sao roteiros de
+# construcao da base, escritos em estilo denso e lidos de cima a baixo uma vez;
+# ali as regras de uma-instrucao-por-linha atrapalham mais do que ajudam.
+line-length = 100
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W"]
+
+[lint.per-file-ignores]
+# E501: os roteiros de construcao carregam textos longos de registro,
+# que ficam piores quebrados em duas linhas do que passando da margem.
+"tools/*.py" = ["E701", "E702", "E401", "E402", "E731", "E501"]
+"tests/conftest.py" = ["E402"]

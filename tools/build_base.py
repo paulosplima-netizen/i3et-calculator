@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Gera a Base de Dados revisada da Calculadora Berco-ao-Portao (Documento 3)."""
-import os, openpyxl, datetime
+import os, re, openpyxl, datetime
 from openpyxl.styles import Font, PatternFill, Alignment
 
 BASE = os.path.expanduser("~/mnt/_Calculadora da Pegada de Carbono do Berço ao Portão")
@@ -8,7 +8,18 @@ BASE = os.path.expanduser("~/mnt/_Calculadora da Pegada de Carbono do Berço ao 
 D = next((d for d in (os.path.join(BASE, "Documentação"), BASE)
           if os.path.exists(os.path.join(d, "LVManufacturingMassGHGSimulator_20260919a.xlsx"))), BASE)
 SRC = os.path.join(D, "LVManufacturingMassGHGSimulator_20260919a.xlsx")
-OUT = os.path.join(D, "BaseDeDados_CalculadoraBP_20260919a.xlsx")
+# Diretriz D6: o documento entregue leva a data e a letra da versao do dia.
+# A letra avanca quando ja existe um arquivo do mesmo dia com conteudo anterior.
+def _out_name(d):
+    hoje = datetime.date.today().strftime("%Y%m%d")
+    for letra in "abcdefghijklmnopqrstuvwxyz":
+        nome = os.path.join(d, f"BaseDeDados_CalculadoraBP_{hoje}{letra}.xlsx")
+        if not os.path.exists(nome):
+            return nome
+        ultimo = nome
+    return ultimo
+
+OUT = _out_name(D)
 print("documentos em:", D)
 
 src = openpyxl.load_workbook(SRC, data_only=True)
@@ -314,8 +325,12 @@ if os.path.exists(I3ET):
     import openpyxl as _ox
     _wb = _ox.load_workbook(I3ET, data_only=True, read_only=True)
     _m2 = {}
+    # Rows 1..80 carry the configuration parameters; rows 617..626 carry the
+    # fluids block, which is the composition of GREET group K -- see below.
     for _i, _row in enumerate(_wb["M2 GHG Mfg Module"].iter_rows(
-            min_row=1, max_row=80, max_col=210, values_only=True), 1):
+            min_row=1, max_row=630, max_col=210, values_only=True), 1):
+        if _i > 80 and not (615 <= _i <= 630):
+            continue
         for _j, _v in enumerate(_row, 1):
             if _v is not None:
                 _m2[(_i, _j)] = _v
@@ -595,6 +610,70 @@ note("Montagem: a versao padrao (A-EF) le o valor da propria tabela de fatores, 
      "756,496 (BR25GLO) kg CO2e/veiculo. As versoes A-G22 e A-G23 trazem a decomposicao por "
      "processo, que reconcilia com o IDM 99 (705,46). O valor de 227,28 do i3ET nao consta de P11 "
      "em nenhuma versao e fica marcado como 'legacy'.")
+
+# ---- P16 : receita do grupo K (Fluidos), ausente da base do simulador ------
+# A base do simulador nao traz composicao para o grupo K. O i3ET traz: as linhas
+# 620 a 626 do M2 sao as massas, em kg, de cada fluido (IDM 77 a 83), e a linha
+# 617 e a emissao do grupo, que e a soma dessas massas vezes os respectivos
+# fatores. Sem essas linhas, a calculadora carrega a massa dos fluidos e lhes
+# atribui emissao zero -- entre 1,5% e 2,3% do total do veiculo desaparece em
+# silencio, que e exatamente o que a diretriz D13 e a cobertura de fatores
+# existem para impedir. Diretriz D11: prevalece o i3ET.
+#
+# As participacoes sao tomadas da familia de configuracoes de referencia
+# (G01 a G05 e BP01 a BP12), que e a familia dos veiculos do projeto. O i3ET
+# permite composicoes diferentes por configuracao; aqui elas entram por receita
+# (IDVMR), que e a granularidade do modelo relacional.
+FLUID_ROWS = {620: "77", 621: "78", 622: "79", 623: "80",
+              624: "81", 625: "82", 626: "83"}
+#: A receita do SHEV nao tem configuracao com fluidos preenchidos no i3ET.
+#: Adotada a do HEV, por ser hibrido com motor a combustao. Registrado no
+#: Relatorio de Divergencias.
+FLUID_FALLBACK = {"SHEV": "HEV"}
+if os.path.exists(I3ET) and _m2:
+    _cfg = {str(v).strip(): c for (r, c), v in _m2.items()
+            if r == 11 and re.match(r"^[A-Z]{1,2}\d{1,2}$", str(v).strip())}
+    _ref = {c: col for c, col in _cfg.items()
+            if re.match(r"^(G\d{1,2}|BP\d{2})$", c)}
+    _bypt = {}
+    for _code, _col in sorted(_ref.items()):
+        _pt = str(_m2.get((10, _col)) or "").strip()
+        _m = {idm: float(_m2.get((r, _col)) or 0.0) for r, idm in FLUID_ROWS.items()}
+        _tot = sum(_m.values())
+        if _tot <= 0:
+            continue
+        _frac = {k: v / _tot for k, v in _m.items()}
+        _prev = _bypt.get(_pt)
+        if _prev is None:
+            _bypt[_pt] = (_frac, [_code])
+        else:
+            _same = all(abs(_prev[0][k] - _frac[k]) < 1e-9 for k in _frac)
+            if _same:
+                _prev[1].append(_code)
+            else:
+                note("P16 grupo K: %s tem composicao de fluidos diferente da de %s; "
+                     "adotada a primeira (%s)" % (_code, _prev[1][0], _prev[1][0]))
+    _ja = {(r["IDVMR"], r["IDGG"]) for r in P16}
+    _add = 0
+    for _r in P15:
+        _vmr, _pt = _r["IDVMR"], _r["IDVPT"]
+        if (_vmr, "K") in _ja:
+            continue
+        _src_pt = _pt if _pt in _bypt else FLUID_FALLBACK.get(_pt)
+        _hit = _bypt.get(_src_pt)
+        if _hit is None:
+            note("P16 grupo K: sem composicao de fluidos para %s (receita %s)" % (_pt, _vmr))
+            continue
+        for _idm, _f in sorted(_hit[0].items(), key=lambda kv: int(kv[0])):
+            P16.append({"IDVMR": _vmr, "IDGG": "K", "IDM": _idm, "MshareGG": _f})
+            _add += 1
+        if _src_pt != _pt:
+            note("P16 grupo K: receita %s (%s) adotou a composicao de fluidos do %s "
+                 "(o i3ET nao traz configuracao de %s com fluidos preenchidos)"
+                 % (_vmr, _pt, _src_pt, _pt))
+    note("P16: %d participacoes do grupo K (Fluidos) importadas do i3ET, linhas 620 a 626 "
+         "do M2. Antes o grupo tinha massa e emissao zero. Trens de forca com composicao "
+         "propria: %s" % (_add, ", ".join(sorted(_bypt))))
 
 # ---------------------------------------------------------------- verificacoes
 PROC = {r["IDM"] for r in P09 if r["ShareRole"] != "material"}

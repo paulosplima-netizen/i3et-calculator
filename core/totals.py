@@ -17,10 +17,13 @@ def by_group(c02: pd.DataFrame, c03: pd.DataFrame, c07: pd.DataFrame) -> pd.Data
     """C10 — mass and emissions per GREET group, battery included."""
     ghg_materials = (c03.groupby("IDGG", as_index=False)["GHGIDMpGG"].sum()
                         .rename(columns={"GHGIDMpGG": "GHGIDGG"}))
-    ghg_battery = (c07.groupby("IDGG", as_index=False)["GHGIDMpGGB"].sum()
-                      .rename(columns={"GHGIDMpGGB": "GHGIDGG"})) if len(c07) else \
-                  pd.DataFrame(columns=["IDGG", "GHGIDGG"])
-    ghg = pd.concat([ghg_materials, ghg_battery], ignore_index=True)
+    ghg = ghg_materials
+    if len(c07):
+        # Only concatenated when the battery actually has rows: concatenating an
+        # empty frame is deprecated in pandas and changes the column dtypes.
+        ghg_battery = (c07.groupby("IDGG", as_index=False)["GHGIDMpGGB"].sum()
+                          .rename(columns={"GHGIDMpGGB": "GHGIDGG"}))
+        ghg = pd.concat([ghg_materials, ghg_battery], ignore_index=True)
     ghg = ghg.groupby("IDGG", as_index=False)["GHGIDGG"].sum()
     return c02.merge(ghg, on="IDGG", how="left").fillna({"GHGIDGG": 0.0})
 
@@ -33,7 +36,10 @@ def by_material(c03: pd.DataFrame, c07: pd.DataFrame) -> pd.DataFrame:
         b = c07[["IDM", "DsM", "MassIDMpGGB", "GHGIDMpGGB"]].rename(
             columns={"MassIDMpGGB": "MassIDM", "GHGIDMpGGB": "GHGIDM"})
         a = pd.concat([a, b], ignore_index=True)
-    return (a.groupby(["IDM"], as_index=False)
+    # dropna=False: a battery priced by carbon intensity per kilogram has no
+    # material of its own, so its IDM is null. Dropping it would make the sum
+    # of C11 smaller than the vehicle and hide hundreds of kilograms.
+    return (a.groupby(["IDM"], as_index=False, dropna=False)
              .agg(DsM=("DsM", "first"), MassIDM=("MassIDM", "sum"),
                   GHGIDM=("GHGIDM", "sum")))
 

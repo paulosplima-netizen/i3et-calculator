@@ -93,7 +93,38 @@ Duas diferenças não aparecem na tabela acima porque a calculadora **honra o va
 
 Em ambos os casos a calculadora usa o valor informado quando ele existe, e aplica a equação apenas para veículos criados pelo usuário. A coluna `D03.IsCalculated` distingue os dois casos, e toda substituição é registrada no log da execução.
 
-## 6. Conclusão
+## 6. Emissões: fluidos e baterias
+
+Em 24 configurações da família de referência — aquelas cujas receitas de materiais a base possui e cuja massa já reproduz o i3ET — as emissões foram comparadas parcela a parcela.
+
+**Fluidos (grupo `K`) — corrigido em 20/09/2026.** A base do simulador não trazia composição para o grupo dos fluidos: a calculadora carregava a massa (25 a 43 kg por veículo) e lhe atribuía **emissão zero**. O i3ET traz a composição nas linhas 620 a 626 do módulo M2, e ela passou a integrar `P16`. A concordância agora é exata (maior diferença relativa: 2.1e-16). Antes da correção, faltavam entre 67 e 108 kg CO₂e por veículo, ou algo entre 1,5% e 2,3% do total do berço ao portão. **Nenhum ajuste é necessário no i3ET**: a falha estava na base derivada, não na planilha.
+
+**Bateria de tração.** Reproduz o i3ET na precisão da máquina em todos os modelos que a base descreve. As configurações da família `G` citam modelos que vivem apenas na planilha de baterias do i3ET; para elas a calculadora **mantém a massa, declara o fator ausente e registra aviso** — nunca atribui emissão zero em silêncio.
+
+**Bateria auxiliar (chumbo-ácido).** A intensidade por quilograma coincide exatamente com a das colunas `G` do i3ET. As colunas `BP` da mesma planilha são **9.87% maiores**, por uma razão localizada: elas lançam o plástico da bateria como *Average Plastic* (IDM 10; 4,4833 kg CO₂e/kg) enquanto as colunas `G` o lançam como *Polypropylene* (2,6074). A base segue o polipropileno, que é o material específico e é também o que a receita do simulador declara. O efeito é de cerca de 1,8 kg CO₂e por veículo — menos de 0,05% do total.
+
+**Ajuste sugerido no i3ET:** uniformizar o material do plástico da bateria auxiliar entre as duas famílias de colunas. É uma inconsistência interna da planilha, não uma divergência com a calculadora.
+
+## 7. Emissões: composição dos materiais do veículo — **em aberto**
+
+Esta é a única divergência de emissões ainda não resolvida, e é a mais importante deste relatório.
+
+A **massa** do veículo reproduz o i3ET exatamente. A **distribuição dessa massa entre materiais**, não: para a mesma receita (`BISD2` em `BP01`, por exemplo, que é a receita que a própria planilha declara usar), a base põe cerca de 143 kg a menos de aço e 68 kg a mais de plástico médio, além de separar o alumínio em chapa e extrudado onde o i3ET usa uma única entrada. Como os fatores de emissão diferem entre esses materiais, o total de emissões dos materiais do veículo diverge.
+
+| Configuração | Trem de força | Calculadora (kg CO₂e) | i3ET (kg CO₂e) | Dif. |
+|---|---|---:|---:|---:|
+| `G03` | PHEV | 6,086.8 | 6,682.0 | -8.91% |
+| `G02` | HEV | 6,069.1 | 6,647.3 | -8.70% |
+| `G13` | PHEV | 6,071.2 | 6,619.9 | -8.29% |
+| `BP04` | BEV | 4,243.2 | 4,246.2 | -0.07% |
+| `BP02` | ICEV | 4,630.3 | 4,577.0 | +1.17% |
+| `BP01` | ICEV | 4,398.5 | 4,335.9 | +1.44% |
+
+A origem é conhecida: as receitas `P16` vêm da planilha `LVManufacturingMassGHGSimulator`, e o i3ET usa as suas próprias tabelas de composição por grupo GREET. São dois instantâneos da mesma tabela que se separaram — o mesmo tipo de problema já encontrado em `D03` e resolvido pela sincronização com as colunas `BP`.
+
+**Decisão pendente.** Pela diretriz **D11** prevalece o i3ET, o que implicaria reconstruir `P16` a partir das tabelas de composição da planilha. É uma mudança que desloca todos os resultados de emissões e merece decisão explícita antes de ser feita. Enquanto não for tomada, o teste `test_car_materials_stay_within_the_documented_gap` trava a distância no patamar atual, de modo que ela não possa crescer despercebida.
+
+## 8. Conclusão
 
 **Toda diferença material está explicada.** Nenhuma decorre de erro de cálculo da calculadora: elas vêm de um módulo fora do escopo desta versão (leveza) e de uma inconsistência identificada na lista de exclusão do módulo híbrido do i3ET.
 

@@ -379,7 +379,29 @@ Os números são exportados com a precisão completa do `float64`. Arredondament
 | Invariantes | I1 a I13 sobre a base de referência | `tests/test_invariants.py` |
 | Aderência | Comparação com o i3ET nos doze veículos | `tests/test_i3et_reference.py` |
 | Regressão | Resultados congelados: qualquer mudança numérica precisa ser deliberada | `tests/test_regression.py` |
+| Aderência (emissões) | Fluidos, baterias e materiais, onde a massa já coincide | `tests/test_ghg_reference.py` |
 | Borda | Veículo sem bateria, `GC = 0`, `Beta = 0`, receita incompleta, `EF` ausente | `tests/test_edge_cases.py` |
+
+Os testes de aderência separam massa de emissões de propósito. A massa é o
+módulo M1 e está fechada: 39 configurações exatas, 28 explicadas pelo fator de
+leveza (M5, fora de escopo), 5 pela lista de exclusão do módulo híbrido, nenhuma
+sem explicação. As emissões são o módulo M2, e ali o estado é parcial: fluidos e
+baterias reproduzem o i3ET exatamente, a composição dos materiais do veículo
+ainda não — ver §7 do Documento 5. O teste dessa parcela é um **catraca**: ele
+não aceita a diferença, apenas impede que ela cresça enquanto a decisão de
+reconstruir `P16` a partir do i3ET não é tomada.
+
+### 7.1.1 Como rodar
+
+```
+python -m pytest -q              # a suite inteira, poucos segundos
+python tools/validate_core.py    # o quadro de aceitação contra o i3ET
+python tools/report_divergences.py   # regenera o Documento 5
+python tools/freeze_regression.py    # recongela os resultados (mudança deliberada)
+```
+
+O mesmo conjunto roda a cada `push` no GitHub, por `.github/workflows/tests.yml`.
+A aceitação do cálculo é um comando, não a lembrança de ter conferido.
 
 ### 7.2 Extração dos valores de referência
 

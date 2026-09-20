@@ -7,7 +7,6 @@ does not hand over a number it cannot reconcile with itself.
 
 from __future__ import annotations
 
-import pandas as pd
 
 from .log import Log
 
@@ -19,7 +18,11 @@ def _closure(df, keys, column, rule, log, p09):
     material = p09.loc[p09["ShareRole"] == "material", "IDM"]
     only = df[df["IDM"].isin(material)]
     sums = only.groupby(keys, as_index=False)[column].sum()
-    bad = sums[(sums[column] - 1).abs() > CLOSURE_TOL]
+    # A group whose fractions sum to exactly zero is a group the recipe does
+    # not use (e.g. a battery chemistry that carries no plastics). That is an
+    # absence, not a closure violation: only non-empty groups must close on 1.
+    present = sums[sums[column].abs() > CLOSURE_TOL]
+    bad = present[(present[column] - 1).abs() > CLOSURE_TOL]
     for _, r in bad.iterrows():
         log.error(rule, f"{' / '.join(str(r[k]) for k in keys)}: soma = {r[column]:.9f}")
     return len(bad) == 0

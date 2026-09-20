@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import csv
 import datetime as dt
+import glob
 import hashlib
 import os
 import sqlite3
@@ -26,14 +27,17 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB = os.path.join(REPO, "data", "base_referencia.sqlite")
 CSV_DIR = os.path.join(REPO, "data", "csv")
 
-DEFAULT_SOURCES = [
+#: Onde procurar a base, quando o caminho nao e passado na linha de comando.
+#: Dentro de cada pasta vale a versao mais recente pelo nome, que e o que a
+#: convencao _AAAAMMDDx garante ser a ordem cronologica (diretriz D6).
+DEFAULT_DIRS = [
     os.path.expanduser(
-        "~/mnt/_Calculadora da Pegada de Carbono do Berço ao Portão/Documentação/"
-        "BaseDeDados_CalculadoraBP_20260919a.xlsx"),
+        "~/mnt/_Calculadora da Pegada de Carbono do Berço ao Portão/Documentação"),
     os.path.expanduser(
-        "~/OneDrive/Documents/_Unicamp/_Calculadora da Pegada de Carbono do Berço ao Portão/"
-        "Documentação/BaseDeDados_CalculadoraBP_20260919a.xlsx"),
+        "~/OneDrive/Documents/_Unicamp/_Calculadora da Pegada de Carbono do Berço ao "
+        "Portão/Documentação"),
 ]
+SOURCE_GLOB = "BaseDeDados_CalculadoraBP_*.xlsx"
 
 TEXT_ID_COLUMNS = {"IDM"}          # codes such as 4a, 4b, 46a, 46b
 
@@ -41,7 +45,10 @@ TEXT_ID_COLUMNS = {"IDM"}          # codes such as 4a, 4b, 46a, 46b
 def find_source(argv) -> str:
     if len(argv) > 1:
         return argv[1]
-    for p in DEFAULT_SOURCES:
+    candidates = []
+    for d in DEFAULT_DIRS:
+        candidates += sorted(glob.glob(os.path.join(d, SOURCE_GLOB)), reverse=True)
+    for p in candidates:
         if os.path.exists(p):
             return p
     raise SystemExit("Workbook not found. Pass the path as an argument.")

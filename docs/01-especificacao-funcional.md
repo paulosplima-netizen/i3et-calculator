@@ -377,6 +377,24 @@ com `MshareGG` vindo de `P16`, pela chave (`IDVMR`, `IDGG`, `IDM`).
 
 Aplica-se a **todos os grupos exceto `Iprinc`**, cuja composição é tratada em §11.
 
+**Grupo `K` (Fluidos).** A base do simulador não trazia receita para os fluidos. O
+grupo carregava massa — de 25 a 43 kg por veículo — e, sem materiais, recebia
+emissão zero. Não era uma decisão: era uma ausência de dado que se comportava
+como um valor. A composição existe no i3ET (módulo M2, linhas 620 a 626: óleo de
+motor, fluido de direção, fluido de freio, fluido de transmissão, arrefecimento,
+lavador de para-brisa e adesivos) e foi incorporada a `P16` por trem de força,
+pela diretriz **D11**. Com ela, a emissão dos fluidos reproduz o i3ET
+exatamente. A correção acrescentou entre 67 e 108 kg CO₂e por veículo, entre
+1,5% e 2,3% do total do berço ao portão. A receita do `SHEV` adota a do `HEV`,
+por não haver configuração `SHEV` com fluidos preenchidos na planilha; o registro
+está no Documento 5.
+
+**Fechamento e grupo ausente.** Um par (`IDVMR`, `IDGG`) cujas participações
+somam exatamente zero é um grupo que aquela receita não usa — uma ausência, não
+uma violação de fechamento. A verificação ignora esses pares e exige o
+fechamento em 1 apenas dos grupos presentes. Confundir os dois casos foi o que
+inicialmente fez a base parecer inválida.
+
 **Invariante de fechamento.** Para todo par (`IDVMR`, `IDGG`) com massa não nula, exige-se:
 
 $$\left|\sum_{IDM \,:\, ShareRole = material} MshareGG_{IDVMR,IDGG,IDM} - 1\right| \le 10^{-6}$$

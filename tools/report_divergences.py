@@ -14,6 +14,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
+import re
 import statistics
 import sys
 from collections import defaultdict
@@ -102,6 +103,61 @@ def analyse():
     return findings, fx
 
 
+#: Configuracoes cujas receitas de materiais a base efetivamente possui.
+REFERENCE_FAMILY = re.compile(r"^(G\d{1,2}|BP\d{2})$")
+CAR_GROUPS = ["A", "B", "C", "D", "E", "F", "G", "H", "J"]
+
+
+def analyse_ghg():
+    """A comparacao das emissoes, que e o que o modulo M2 produz.
+
+    So entram as configuracoes cuja massa ja reproduz o i3ET: onde a massa
+    difere, comparar emissoes seria medir de novo o fator de leveza.
+    """
+    fx = json.load(open(FIXTURE, encoding="utf-8"))
+    base = loader.load_sqlite(DB)
+    ef = pd.DataFrame(
+        [{"IDM": m, "IDEFV": "FIXTURE", "EF": v, "EFnotes": "i3ET", "IsUserDefined": 0}
+         for m, v in fx["ef_by_material"].items()])
+    rec = {r["IDVPT"]: r["IDVMR"] for r in base["P15"].to_dict("records")}
+    descritas = set(base["P19"]["IDBMd"])
+
+    out = []
+    for code in fx["usable_configs"]:
+        cfg = fx["configs"][code]
+        if not REFERENCE_FAMILY.match(code) or cfg["powertrain"] not in rec:
+            continue
+        gc = {int(k): (v if isinstance(v, (int, float)) else 0.0)
+              for k, v in cfg["gc"].items()}
+        bid = cfg["gc"].get("32")
+        bid = None if bid in (None, "-", "NA") else str(bid).strip()
+        supplied = {i for i in P.ENDOGENOUS
+                    if isinstance(cfg["gc"].get(str(i)), (int, float))}
+        r = calc.calculate_vehicle(base, gc, powertrain=cfg["powertrain"],
+                                   battery_id=bid, idmpv=1, idvmr=rec[cfg["powertrain"]],
+                                   idefv="FIXTURE", idapv="A-EF", boundary="MAT",
+                                   ef_table=ef, supplied=supplied)
+        esperada = cfg["expected"]["vehicle_mass_kg"]
+        if abs(r["totals"]["MassIDV"] - esperada) > 1e-6 * max(1.0, esperada):
+            continue
+        c10 = r["C10"].set_index("IDGG")
+        presentes = [g for g in CAR_GROUPS if g in c10.index]
+        massa_aux = float(c10["MassIDGG"].get("Iaux", 0.0))
+        out.append({
+            "config": code, "powertrain": cfg["powertrain"],
+            "fluidos_nossa": float(c10["GHGIDGG"].get("K", 0.0)),
+            "fluidos_i3et": cfg["expected"]["ghg_fluids_kgCO2e"],
+            "aux_nossa_por_kg": (float(c10["GHGIDGG"].get("Iaux", 0.0)) / massa_aux
+                                 if massa_aux else None),
+            "aux_i3et_por_kg": (cfg["expected"]["ghg_aux_battery_kgCO2e"] / massa_aux
+                                if massa_aux else None),
+            "carro_nossa": float(c10.loc[presentes, "GHGIDGG"].sum()),
+            "carro_i3et": cfg["expected"]["ghg_materials_kgCO2e"],
+            "bateria_descrita": bool(bid) and bid in descritas,
+        })
+    return out
+
+
 CAUSA_TEXTO = {
     "leveza": (
         "### Fator de leveza (módulo M5)\n\n"
@@ -137,7 +193,90 @@ CAUSA_TEXTO = {
 }
 
 
-def write_report(findings, fx, path):
+def _secao_emissoes(w, ghg):
+    """Secoes 6 e 7: o que o M2 produz, comparado com o i3ET."""
+    fl = [g for g in ghg if g["fluidos_i3et"]]
+    pior_fl = max((abs(g["fluidos_nossa"] - g["fluidos_i3et"]) / g["fluidos_i3et"]
+                   for g in fl), default=0.0)
+    aux = [g for g in ghg if g["aux_i3et_por_kg"]]
+    razao_bp = {round(g["aux_i3et_por_kg"] / g["aux_nossa_por_kg"], 6)
+                for g in aux if g["config"].startswith("BP")}
+    razao_g = {round(g["aux_i3et_por_kg"] / g["aux_nossa_por_kg"], 6)
+               for g in aux if not g["config"].startswith("BP")}
+    carro = sorted(((g["carro_nossa"] - g["carro_i3et"]) / g["carro_i3et"], g)
+                   for g in ghg if g["carro_i3et"])
+
+    w("## 6. Emissões: fluidos e baterias")
+    w("")
+    w(f"Em {len(ghg)} configurações da família de referência — aquelas cujas receitas "
+      "de materiais a base possui e cuja massa já reproduz o i3ET — as emissões "
+      "foram comparadas parcela a parcela.")
+    w("")
+    w("**Fluidos (grupo `K`) — corrigido em 20/09/2026.** A base do simulador não "
+      "trazia composição para o grupo dos fluidos: a calculadora carregava a massa "
+      "(25 a 43 kg por veículo) e lhe atribuía **emissão zero**. O i3ET traz a "
+      "composição nas linhas 620 a 626 do módulo M2, e ela passou a integrar `P16`. "
+      f"A concordância agora é exata (maior diferença relativa: {pior_fl:.1e}). "
+      "Antes da correção, faltavam entre 67 e 108 kg CO₂e por veículo, ou algo entre "
+      "1,5% e 2,3% do total do berço ao portão. **Nenhum ajuste é necessário no "
+      "i3ET**: a falha estava na base derivada, não na planilha.")
+    w("")
+    w("**Bateria de tração.** Reproduz o i3ET na precisão da máquina em todos os "
+      "modelos que a base descreve. As configurações da família `G` citam modelos "
+      "que vivem apenas na planilha de baterias do i3ET; para elas a calculadora "
+      "**mantém a massa, declara o fator ausente e registra aviso** — nunca atribui "
+      "emissão zero em silêncio.")
+    w("")
+    if len(razao_bp) == 1 and razao_g <= {1.0}:
+        razao = razao_bp.pop()
+        w("**Bateria auxiliar (chumbo-ácido).** A intensidade por quilograma coincide "
+          "exatamente com a das colunas `G` do i3ET. As colunas `BP` da mesma planilha "
+          f"são **{(razao - 1) * 100:.2f}% maiores**, por uma razão localizada: elas "
+          "lançam o plástico da bateria como *Average Plastic* (IDM 10; 4,4833 kg "
+          "CO₂e/kg) enquanto as colunas `G` o lançam como *Polypropylene* (2,6074). "
+          "A base segue o polipropileno, que é o material específico e é também o que "
+          "a receita do simulador declara. O efeito é de cerca de 1,8 kg CO₂e por "
+          "veículo — menos de 0,05% do total.")
+        w("")
+        w("**Ajuste sugerido no i3ET:** uniformizar o material do plástico da bateria "
+          "auxiliar entre as duas famílias de colunas. É uma inconsistência interna da "
+          "planilha, não uma divergência com a calculadora.")
+        w("")
+    w("## 7. Emissões: composição dos materiais do veículo — **em aberto**")
+    w("")
+    w("Esta é a única divergência de emissões ainda não resolvida, e é a mais "
+      "importante deste relatório.")
+    w("")
+    w("A **massa** do veículo reproduz o i3ET exatamente. A **distribuição dessa "
+      "massa entre materiais**, não: para a mesma receita (`BISD2` em `BP01`, por "
+      "exemplo, que é a receita que a própria planilha declara usar), a base põe "
+      "cerca de 143 kg a menos de aço e 68 kg a mais de plástico médio, além de "
+      "separar o alumínio em chapa e extrudado onde o i3ET usa uma única entrada. "
+      "Como os fatores de emissão diferem entre esses materiais, o total de emissões "
+      "dos materiais do veículo diverge.")
+    w("")
+    w("| Configuração | Trem de força | Calculadora (kg CO₂e) | i3ET (kg CO₂e) | Dif. |")
+    w("|---|---|---:|---:|---:|")
+    for rel, g in carro[:3] + carro[-3:]:
+        w(f"| `{g['config']}` | {g['powertrain']} | {g['carro_nossa']:,.1f} | "
+          f"{g['carro_i3et']:,.1f} | {rel:+.2%} |")
+    w("")
+    w("A origem é conhecida: as receitas `P16` vêm da planilha "
+      "`LVManufacturingMassGHGSimulator`, e o i3ET usa as suas próprias tabelas de "
+      "composição por grupo GREET. São dois instantâneos da mesma tabela que se "
+      "separaram — o mesmo tipo de problema já encontrado em `D03` e resolvido pela "
+      "sincronização com as colunas `BP`.")
+    w("")
+    w("**Decisão pendente.** Pela diretriz **D11** prevalece o i3ET, o que implicaria "
+      "reconstruir `P16` a partir das tabelas de composição da planilha. É uma "
+      "mudança que desloca todos os resultados de emissões e merece decisão "
+      "explícita antes de ser feita. Enquanto não for tomada, o teste "
+      "`test_car_materials_stay_within_the_documented_gap` trava a distância no "
+      "patamar atual, de modo que ela não possa crescer despercebida.")
+    w("")
+
+
+def write_report(findings, fx, path, ghg=None):
     material = [f for f in findings if f["causa"] != "nenhuma"]
     por_causa = defaultdict(list)
     for f in material:
@@ -229,7 +368,9 @@ def write_report(findings, fx, path):
       "`D03.IsCalculated` distingue os dois casos, e toda substituição é registrada "
       "no log da execução.")
     w("")
-    w("## 6. Conclusão")
+    if ghg:
+        _secao_emissoes(w, ghg)
+    w("## 8. Conclusão")
     w("")
     if not por_causa.get("a investigar"):
         w("**Toda diferença material está explicada.** Nenhuma decorre de erro de "
@@ -240,7 +381,7 @@ def write_report(findings, fx, path):
         w(f"Restam **{len(por_causa['a investigar'])} configurações** sem explicação, "
           "listadas em §4. Nenhuma conclusão deve ser tirada antes de analisá-las.")
     w("")
-    w(f"Os **doze veículos de referência `BP01`–`BP12` reproduzem o i3ET na precisão "
+    w("Os **doze veículos de referência `BP01`–`BP12` reproduzem o i3ET na precisão "
       "da máquina**, com erro relativo entre 0 e 2,6 × 10⁻¹⁶.")
     w("")
     w("---")
@@ -254,6 +395,7 @@ def write_report(findings, fx, path):
 
 def main():
     findings, fx = analyse()
+    ghg = analyse_ghg()
     hoje = dt.date.today().strftime("%Y%m%d")
     nome = f"RelatorioDeDivergencias_i3ET_{hoje}a.md"
     destinos = [
@@ -263,7 +405,7 @@ def main():
     ]
     for d in destinos:
         if os.path.isdir(os.path.dirname(d)):
-            material = write_report(findings, fx, d)
+            material = write_report(findings, fx, d, ghg)
             print("gravado:", d)
     print(f"\n{len(findings)} configuracoes, {len(material)} com diferenca material")
     for causa in sorted({f['causa'] for f in findings if f['causa'] != 'nenhuma'}):
