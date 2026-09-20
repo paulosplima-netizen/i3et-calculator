@@ -31,6 +31,18 @@ DB = os.path.join(REPO, "data", "base_referencia.sqlite")
 TOL = 1e-6
 #: Subgroups that do not follow the scaling law, so they carry no fLM.
 NOT_SCALED_BY = {35, 42}
+IDSG_HYBRID_MODULE = 43
+
+#: Divergences already investigated, explained and accepted by the author.
+#: They belong in their own bucket so that "sem explicacao" keeps meaning
+#: "something new broke" -- a check that is permanently amber stops being read.
+KNOWN = {
+    "modulo hibrido em FCV": (
+        "O i3ET zera o modulo de combinacao hibrida para ICEV, BEV, SHEV, SPHEV, "
+        "HFCEV e EFCEV, mas as configuracoes usam o rotulo FCV, ausente dessa lista. "
+        "A calculadora atribui o modulo apenas a HEV e PHEV. Decisao de 20/09/2026: "
+        "manter a regra coerente e registrar no Relatorio de Divergencias."),
+}
 
 
 def classify(code, cfg, result, p08):
@@ -49,6 +61,12 @@ def classify(code, cfg, result, p08):
         # total does not, which means the difference is somewhere else.
         if abs(factor - 1.0) > 1e-9:
             return "leveza", factor
+
+    # Known and accepted: the hybrid combination module in fuel cell vehicles.
+    delta_module = ours.get(IDSG_HYBRID_MODULE, 0.0) - i3.get(IDSG_HYBRID_MODULE, 0.0)
+    if cfg["powertrain"] == "FCV" and abs(delta_module - (mass_ours - mass_i3et)) < 1e-6:
+        return "modulo hibrido em FCV", None
+
     return "sem explicacao", None
 
 
@@ -61,7 +79,8 @@ def main():
     p08 = {int(r.IDSG): int(r.IDVP) for r in base["P08"].itertuples()}
     idvmr = base["D02"].iloc[0]["IDVMR"]
 
-    buckets = {"exata": [], "leveza": [], "sem explicacao": []}
+    buckets = {"exata": [], "leveza": [], "modulo hibrido em FCV": [],
+               "sem explicacao": []}
     for code in fx["usable_configs"]:
         cfg = fx["configs"][code]
         gc = {int(k): (v if isinstance(v, (int, float)) else 0.0)
@@ -81,16 +100,23 @@ def main():
 
     n = len(fx["usable_configs"])
     print(f"VALIDACAO DO NUCLEO CONTRA O i3ET — {n} configuracoes\n")
-    for name in ("exata", "leveza", "sem explicacao"):
+    for name in ("exata", "leveza", "modulo hibrido em FCV", "sem explicacao"):
         print(f"  {name:16s}: {len(buckets[name]):3d}  ({100*len(buckets[name])/n:.0f}%)")
     fatores = sorted({round(f, 6) for _, _, f, _, _ in buckets["leveza"] if f})
     if fatores:
         print(f"\n  fatores de leveza: {fatores}")
+    for name, texto in KNOWN.items():
+        if buckets.get(name):
+            print(f"\n  {name} — divergencia conhecida e aceita:")
+            print(f"    {texto}")
+            print(f"    configuracoes: {', '.join(c for c, *_ in buckets[name])}")
     if buckets["sem explicacao"]:
         print("\n  SEM EXPLICACAO:")
         for code, pt, _, a, b in buckets["sem explicacao"]:
             print(f"    {code:6s} {pt:5s} nossa={a:12.4f}  i3ET={b:12.4f}  "
                   f"dif={a-b:+10.4f}")
+    print(f"\n  {'RESULTADO: aprovado' if not buckets['sem explicacao'] else 'RESULTADO: reprovado'}"
+          f" — {len(buckets['sem explicacao'])} divergencia(s) sem explicacao")
     return buckets
 
 
