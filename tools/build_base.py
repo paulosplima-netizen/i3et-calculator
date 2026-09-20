@@ -329,7 +329,7 @@ if os.path.exists(I3ET):
     # fluids block, which is the composition of GREET group K -- see below.
     for _i, _row in enumerate(_wb["M2 GHG Mfg Module"].iter_rows(
             min_row=1, max_row=630, max_col=210, values_only=True), 1):
-        if _i > 80 and not (615 <= _i <= 630):
+        if _i > 80 and not (82 <= _i <= 281) and not (615 <= _i <= 630):
             continue
         for _j, _v in enumerate(_row, 1):
             if _v is not None:
@@ -610,6 +610,142 @@ note("Montagem: a versao padrao (A-EF) le o valor da propria tabela de fatores, 
      "756,496 (BR25GLO) kg CO2e/veiculo. As versoes A-G22 e A-G23 trazem a decomposicao por "
      "processo, que reconcilia com o IDM 99 (705,46). O valor de 227,28 do i3ET nao consta de P11 "
      "em nenhuma versao e fica marcado como 'legacy'.")
+
+# ---- P15/P16 : as receitas de materiais vem do i3ET ------------------------
+# O i3ET guarda as receitas em colunas nomeadas do proprio M2, no bloco
+# T8:DD281 (linha 8 = nome da receita, linha 19 = '%' marca o inicio de cada
+# grupo GREET, coluna L = IDM). Cada configuracao escolhe a sua coluna.
+#
+# Ha duas familias, e elas nao sao duas versoes do mesmo dado:
+#   <PT>-BISD<n>       receita original, de consultoria
+#   <PT>-PBP_BISD<n>   receita do Projeto do Berco ao Portao, que partiu da
+#                      anterior e ajustou a participacao de alguns materiais
+#                      com informacao das montadoras brasileiras
+# As duas passam a existir na base, com procedencia declarada em P15.DsVMR, e
+# os veiculos do projeto (BP01..BP12) usam as PBP_, que e o que o i3ET aplica a
+# eles (diretriz D11).
+#
+# A importacao tambem restaura participacoes que a base do simulador trazia como
+# zero -- platina, niquel, mica, zinco, oxido de zinco, nailon, resina fenolica.
+# Sao valores entre 2e-05 e 4e-04, e um deles pesa: a platina do catalisador, com
+# fator de 69.670 kg CO2e/kg na versao BR23, vale de 3% a 6% do veiculo. Diretriz
+# D13: numa tabela de fatores com cinco ordens de grandeza, nao ha participacao
+# desprezivel a priori.
+RECIPE_COLS = {
+    "BISD2": "ICEV-BISD2", "BISD3": "ICEV-BISD3", "BISD6": "HEV-BISD6",
+    "BISD7": "SHEV-BISD7", "BISD8": "PHEV-BISD8", "BISD12": "BEV-BISD12",
+    "PBP_BISD2": "ICEV-PBP_BISD2", "PBP_BISD2s": "ICEV-PBP_BISD2s",
+    "PBP_BISD3": "ICEV-PBP_BISD3", "PBP_BISD6": "HEV-PBP_BISD6",
+    "PBP_BISD8": "PHEV-PBP_BISD8", "PBP_BISD12": "BEV-PBP_BISD12",
+}
+#: Receita de origem, quando o nome nao a revela (PBP_BISD2s veio da BISD2).
+RECIPE_PARENT = {"PBP_BISD2s": "BISD2"}
+#: Iprinc vem de P20 (composicao por modelo de bateria) e K do bloco de fluidos.
+RECIPE_SKIP_GROUPS = {"Iprinc", "K"}
+DS_CONSULTORIA = ("Receita original, de consultoria, extraida da coluna %s do bloco de "
+                  "receitas do i3ET (M2, T8:DD281).")
+DS_PBP = ("Receita do Projeto do Berco ao Portao (FGV/Unicamp para a Fundep, Programa "
+          "Move): partiu da receita de consultoria %s e ajustou a participacao de alguns "
+          "materiais com informacao das montadoras brasileiras. Coluna %s do i3ET.")
+if os.path.exists(I3ET) and _m2:
+    _rcol = {str(v).strip(): c for (r, c), v in _m2.items()
+             if r == 8 and str(v).strip() not in (".", "", "None")}
+    _grupo, _linhas = None, []
+    for _r in range(82, 282):
+        if _m2.get((_r, 19)) == "%":
+            _grupo = str(_m2.get((_r, 15))).strip(); continue
+        _idm = _m2.get((_r, 12))
+        if _idm not in (None, "") and _grupo:
+            _linhas.append((_r, _grupo, sidm(_idm)))
+
+    def _vetor(nome):
+        c = _rcol[nome]
+        out = {}
+        for _r, g, idm in _linhas:
+            if g in RECIPE_SKIP_GROUPS:
+                continue
+            v = _m2.get((_r, c))
+            if isinstance(v, (int, float)):
+                out[(g, idm)] = out.get((g, idm), 0.0) + float(v)
+        return out
+
+    # Algumas colunas fecham a soma com um residuo negativo na linha 'Others'
+    # (IDM 40), da ordem de 1e-04. Participacao massica negativa nao existe: a
+    # linha entra como zero e a normalizacao redistribui a diferenca. O desvio
+    # que isso introduz e de quarta casa decimal.
+    _negativos = []
+    _p15 = {r["IDVMR"]: r for r in P15}
+    _antes = {(r["IDVMR"], r["IDGG"], sidm(r["IDM"])): r for r in P16}
+    _novos, _ajustados, _restaurados = 0, 0, 0
+    for _vmr, _nome in RECIPE_COLS.items():
+        if _nome not in _rcol:
+            note("P16: receita %s ausente do i3ET" % _nome); continue
+        _vet = _vetor(_nome)
+        _origem = RECIPE_PARENT.get(_vmr, _vmr.replace("PBP_", ""))
+        if _vmr not in _p15:
+            _base_p15 = _p15.get(_origem)
+            if _base_p15 is None:
+                note("P15: sem receita de origem para %s" % _vmr); continue
+            _p15[_vmr] = {"IDVMR": _vmr, "IDVPT": _base_p15["IDVPT"],
+                          "IDVDT": _base_p15["IDVDT"], "IDVS": _base_p15["IDVS"],
+                          "DsVMR": DS_PBP % (_origem, _nome)}
+            P15.append(_p15[_vmr]); _novos += 1
+            # Iprinc: a composicao por grupo nao cobre a bateria de tracao, que vem
+            # de P20; as linhas de Iprinc da receita de origem sao copiadas.
+            for _r in list(P16):
+                if _r["IDVMR"] == _origem and _r["IDGG"] in RECIPE_SKIP_GROUPS:
+                    _c = dict(_r); _c["IDVMR"] = _vmr; P16.append(_c)
+        else:
+            _p15[_vmr]["DsVMR"] = DS_CONSULTORIA % _nome
+        for (_g, _idm), _share in sorted(_vet.items()):
+            if _share < 0:
+                _negativos.append((_vmr, _g, _idm, _share)); _share = 0.0
+            _k = (_vmr, _g, _idm)
+            _r = _antes.get(_k)
+            if _r is None:
+                _linha = {"IDVMR": _vmr, "IDGG": _g, "IDM": _idm, "MshareGG": _share}
+                P16.append(_linha); _antes[_k] = _linha
+                if _share > 0 and _vmr in RECIPE_COLS and not _vmr.startswith("PBP_"):
+                    _restaurados += 1
+            else:
+                if _r.get("MshareGG") in (None, 0) and _share > 0:
+                    _restaurados += 1
+                if abs(float(_r.get("MshareGG") or 0.0) - _share) > 1e-12:
+                    _ajustados += 1
+                _r["MshareGG"] = _share
+    if _negativos:
+        note("P16: %d participacoes negativas (residuo de fechamento na linha 'Others' das "
+             "receitas do i3ET) entraram como zero; a normalizacao redistribui a diferenca. "
+             "Maior valor: %.2e em %s / grupo %s."
+             % (len(_negativos), min(x[3] for x in _negativos),
+                min(_negativos, key=lambda x: x[3])[0],
+                min(_negativos, key=lambda x: x[3])[1]))
+    note("P15/P16: %d receitas importadas do bloco de receitas do i3ET (M2, T8:DD281); "
+         "%d receitas novas (familia PBP_, do Projeto do Berco ao Portao), "
+         "%d participacoes ajustadas para a precisao da fonte e %d participacoes nao nulas "
+         "que a base trazia como zero -- entre elas a platina do catalisador."
+         % (len(RECIPE_COLS), _novos, _ajustados, _restaurados))
+
+# ---- D02 : a receita de cada veiculo e a que o i3ET aplica a sua coluna -----
+# A linha 9 da coluna BP do M2 nomeia a receita. Deduzir pelo trem de forca nao
+# serve: ha mais de uma receita por trem de forca, e BP02 usa uma variante
+# propria (ICEV-PBP_BISD2s) que o nome do veiculo nao revela.
+    _por_nome = {v: k for k, v in RECIPE_COLS.items()}
+    _dsv = {r["DsV"]: r["IDV"] for r in D01}
+    _troca, _sem = 0, []
+    for _r in D02:
+        _nome_v = next((n for n, i in _dsv.items() if i == _r["IDV"]), None)
+        _col = bpcol.get(_nome_v) if _nome_v else None
+        _rec = str(_m2.get((9, _col)) or "").strip() if _col else ""
+        _alvo = _por_nome.get(_rec)
+        if _alvo:
+            if _alvo != _r["IDVMR"]:
+                _r["IDVMR"] = _alvo; _troca += 1
+        elif _rec:
+            _sem.append((_nome_v, _rec))
+    note("D02: %d veiculos passaram a usar a receita que o i3ET nomeia na linha 9 da sua "
+         "coluna. Receitas citadas e ausentes da base: %s"
+         % (_troca, _sem if _sem else "nenhuma"))
 
 # ---- P16 : receita do grupo K (Fluidos), ausente da base do simulador ------
 # A base do simulador nao traz composicao para o grupo K. O i3ET traz: as linhas

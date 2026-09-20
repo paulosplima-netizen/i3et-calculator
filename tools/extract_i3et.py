@@ -45,6 +45,7 @@ M2_GC_LAST_IDVP = 40          # rows 11..50; row 51 is Battery Carbon Intensity,
 M2_ROW_VEHICLE_MASS = 69      # WEIGHT (without driver and liquid fuel)
 M2_ROWS_GROUP_MASS = range(70, 82)   # the twelve GREET groups, in P04 order
 M2_ROW_POWERTRAIN = 10
+M2_ROW_RECIPE = 9             # nome da receita de materiais que a coluna usa
 M2_ROW_ASSEMBLY = 510         # A - Assembling
 M2_ROW_MATERIALS = 516        # GHG car without batteries and fluids
 M2_ROW_AUX_BATTERY = 560
@@ -182,9 +183,15 @@ def main() -> int:
                  expected["ghg_assembly_kgCO2e"]]
         expected["ghg_cradle_to_gate_kgCO2e"] = (
             sum(p for p in parts if p is not None) if all(p is not None for p in parts) else None)
+        # A receita e uma propriedade da configuracao, nao do trem de forca: o
+        # i3ET tem mais de uma receita por trem de forca (a de consultoria e a
+        # do Projeto do Berco ao Portao). Sem este campo a comparacao teria de
+        # adivinhar qual usar.
+        recipe = str(m2.get((M2_ROW_RECIPE, c2)) or "").strip()
         configs[code] = {
             "label": str(m2.get((8, c2)) or code),
             "powertrain": str(m2.get((M2_ROW_POWERTRAIN, c2)) or "").strip(),
+            "recipe": recipe,
             "gc": gc,
             "expected": expected,
         }

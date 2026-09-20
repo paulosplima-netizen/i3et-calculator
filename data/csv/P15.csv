@@ -1,7 +1,13 @@
 ﻿IDVMR;IDVPT;IDVDT;IDVS;DsVMR
-BISD2;ICEV;Sedan;Midsize;blblblbl
-BISD3;ICEV;Sedan;Midsize;blblblbl
-BISD6;HEV;Sedan;Midsize;blblblbl
-BISD7;SHEV;Sedan;Midsize;blblblbl
-BISD8;PHEV;Sedan;Midsize;blblblbl
-BISD12;BEV;Sedan;Midsize;blblblbl
+BISD2;ICEV;Sedan;Midsize;Receita original, de consultoria, extraida da coluna ICEV-BISD2 do bloco de receitas do i3ET (M2, T8:DD281).
+BISD3;ICEV;Sedan;Midsize;Receita original, de consultoria, extraida da coluna ICEV-BISD3 do bloco de receitas do i3ET (M2, T8:DD281).
+BISD6;HEV;Sedan;Midsize;Receita original, de consultoria, extraida da coluna HEV-BISD6 do bloco de receitas do i3ET (M2, T8:DD281).
+BISD7;SHEV;Sedan;Midsize;Receita original, de consultoria, extraida da coluna SHEV-BISD7 do bloco de receitas do i3ET (M2, T8:DD281).
+BISD8;PHEV;Sedan;Midsize;Receita original, de consultoria, extraida da coluna PHEV-BISD8 do bloco de receitas do i3ET (M2, T8:DD281).
+BISD12;BEV;Sedan;Midsize;Receita original, de consultoria, extraida da coluna BEV-BISD12 do bloco de receitas do i3ET (M2, T8:DD281).
+PBP_BISD2;ICEV;Sedan;Midsize;Receita do Projeto do Berco ao Portao (FGV/Unicamp para a Fundep, Programa Move): partiu da receita de consultoria BISD2 e ajustou a participacao de alguns materiais com informacao das montadoras brasileiras. Coluna ICEV-PBP_BISD2 do i3ET.
+PBP_BISD2s;ICEV;Sedan;Midsize;Receita do Projeto do Berco ao Portao (FGV/Unicamp para a Fundep, Programa Move): partiu da receita de consultoria BISD2 e ajustou a participacao de alguns materiais com informacao das montadoras brasileiras. Coluna ICEV-PBP_BISD2s do i3ET.
+PBP_BISD3;ICEV;Sedan;Midsize;Receita do Projeto do Berco ao Portao (FGV/Unicamp para a Fundep, Programa Move): partiu da receita de consultoria BISD3 e ajustou a participacao de alguns materiais com informacao das montadoras brasileiras. Coluna ICEV-PBP_BISD3 do i3ET.
+PBP_BISD6;HEV;Sedan;Midsize;Receita do Projeto do Berco ao Portao (FGV/Unicamp para a Fundep, Programa Move): partiu da receita de consultoria BISD6 e ajustou a participacao de alguns materiais com informacao das montadoras brasileiras. Coluna HEV-PBP_BISD6 do i3ET.
+PBP_BISD8;PHEV;Sedan;Midsize;Receita do Projeto do Berco ao Portao (FGV/Unicamp para a Fundep, Programa Move): partiu da receita de consultoria BISD8 e ajustou a participacao de alguns materiais com informacao das montadoras brasileiras. Coluna PHEV-PBP_BISD8 do i3ET.
+PBP_BISD12;BEV;Sedan;Midsize;Receita do Projeto do Berco ao Portao (FGV/Unicamp para a Fundep, Programa Move): partiu da receita de consultoria BISD12 e ajustou a participacao de alguns materiais com informacao das montadoras brasileiras. Coluna BEV-PBP_BISD12 do i3ET.

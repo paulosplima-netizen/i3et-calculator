@@ -13,7 +13,6 @@ Run it again only when a change is meant to move the results:
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import sys
@@ -48,9 +47,10 @@ def build() -> dict:
             "by_group": {str(r_.IDGG): [r_.MassIDGG, r_.GHGIDGG]
                          for r_ in r["C10"].itertuples()},
         }
-    with open(DB, "rb") as fh:
-        digest = hashlib.sha256(fh.read()).hexdigest()
-    return {"base_sha256": digest, "n_vehicles": len(vehicles),
+    # O identificador e o ParamBaseHash, que resume o conteudo das tabelas de
+    # parametros. O sha256 do arquivo nao serve: reconstruir a base sem mudar
+    # um unico valor produz bytes diferentes.
+    return {"param_base_hash": base.param_hash, "n_vehicles": len(vehicles),
             "fields": list(FIELDS), "vehicles": vehicles}
 
 

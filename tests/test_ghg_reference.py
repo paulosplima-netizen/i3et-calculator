@@ -17,41 +17,43 @@ column carry its own composition; the relational model carries it per recipe
 
 from __future__ import annotations
 
-import re
-
 import pytest
 
 from core import calc
 from core import params as P
 
 TOL = 1e-6
-#: Configurations whose recipes the base holds. GL/SL/PL are lightweighting
-#: families (module M5) and P/S are alternative scenarios with compositions of
-#: their own.
-REFERENCE_FAMILY = re.compile(r"^(G\d{1,2}|BP\d{2})$")
 CAR_GROUPS = ["A", "B", "C", "D", "E", "F", "G", "H", "J"]
 
-#: The i3ET's BP columns charge the auxiliary battery's plastic to Average
-#: Plastic (IDM 10, 4.4833 kg CO2e/kg) while its G columns charge it to
-#: Polypropylene (2.6074). The base follows the G columns, which is also what
-#: the simulator's own recipe says. The gap is a fixed 9.87% of a component
-#: worth about 18 kg CO2e -- under 0.05% of the vehicle. Relatorio de
-#: Divergencias, item 6.
-AUX_BP_RATIO = 1.098665
-#: How far the vehicle materials are from the i3ET today. Not an accepted
-#: value: a ceiling, so that the gap cannot widen unnoticed while it is open.
-CAR_MAX_REL = 0.10
+#: The residue of zeroing the negative balancing plug of the `Others` line in
+#: the i3ET's own recipes (order 1e-04 of one group's mass). It only shows up
+#: in the hybrids, whose group C carries it.
+CAR_MAX_REL = 1e-4
+
+
+def _idvmr_of(cfg, conhecidas):
+    """The recipe the i3ET used for this configuration, as an IDVMR.
+
+    The fixture records the column name (`ICEV-PBP_BISD2`); the base names the
+    same recipe `PBP_BISD2`. Configurations whose recipe the base does not hold
+    -- the `G`, `S` and `P` families each carry their own -- are left out of
+    the comparison instead of being matched to the nearest guess.
+    """
+    nome = str(cfg.get("recipe") or "")
+    if "-" not in nome:
+        return None
+    idvmr = nome.split("-", 1)[1].strip()
+    return idvmr if idvmr in conhecidas else None
 
 
 def _usable(base, i3et):
-    rec = {r["IDVPT"]: r["IDVMR"] for r in base["P15"].to_dict("records")}
+    conhecidas = set(base["P15"]["IDVMR"])
     for code in i3et["usable_configs"]:
         cfg = i3et["configs"][code]
-        if not REFERENCE_FAMILY.match(code):
+        idvmr = _idvmr_of(cfg, conhecidas)
+        if idvmr is None:
             continue
-        if cfg["powertrain"] not in rec:
-            continue          # FCV has no recipe in the base -- known divergence
-        yield code, cfg, rec[cfg["powertrain"]]
+        yield code, cfg, idvmr
 
 
 def _run(base, cfg, idvmr, ef_i3et):
@@ -112,9 +114,10 @@ def _battery_is_described(base, cfg):
 def test_traction_battery_reproduces_the_i3et(base, runs):
     """For every battery model the base actually describes.
 
-    The G family cites models that live in the i3ET's battery sheet and not in
-    P19. Those are covered by the next test, which is about honesty rather
-    than about agreement.
+    A model the base does not describe never reaches this point: those
+    configurations use recipes the base does not hold either. The behaviour for
+    an undescribed model -- keep the mass, declare the factor absent, warn --
+    is asserted in `test_edge_cases.py`.
     """
     checked = 0
     for code, (cfg, r, _c10) in runs.items():
@@ -127,34 +130,13 @@ def test_traction_battery_reproduces_the_i3et(base, runs):
     assert checked >= 9, "nenhum modelo de bateria conferido"
 
 
-def test_an_undescribed_battery_is_reported_and_not_zeroed(base, i3et, ef_i3et):
-    """A battery the base does not describe must not cost zero in silence.
-
-    It keeps its mass, its factor is declared absent, the coverage picks it up
-    and the log says so. This is the rule of Documento 1, secao 13.3 applied to
-    the one place where it is easiest to break.
-    """
-    for code, cfg, idvmr in _usable(base, i3et):
-        bid = cfg["gc"].get("32")
-        if bid in (None, "", "-", "NA") or _battery_is_described(base, cfg):
-            continue
-        r = _run(base, cfg, idvmr, ef_i3et)
-        c07 = r["C07"]
-        assert len(c07), f"{code}: bateria {bid} sumiu do resultado"
-        assert float(c07["MassIDMpGGB"].sum()) > 0, code
-        assert (c07["HasFactor"] == 0).all(), code
-        assert r["totals"]["MassNoFactor"] > 0, code
-        assert any(str(bid) in e.message for e in r["log"].of("AVISO")), code
-        return
-    pytest.skip("todas as configuracoes citam modelos descritos na base")
-
-
-def test_auxiliary_battery_matches_the_g_family_intensity(runs):
+def test_auxiliary_battery_reproduces_the_i3et(runs):
     """Emissions per kg, which is what the recipe determines.
 
-    The G columns of the i3ET and the base agree exactly. The BP columns differ
-    by a constant factor because of the plastic they charge it to -- asserted
-    here so that the difference stays that one, known cause.
+    This used to differ by a constant 9.87% on the `BP` configurations: they
+    charge the auxiliary battery's plastic to Average Plastic while the `G`
+    ones charge it to Polypropylene. It was not two conventions in the
+    spreadsheet -- it was two different recipes, and the base now holds both.
     """
     for code, (cfg, _r, c10) in runs.items():
         mass = float(c10["MassIDGG"].get("Iaux", 0.0))
@@ -162,29 +144,48 @@ def test_auxiliary_battery_matches_the_g_family_intensity(runs):
             continue
         ours = float(c10["GHGIDGG"].get("Iaux", 0.0)) / mass
         theirs = cfg["expected"]["ghg_aux_battery_kgCO2e"] / mass
-        expected = theirs / (AUX_BP_RATIO if code.startswith("BP") else 1.0)
-        assert ours == pytest.approx(expected, rel=1e-5), code
+        assert ours == pytest.approx(theirs, rel=1e-9), code
 
 
-def test_car_materials_stay_within_the_documented_gap(runs):
-    """OPEN ITEM -- Relatorio de Divergencias, item 7.
+def test_vehicle_materials_reproduce_the_i3et(runs):
+    """The emissions of the vehicle's materials, group by group.
 
-    The mass of the vehicle matches the i3ET exactly and its distribution among
-    materials does not: the base's recipes (P16, from the simulator) put less
-    steel and more plastic than the i3ET's own composition for the same
-    recipe name. Until that is settled this test is a ratchet, not an
-    acceptance: it fails if the distance grows.
+    This was the open item of 20/09/2026, and it is closed. The base now holds
+    both recipe families the i3ET holds -- the consultancy's `BISD*` and the
+    Berco ao Portao project's `PBP_BISD*` -- and each configuration uses the
+    one the spreadsheet names on row 9 of its column. The ICEV and BEV
+    configurations agree to machine precision; the hybrids carry the residue
+    described in `CAR_MAX_REL`.
     """
-    worst = None
+    pior = None
     for code, (cfg, _r, c10) in runs.items():
         present = [g for g in CAR_GROUPS if g in c10.index]
         ours = float(c10.loc[present, "GHGIDGG"].sum())
         theirs = cfg["expected"]["ghg_materials_kgCO2e"]
         rel = abs(ours - theirs) / theirs
-        if worst is None or rel > worst[1]:
-            worst = (code, rel)
-    assert worst[1] <= CAR_MAX_REL, (
-        f"a diferenca nos materiais do veiculo cresceu: {worst[0]} "
-        f"esta a {worst[1]:.2%} (limite documentado {CAR_MAX_REL:.0%})")
+        if pior is None or rel > pior[1]:
+            pior = (code, rel)
+    assert pior[1] <= CAR_MAX_REL, (
+        f"os materiais do veiculo divergem do i3ET: {pior[0]} esta a "
+        f"{pior[1]:.2e} (limite {CAR_MAX_REL:.0e})")
 
 
+def test_the_recipe_of_each_configuration_is_the_one_the_i3et_names(base, i3et):
+    """The comparison must not guess which recipe to use.
+
+    There is more than one recipe per powertrain, and `BP02` uses a variant its
+    vehicle name does not reveal. The fixture records the name the spreadsheet
+    gives, and the project's own scenarios have to match it.
+    """
+    d01 = base["D01"].set_index("IDV")
+    d02 = base["D02"]
+    conhecidas = set(base["P15"]["IDVMR"])
+    for _, cen in d02.iterrows():
+        code = d01.loc[int(cen["IDV"])]["DsV"]
+        cfg = i3et["configs"].get(code)
+        if cfg is None:
+            continue
+        esperado = _idvmr_of(cfg, conhecidas)
+        assert esperado is not None, f"{code}: receita {cfg.get('recipe')} ausente da base"
+        assert cen["IDVMR"] == esperado, (
+            f"{code} usa {cen['IDVMR']} e o i3ET nomeia {cfg['recipe']}")

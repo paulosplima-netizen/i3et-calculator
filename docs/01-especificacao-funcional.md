@@ -377,6 +377,23 @@ com `MshareGG` vindo de `P16`, pela chave (`IDVMR`, `IDGG`, `IDM`).
 
 Aplica-se a **todos os grupos exceto `Iprinc`**, cuja composição é tratada em §11.
 
+**Duas famílias de receitas.** O i3ET guarda as receitas em colunas nomeadas do
+módulo M2 (bloco `T8:DD281`), e a linha 9 de cada configuração nomeia a que ela
+usa. São duas famílias, e não duas versões do mesmo dado: `<PT>-BISD<n>` é a
+receita original, de consultoria, e `<PT>-PBP_BISD<n>` é a do Projeto do Berço
+ao Portão, que partiu da anterior e ajustou a participação de alguns materiais
+com informação das montadoras brasileiras. A base traz as duas, com a
+procedência declarada em `P15.DsVMR`, e cada cenário de `D02` aponta para a que
+a planilha nomeia. Deduzir a receita pelo trem de força não serve: há mais de
+uma por trem de força, e o veículo `BP02` usa uma variante — `PBP_BISD2s` — que
+o seu nome não revela.
+
+**Participação mássica negativa.** Algumas colunas do i3ET fecham a soma do
+grupo com um resíduo negativo na linha `Others`, da ordem de 1 × 10⁻⁴. Fração
+mássica negativa não existe: essas linhas entram como zero e a normalização
+redistribui a diferença, o que introduz um desvio de 3 × 10⁻⁵ no resultado dos
+híbridos. Está registrado no Documento 5.
+
 **Grupo `K` (Fluidos).** A base do simulador não trazia receita para os fluidos. O
 grupo carregava massa — de 25 a 43 kg por veículo — e, sem materiais, recebia
 emissão zero. Não era uma decisão: era uma ausência de dado que se comportava

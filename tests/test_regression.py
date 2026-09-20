@@ -11,8 +11,6 @@ Regenerate with `python tools/freeze_regression.py`.
 
 from __future__ import annotations
 
-import hashlib
-
 import pytest
 
 from core import calc
@@ -29,12 +27,14 @@ def current(base):
     return _results(base)
 
 
-def test_the_frozen_base_is_the_shipped_base(frozen):
-    """If the database changed, the frozen numbers describe another base."""
-    from tests.conftest import DB
-    with open(DB, "rb") as fh:
-        digest = hashlib.sha256(fh.read()).hexdigest()
-    assert digest == frozen["base_sha256"], (
+def test_the_frozen_base_is_the_shipped_base(base, frozen):
+    """If the parameters changed, the frozen numbers describe another base.
+
+    The identifier is the `ParamBaseHash`, which summarises the content of the
+    parameter tables. The file's own checksum would not do: rebuilding the
+    database without changing a single value produces different bytes.
+    """
+    assert base.param_hash == frozen["param_base_hash"], (
         "a base mudou desde o congelamento; rode tools/freeze_regression.py "
         "e explique no commit o que mudou")
 

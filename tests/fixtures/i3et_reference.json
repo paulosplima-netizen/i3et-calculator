@@ -113,7 +113,8 @@
     "40": 2.116040063652855
    },
    "label": "ICEV-A01",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-G21"
   },
   "A02": {
    "expected": {
@@ -228,7 +229,8 @@
     "40": 1.4065935133114194
    },
    "label": "HEV-A02",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-G22"
   },
   "A03": {
    "expected": {
@@ -343,7 +345,8 @@
     "40": 1.9302659120208487
    },
    "label": "SHEV-A03",
-   "powertrain": "SHEV"
+   "powertrain": "SHEV",
+   "recipe": "HEV-G22"
   },
   "A04": {
    "expected": {
@@ -390,17 +393,17 @@
      "19": 7.805710600150814,
      "20": 54.4311,
      "21": 99.98953966911765,
-     "22": 6.5514741896919215,
+     "22": 6.551474189691922,
      "23": 61.86366086954274,
      "24": 9.30690012981929,
-     "25": 6.481581732693279,
+     "25": 6.48158173269328,
      "26": 14.27557276140064,
      "27": 9.136539465791488,
-     "28": 56.591952750966016,
-     "29": 28.056682429043533,
+     "28": 56.59195275096603,
+     "29": 28.05668242904354,
      "30": 0,
      "31": 23.085653406199565,
-     "32": 22.45927396838286,
+     "32": 22.459273968382863,
      "33": 9.30690012981929,
      "34": 0,
      "35": 9.52807445564603,
@@ -411,7 +414,7 @@
      "40": 0,
      "41": 0,
      "42": 0,
-     "43": 47.66640533444227
+     "43": 47.666405334442274
     },
     "vehicle_mass_kg": null
    },
@@ -458,7 +461,8 @@
     "40": 0.9800383191108566
    },
    "label": "PHEV-A04",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-G23"
   },
   "A05": {
    "expected": {
@@ -573,7 +577,8 @@
     "40": 1.0654146891815004
    },
    "label": "SPHEV-A05",
-   "powertrain": "SPHEV"
+   "powertrain": "SPHEV",
+   "recipe": "PHEV-G23"
   },
   "A06": {
    "expected": {
@@ -611,10 +616,10 @@
      "10": 21.915443525785896,
      "11": 43.48986455572305,
      "12": 40.730682588993204,
-     "13": 33.96008663228549,
-     "14": 10.20884236401919,
-     "15": 31.575323182157952,
-     "16": 17.54767331207541,
+     "13": 33.96008663222852,
+     "14": 10.208842364002065,
+     "15": 31.575323182132916,
+     "16": 17.54767331206926,
      "17": 13.13835221792741,
      "18": 15.729874407108005,
      "19": 7.805710600150814,
@@ -627,14 +632,14 @@
      "26": 0,
      "27": 0,
      "28": 0,
-     "29": 25.351945765535557,
+     "29": 25.351945765448615,
      "30": 0,
-     "31": 21.940613651393075,
-     "32": 21.657835757784245,
-     "33": 8.85667840702063,
+     "31": 21.940613651355317,
+     "32": 21.65783575775762,
+     "33": 8.856678407005774,
      "34": 0,
-     "35": 28.482131626488766,
-     "36": 403.8282315812488,
+     "35": 28.482131626535338,
+     "36": 403.8282315818858,
      "37": 25,
      "38": 0,
      "39": 0,
@@ -688,7 +693,8 @@
     "40": 0.742615182032413
    },
    "label": "BEV-A06",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-G24"
   },
   "A07": {
    "expected": {
@@ -803,7 +809,8 @@
     "40": "#N/A"
    },
    "label": "HFCEV-A07",
-   "powertrain": "HFCEV"
+   "powertrain": "HFCEV",
+   "recipe": "FCV-G25"
   },
   "A08": {
    "expected": {
@@ -918,7 +925,8 @@
     "40": "#N/A"
    },
    "label": "EFCEV-A08",
-   "powertrain": "EFCEV"
+   "powertrain": "EFCEV",
+   "recipe": "FCV-G25"
   },
   "BP01": {
    "expected": {
@@ -1033,7 +1041,8 @@
     "40": 2.188299418604651
    },
    "label": "ICEV-BP01",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-PBP_BISD2"
   },
   "BP02": {
    "expected": {
@@ -1148,7 +1157,8 @@
     "40": 1.7486062717770032
    },
    "label": "ICEV-BP02",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-PBP_BISD2s"
   },
   "BP03": {
    "expected": {
@@ -1263,7 +1273,8 @@
     "40": 1.0929582577132486
    },
    "label": "ICEV-BP03",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-PBP_BISD3"
   },
   "BP04": {
    "expected": {
@@ -1378,7 +1389,8 @@
     "40": 0.9635520000000001
    },
    "label": "BEV-BP04",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-PBP_BISD12"
   },
   "BP05": {
    "expected": {
@@ -1493,7 +1505,8 @@
     "40": 1.7486062717770032
    },
    "label": "BEV-BP05",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-PBP_BISD12"
   },
   "BP06": {
    "expected": {
@@ -1608,7 +1621,8 @@
     "40": 1.0929582577132486
    },
    "label": "BEV-BP06",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-PBP_BISD12"
   },
   "BP07": {
    "expected": {
@@ -1723,7 +1737,8 @@
     "40": 1.0929582577132486
    },
    "label": "HEV-BP07",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-PBP_BISD6"
   },
   "BP08": {
    "expected": {
@@ -1838,7 +1853,8 @@
     "40": 2.734877384196185
    },
    "label": "HEV-BP08",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-PBP_BISD6"
   },
   "BP09": {
    "expected": {
@@ -1953,7 +1969,8 @@
     "40": 1.0929582577132486
    },
    "label": "HEV-BP09",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-PBP_BISD6"
   },
   "BP10": {
    "expected": {
@@ -2068,7 +2085,8 @@
     "40": 1.0929582577132486
    },
    "label": "PHEV-BP10",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-PBP_BISD8"
   },
   "BP11": {
    "expected": {
@@ -2183,7 +2201,8 @@
     "40": 0.9635520000000001
    },
    "label": "PHEV-BP11",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-PBP_BISD8"
   },
   "BP12": {
    "expected": {
@@ -2298,7 +2317,8 @@
     "40": 1.0929582577132486
    },
    "label": "PHEV-BP12",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-PBP_BISD8"
   },
   "G01": {
    "expected": {
@@ -2413,7 +2433,8 @@
     "40": 2.904229041738906
    },
    "label": "ICEV-G01",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-G01"
   },
   "G02": {
    "expected": {
@@ -2528,7 +2549,8 @@
     "40": 2.108411582939591
    },
    "label": "HEV-G02",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-G02"
   },
   "G03": {
    "expected": {
@@ -2643,7 +2665,8 @@
     "40": 1.3028057852837658
    },
    "label": "PHEV-G03",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-G03"
   },
   "G04": {
    "expected": {
@@ -2758,7 +2781,8 @@
     "40": 0.7859458996065654
    },
    "label": "BEV-G04",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-G04"
   },
   "G05": {
    "expected": {
@@ -2873,7 +2897,8 @@
     "40": 2.12232822409498
    },
    "label": "FCV-G05",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-G05"
   },
   "G06": {
    "expected": {
@@ -2988,7 +3013,8 @@
     "40": 2.5780437016571716
    },
    "label": "ICEV-G06",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-G06"
   },
   "G07": {
    "expected": {
@@ -3103,7 +3129,8 @@
     "40": 1.8541462845966943
    },
    "label": "HEV-G07",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-G07"
   },
   "G08": {
    "expected": {
@@ -3218,7 +3245,8 @@
     "40": 1.159695106103472
    },
    "label": "PHEV-G08",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-G08"
   },
   "G09": {
    "expected": {
@@ -3333,7 +3361,8 @@
     "40": 0.6935288523348092
    },
    "label": "BEV-G09",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-G09"
   },
   "G10": {
    "expected": {
@@ -3448,7 +3477,8 @@
     "40": 1.8579151261774773
    },
    "label": "FCV-G10",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-G10"
   },
   "G11": {
    "expected": {
@@ -3563,7 +3593,8 @@
     "40": 2.904229041738906
    },
    "label": "ICEV-G11",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-G11"
   },
   "G12": {
    "expected": {
@@ -3678,7 +3709,8 @@
     "40": 2.108411582939591
    },
    "label": "HEV-G12",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-G12"
   },
   "G13": {
    "expected": {
@@ -3793,7 +3825,8 @@
     "40": 1.1790038277025745
    },
    "label": "PHEV-G13",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-G13"
   },
   "G14": {
    "expected": {
@@ -3908,7 +3941,8 @@
     "40": 0.7813765455343183
    },
    "label": "BEV-G14",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-G14"
   },
   "G15": {
    "expected": {
@@ -4023,7 +4057,8 @@
     "40": 2.1675307848297454
    },
    "label": "FCV-G15",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-G15"
   },
   "G16": {
    "expected": {
@@ -4138,7 +4173,8 @@
     "40": 2.5780437016571716
    },
    "label": "ICEV-G16",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-G16"
   },
   "G17": {
    "expected": {
@@ -4253,7 +4289,8 @@
     "40": 1.8541462845966943
    },
    "label": "HEV-G17",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-G17"
   },
   "G18": {
    "expected": {
@@ -4368,7 +4405,8 @@
     "40": 1.0669241628395016
    },
    "label": "PHEV-G18",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-G18"
   },
   "G19": {
    "expected": {
@@ -4483,7 +4521,8 @@
     "40": 0.699421279555304
    },
    "label": "BEV-G19",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-G19"
   },
   "G20": {
    "expected": {
@@ -4598,7 +4637,8 @@
     "40": 1.8974860654778254
    },
    "label": "FCV-G20",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-G20"
   },
   "G21": {
    "expected": {
@@ -4713,7 +4753,8 @@
     "40": 2.903992594060376
    },
    "label": "ICEV-G21",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-G21"
   },
   "G22": {
    "expected": {
@@ -4827,7 +4868,8 @@
     "40": 2.1084775537224383
    },
    "label": "HEV-G22",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-G22"
   },
   "G23": {
    "expected": {
@@ -4942,7 +4984,8 @@
     "40": 1.149469606001202
    },
    "label": "PHEV-G23",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-G23"
   },
   "G24": {
    "expected": {
@@ -5057,7 +5100,8 @@
     "40": 0.6963832272492386
    },
    "label": "BEV-G24",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-G24"
   },
   "G25": {
    "expected": {
@@ -5171,7 +5215,8 @@
     "40": 1.2488648078352695
    },
    "label": "FCV-G25",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-G25"
   },
   "G26": {
    "expected": {
@@ -5286,7 +5331,8 @@
     "40": 2.577823083156411
    },
    "label": "ICEV-G26",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-G26"
   },
   "G27": {
    "expected": {
@@ -5400,7 +5446,8 @@
     "40": 1.8542456983309605
    },
    "label": "HEV-G27",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-G27"
   },
   "G28": {
    "expected": {
@@ -5515,7 +5562,8 @@
     "40": 1.0413769192682583
    },
    "label": "PHEV-G28",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-G28"
   },
   "G29": {
    "expected": {
@@ -5630,7 +5678,8 @@
     "40": 0.6272681550707576
    },
    "label": "BEV-G29",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-G29"
   },
   "G30": {
    "expected": {
@@ -5744,7 +5793,8 @@
     "40": 1.09322846827773
    },
    "label": "FCV-G30",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-G30"
   },
   "GL21": {
    "expected": {
@@ -5859,7 +5909,8 @@
     "40": 2.81364615780072
    },
    "label": "ICEV-GL21",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-GL21"
   },
   "GL26": {
    "expected": {
@@ -5974,7 +6025,8 @@
     "40": 2.4040647550828935
    },
    "label": "ICEV-GL26",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-GL26"
   },
   "P21": {
    "expected": {
@@ -6089,7 +6141,8 @@
     "40": 4.6224104496476475
    },
    "label": "ICEV-P21",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-P21"
   },
   "P22": {
    "expected": {
@@ -6203,7 +6256,8 @@
     "40": 1.8561490955388575
    },
    "label": "HEV-P22",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-P22"
   },
   "P23": {
    "expected": {
@@ -6318,7 +6372,8 @@
     "40": 2.2416662037406003
    },
    "label": "PHEV-P23",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-P23"
   },
   "P24": {
    "expected": {
@@ -6433,7 +6488,8 @@
     "40": 2.8131598341211346
    },
    "label": "BEV-P24",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-P24"
   },
   "P25": {
    "expected": {
@@ -6547,7 +6603,8 @@
     "40": 1.1721401790339148
    },
    "label": "FCV-P25",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-P25"
   },
   "P26": {
    "expected": {
@@ -6662,7 +6719,8 @@
     "40": 3.183393258625719
    },
    "label": "ICEV-P26",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-P26"
   },
   "P27": {
    "expected": {
@@ -6776,7 +6834,8 @@
     "40": 1.3004925680684043
    },
    "label": "HEV-P27",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-P27"
   },
   "P28": {
    "expected": {
@@ -6891,7 +6950,8 @@
     "40": 4.13694826580455
    },
    "label": "PHEV-P28",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-P28"
   },
   "P29": {
    "expected": {
@@ -7006,7 +7066,8 @@
     "40": 1.6881501770177936
    },
    "label": "BEV-P29",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-P29"
   },
   "P30": {
    "expected": {
@@ -7120,7 +7181,8 @@
     "40": 1.9737655155064917
    },
    "label": "FCV-P30",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-P30"
   },
   "PL21": {
    "expected": {
@@ -7235,7 +7297,8 @@
     "40": 4.384464612755751
    },
    "label": "ICEV-PL21",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-PL21"
   },
   "PL26": {
    "expected": {
@@ -7350,7 +7413,8 @@
     "40": 3.778250316971516
    },
    "label": "ICEV-PL26",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-PL26"
   },
   "S21": {
    "expected": {
@@ -7465,7 +7529,8 @@
     "40": 3.78788650497444
    },
    "label": "ICEV-S21",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-S21"
   },
   "S22": {
    "expected": {
@@ -7579,7 +7644,8 @@
     "40": 2.6005308596710033
    },
    "label": "HEV-S22",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-S22"
   },
   "S23": {
    "expected": {
@@ -7694,7 +7760,8 @@
     "40": 1.50122674618261
    },
    "label": "PHEV-S23",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-S23"
   },
   "S24": {
    "expected": {
@@ -7809,7 +7876,8 @@
     "40": 1.0105336862635521
    },
    "label": "BEV-S24",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-S24"
   },
   "S25": {
    "expected": {
@@ -7923,7 +7991,8 @@
     "40": 1.7826509532335493
    },
    "label": "FCV-S25",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-S25"
   },
   "S26": {
    "expected": {
@@ -8038,7 +8107,8 @@
     "40": 3.3814901434730325
    },
    "label": "ICEV-S26",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-S26"
   },
   "S27": {
    "expected": {
@@ -8152,7 +8222,8 @@
     "40": 2.2943051923484994
    },
    "label": "HEV-S27",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-S27"
   },
   "S28": {
    "expected": {
@@ -8267,7 +8338,8 @@
     "40": 1.3654286886283316
    },
    "label": "PHEV-S28",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-S28"
   },
   "S29": {
    "expected": {
@@ -8382,7 +8454,8 @@
     "40": 0.9125936833351783
    },
    "label": "BEV-S29",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-S29"
   },
   "S30": {
    "expected": {
@@ -8496,7 +8569,8 @@
     "40": 1.5706917660094923
    },
    "label": "FCV-S30",
-   "powertrain": "FCV"
+   "powertrain": "FCV",
+   "recipe": "FCV-S30"
   },
   "SL21": {
    "expected": {
@@ -8611,7 +8685,8 @@
     "40": 3.1485116315567074
    },
    "label": "ICEV-SL21",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-SL21"
   },
   "SL26": {
    "expected": {
@@ -8726,7 +8801,8 @@
     "40": 2.789255520514447
    },
    "label": "ICEV-SL26",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-SL26"
   },
   "SV1": {
    "expected": {
@@ -8841,7 +8917,8 @@
     "40": 2.160209902906143
    },
    "label": "ICEV-SV1",
-   "powertrain": "ICEV"
+   "powertrain": "ICEV",
+   "recipe": "ICEV-G21"
   },
   "SV2": {
    "expected": {
@@ -8956,7 +9033,8 @@
     "40": 1.7951312099261774
    },
    "label": "HEV-SV2",
-   "powertrain": "HEV"
+   "powertrain": "HEV",
+   "recipe": "HEV-G22"
   },
   "SV3": {
    "expected": {
@@ -9071,7 +9149,8 @@
     "40": 0.5406342198655589
    },
    "label": "PHEV-SV3",
-   "powertrain": "PHEV"
+   "powertrain": "PHEV",
+   "recipe": "PHEV-G23"
   },
   "SV4": {
    "expected": {
@@ -9186,7 +9265,8 @@
     "40": 0.8449305849189571
    },
    "label": "BEV-SV4",
-   "powertrain": "BEV"
+   "powertrain": "BEV",
+   "recipe": "BEV-G24"
   }
  },
  "ef_by_material": {

@@ -95,23 +95,28 @@ Em ambos os casos a calculadora usa o valor informado quando ele existe, e aplic
 
 ## 6. Emissões: fluidos e baterias
 
-Em 24 configurações da família de referência — aquelas cujas receitas de materiais a base possui e cuja massa já reproduz o i3ET — as emissões foram comparadas parcela a parcela.
+Em 12 configurações da família de referência — aquelas cujas receitas de materiais a base possui e cuja massa já reproduz o i3ET — as emissões foram comparadas parcela a parcela.
 
 **Fluidos (grupo `K`) — corrigido em 20/09/2026.** A base do simulador não trazia composição para o grupo dos fluidos: a calculadora carregava a massa (25 a 43 kg por veículo) e lhe atribuía **emissão zero**. O i3ET traz a composição nas linhas 620 a 626 do módulo M2, e ela passou a integrar `P16`. A concordância agora é exata (maior diferença relativa: 2.1e-16). Antes da correção, faltavam entre 67 e 108 kg CO₂e por veículo, ou algo entre 1,5% e 2,3% do total do berço ao portão. **Nenhum ajuste é necessário no i3ET**: a falha estava na base derivada, não na planilha.
 
 **Bateria de tração.** Reproduz o i3ET na precisão da máquina em todos os modelos que a base descreve. As configurações da família `G` citam modelos que vivem apenas na planilha de baterias do i3ET; para elas a calculadora **mantém a massa, declara o fator ausente e registra aviso** — nunca atribui emissão zero em silêncio.
 
-**Bateria auxiliar (chumbo-ácido).** A intensidade por quilograma coincide exatamente com a das colunas `G` do i3ET. As colunas `BP` da mesma planilha são **9.87% maiores**, por uma razão localizada: elas lançam o plástico da bateria como *Average Plastic* (IDM 10; 4,4833 kg CO₂e/kg) enquanto as colunas `G` o lançam como *Polypropylene* (2,6074). A base segue o polipropileno, que é o material específico e é também o que a receita do simulador declara. O efeito é de cerca de 1,8 kg CO₂e por veículo — menos de 0,05% do total.
+**Bateria auxiliar (chumbo-ácido).** Reproduz o i3ET exatamente, nas duas famílias de configurações. Até 20/09/2026 havia aqui uma diferença fixa de 9,87% nas colunas `BP`, atribuída a uma inconsistência interna da planilha: elas lançam o plástico da bateria como *Average Plastic* e as colunas `G` como *Polypropylene*. Não era inconsistência — eram duas receitas diferentes, e a base passou a ter as duas (§7).
 
-**Ajuste sugerido no i3ET:** uniformizar o material do plástico da bateria auxiliar entre as duas famílias de colunas. É uma inconsistência interna da planilha, não uma divergência com a calculadora.
+## 7. Emissões: composição dos materiais do veículo — **resolvido**
 
-## 7. Emissões: composição dos materiais do veículo — **duas causas identificadas**
+Este foi o item em aberto de 20/09/2026, e está fechado. A massa do veículo já reproduzia o i3ET; a distribuição dessa massa entre materiais não. A investigação mostrou que não era deriva entre cópias de uma mesma tabela, e sim **duas receitas distintas**.
 
-A **massa** do veículo reproduz o i3ET exatamente. A **distribuição dessa massa entre materiais** diverge em alguns grupos, e a investigação de 20/09/2026 separou duas causas independentes. Nenhuma delas é erro de cálculo; as duas são de dados, e cada uma pede uma decisão diferente.
+### 7.1 Duas famílias de receitas, e não duas versões
 
-### 7.1 Duas receitas com o mesmo nome (apenas ICEV)
+O i3ET guarda as receitas em colunas nomeadas do próprio módulo M2 (bloco `T8:DD281`), e a linha 9 de cada configuração nomeia a que ela usa. Há duas famílias:
 
-O i3ET guarda as receitas de materiais em colunas nomeadas, no próprio módulo M2 (bloco `T8:DD281`), e cada configuração escolhe a sua pela linha 9. Existem, lado a lado, **duas colunas para a mesma receita**:
+| Família | Origem |
+|---|---|
+| `<PT>-BISD<n>` | receita original, de consultoria |
+| `<PT>-PBP_BISD<n>` | receita do Projeto do Berço ao Portão, que partiu da anterior e ajustou a participação de alguns materiais com informação das montadoras brasileiras |
+
+No grupo A, por exemplo:
 
 | Grupo A (carroceria) | `ICEV-BISD2` | `ICEV-PBP_BISD2` |
 |---|---:|---:|
@@ -120,44 +125,36 @@ O i3ET guarda as receitas de materiais em colunas nomeadas, no próprio módulo 
 | Cobre/latão | 0,018986306 | 0,000000000 |
 | Alumínio forjado | 0,030699147 | 0,006139829 |
 
-A base da calculadora traz `ICEV-BISD2` — **idêntica à coluna do i3ET até a nona casa decimal**, o que descarta a hipótese de deriva entre duas cópias. As configurações `BP01` e `BP02`, porém, apontam para `ICEV-PBP_BISD2`, e `BP03` para `ICEV-PBP_BISD3`. São escolhas de coluna, não versões diferentes do mesmo dado.
+A base trazia apenas a primeira, e os veículos do projeto usavam-na — daí uma diferença de 126,8 kg de aço em `BP01`, 90,4 no grupo A e 36,4 no grupo B, com a massa total inalterada. **As duas famílias passam a existir na base**, com a procedência declarada em `P15.DsVMR`, e cada cenário usa a receita que a planilha nomeia na sua coluna. Deduzir pelo trem de força não serviria: há mais de uma receita por trem de força, e `BP02` usa uma variante própria, `ICEV-PBP_BISD2s`, que o nome do veículo não revela. Por isso a *fixture* de validação passou a registrar o nome da receita de cada configuração.
 
-O efeito, em `BP01`: **−126,8 kg de aço** (−90,4 no grupo A, −36,4 no grupo B), +56,4 kg de plástico médio, +36,9 kg de alumínio fundido. A massa total não muda — muda a quem ela é atribuída. Em emissões: +223 kg CO₂e no grupo A e +217 kg no grupo B.
+### 7.2 Participações que a base trazia como zero
 
-**As variantes `PBP_` só diferem para ICEV.** Para `HEV-PBP_BISD6`, `PHEV-PBP_BISD8` e `BEV-PBP_BISD12` as colunas são iguais às `BISD` correspondentes — e, de fato, `BP04` a `BP12` não apresentam nenhuma diferença de composição.
+A importação também restaurou 36 participações não nulas que a base arredondara para zero — entre 2 × 10⁻⁵ e 4 × 10⁻⁴: platina no grupo D, níquel, náilon, resina fenólica, mica, zinco e óxido de zinco nos grupos C e G.
 
-**Decisão pendente:** adotar as receitas `PBP_` para `BISD2` e `BISD3`, que é o que o i3ET usa nos veículos do projeto (diretriz D11), ou manter as `BISD`. Convém, antes, saber o que distingue as duas na origem.
+Uma delas não é pequena no resultado: **a platina** do catalisador. Com o fator da versão BR23, de 69.670 kg CO₂e/kg, a participação de 2 × 10⁻⁵ vale 265 kg CO₂e em `BP01` e 152 kg em `BP07` — de 3% a 6% do veículo, vindos de um número arredondado para zero. É o caso exemplar do princípio da diretriz **D13**: numa tabela de fatores com cinco ordens de grandeza de amplitude, não existe participação desprezível a priori.
 
-### 7.2 Participações pequenas perdidas na transcrição
+*A verificar no i3ET:* a platina tem fator **126,5** kg CO₂e/kg nas versões G22, G23 e G24 e **69.670** na BR23 — 550 vezes maior. Uma das duas está errada, e a diferença decide alguns pontos percentuais do resultado de qualquer veículo com catalisador.
 
-A base traz **zero** em participações que o i3ET tem como não nulas. São valores de 2 × 10⁻⁵ a 4 × 10⁻⁴ — platina no grupo D, níquel, náilon, resina fenólica, mica, zinco e óxido de zinco nos grupos C e G, além da linha `Others` em B e D. A normalização das receitas redistribuiu o peso dessas ausências entre os demais materiais, o que explica as diferenças de quarta casa decimal em aço e alumínio.
+### 7.3 Onde isso deixou a aderência
 
-Uma delas não é pequena no resultado: **a platina**. A participação é de 2 × 10⁻⁵ nos ICEV e 1 × 10⁻⁵ nos híbridos, mas o fator de emissão da versão BR23 é de 69.670 kg CO₂e/kg. Em `BP01` isso vale **265 kg CO₂e** e em `BP07`, **152 kg** — de 3% a 6% do veículo, vindos de um número que a base arredondou para zero. É o caso exemplar do princípio da diretriz D13: em uma tabela de fatores com cinco ordens de grandeza de amplitude, não existe participação desprezível a priori.
+| Configuração | Receita | Calculadora (kg CO₂e) | i3ET (kg CO₂e) | Dif. relativa |
+|---|---|---:|---:|---:|
+| `BP01` | `PBP_BISD2` | 4,335.866 | 4,335.866 | -4.2e-16 |
+| `BP02` | `PBP_BISD2s` | 4,576.990 | 4,576.990 | -2.0e-16 |
+| `BP03` | `PBP_BISD3` | 4,957.472 | 4,957.472 | +0.0e+00 |
+| `BP04` | `PBP_BISD12` | 4,246.159 | 4,246.159 | -2.1e-16 |
+| `BP05` | `PBP_BISD12` | 7,987.797 | 7,987.797 | +1.1e-16 |
+| `BP06` | `PBP_BISD12` | 5,275.162 | 5,275.162 | -1.7e-16 |
+| `BP07` | `PBP_BISD6` | 5,002.423 | 5,002.354 | +1.4e-05 |
+| `BP08` | `PBP_BISD6` | 5,783.730 | 5,783.652 | +1.3e-05 |
+| `BP09` | `PBP_BISD6` | 5,758.226 | 5,758.144 | +1.4e-05 |
+| `BP10` | `PBP_BISD8` | 5,652.015 | 5,651.853 | +2.9e-05 |
+| `BP11` | `PBP_BISD8` | 7,739.735 | 7,739.489 | +3.2e-05 |
+| `BP12` | `PBP_BISD8` | 7,410.679 | 7,410.485 | +2.6e-05 |
 
-*Nota lateral:* a mesma platina tem fator **126,5** kg CO₂e/kg nas versões G22/G23/G24 e **69.670** na BR23 — 550 vezes maior. Com os fatores G22, que são os das avaliações do projeto, a participação perdida vale meio quilo de CO₂e. A discrepância entre versões merece verificação na aba de fatores do i3ET.
+Os `ICEV` e os `BEV` reproduzem o i3ET na precisão da máquina. O resíduo de 3 × 10⁻⁵ dos híbridos vem de uma decisão declarada: algumas colunas do i3ET fecham a soma do grupo com um resíduo **negativo** na linha `Others`, da ordem de 1 × 10⁻⁴. Participação mássica negativa não existe; essas oito linhas entram como zero e a normalização redistribui a diferença.
 
-**Correção proposta:** importar as participações do bloco de receitas do i3ET, restaurando as que a base perdeu. Não é mudança de critério, é recuperar a precisão da própria fonte de registro — mas desloca os resultados, então entra em commit próprio, com os testes de regressão recongelados na mesma mudança.
-
-### 7.3 Efeito combinado nos doze veículos do projeto
-
-Nos ICEV as duas causas têm sinais opostos e se cancelam em parte; nos híbridos e elétricos só a segunda atua, e ela é toda platina — nos `BEV` nem isso, porque não há catalisador.
-
-| Configuração | Trem de força | Calculadora (kg CO₂e) | i3ET (kg CO₂e) | Dif. | Causa dominante |
-|---|---|---:|---:|---:|---|
-| `BP11` | PHEV | 7,395.5 | 7,739.5 | -4.44% | §7.2 (platina) |
-| `BP10` | PHEV | 5,425.0 | 5,651.9 | -4.01% | §7.2 (platina) |
-| `BP12` | PHEV | 7,139.5 | 7,410.5 | -3.66% | §7.2 (platina) |
-| `BP08` | HEV | 5,581.6 | 5,783.7 | -3.49% | §7.2 (platina) |
-| `BP07` | HEV | 4,848.5 | 5,002.4 | -3.08% | §7.2 (platina) |
-| `BP09` | HEV | 5,600.1 | 5,758.1 | -2.74% | §7.2 (platina) |
-| `BP03` | ICEV | 4,830.5 | 4,957.5 | -2.56% | §7.1 e §7.2 |
-| `BP01` | ICEV | 4,398.5 | 4,335.9 | +1.44% | §7.1 e §7.2 |
-| `BP02` | ICEV | 4,630.3 | 4,577.0 | +1.17% | §7.1 e §7.2 |
-| `BP06` | BEV | 5,271.2 | 5,275.2 | -0.08% | resíduo |
-| `BP05` | BEV | 7,981.9 | 7,987.8 | -0.07% | resíduo |
-| `BP04` | BEV | 4,243.2 | 4,246.2 | -0.07% | resíduo |
-
-Enquanto as duas decisões não são tomadas, o teste `test_car_materials_stay_within_the_documented_gap` trava a distância no patamar atual, de modo que ela não possa crescer despercebida.
+**Ajuste sugerido no i3ET:** substituir o resíduo negativo de fechamento por um ajuste distribuído, ou aceitar que a soma do grupo não feche exatamente em 1 e registrar isso. Uma participação negativa num vetor de frações mássicas é um artifício de planilha que não sobrevive à passagem para um modelo relacional.
 
 ## 8. Conclusão
 

@@ -14,7 +14,6 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
-import re
 import statistics
 import sys
 from collections import defaultdict
@@ -103,8 +102,6 @@ def analyse():
     return findings, fx
 
 
-#: Configuracoes cujas receitas de materiais a base efetivamente possui.
-REFERENCE_FAMILY = re.compile(r"^(G\d{1,2}|BP\d{2})$")
 CAR_GROUPS = ["A", "B", "C", "D", "E", "F", "G", "H", "J"]
 
 
@@ -119,13 +116,15 @@ def analyse_ghg():
     ef = pd.DataFrame(
         [{"IDM": m, "IDEFV": "FIXTURE", "EF": v, "EFnotes": "i3ET", "IsUserDefined": 0}
          for m, v in fx["ef_by_material"].items()])
-    rec = {r["IDVPT"]: r["IDVMR"] for r in base["P15"].to_dict("records")}
+    conhecidas = set(base["P15"]["IDVMR"])
     descritas = set(base["P19"]["IDBMd"])
 
     out = []
     for code in fx["usable_configs"]:
         cfg = fx["configs"][code]
-        if not REFERENCE_FAMILY.match(code) or cfg["powertrain"] not in rec:
+        nome = str(cfg.get("recipe") or "")
+        idvmr = nome.split("-", 1)[1].strip() if "-" in nome else None
+        if idvmr not in conhecidas:
             continue
         gc = {int(k): (v if isinstance(v, (int, float)) else 0.0)
               for k, v in cfg["gc"].items()}
@@ -134,7 +133,7 @@ def analyse_ghg():
         supplied = {i for i in P.ENDOGENOUS
                     if isinstance(cfg["gc"].get(str(i)), (int, float))}
         r = calc.calculate_vehicle(base, gc, powertrain=cfg["powertrain"],
-                                   battery_id=bid, idmpv=1, idvmr=rec[cfg["powertrain"]],
+                                   battery_id=bid, idmpv=1, idvmr=idvmr,
                                    idefv="FIXTURE", idapv="A-EF", boundary="MAT",
                                    ef_table=ef, supplied=supplied)
         esperada = cfg["expected"]["vehicle_mass_kg"]
@@ -144,7 +143,7 @@ def analyse_ghg():
         presentes = [g for g in CAR_GROUPS if g in c10.index]
         massa_aux = float(c10["MassIDGG"].get("Iaux", 0.0))
         out.append({
-            "config": code, "powertrain": cfg["powertrain"],
+            "config": code, "powertrain": cfg["powertrain"], "receita": idvmr,
             "fluidos_nossa": float(c10["GHGIDGG"].get("K", 0.0)),
             "fluidos_i3et": cfg["expected"]["ghg_fluids_kgCO2e"],
             "aux_nossa_por_kg": (float(c10["GHGIDGG"].get("Iaux", 0.0)) / massa_aux
@@ -224,33 +223,34 @@ def _secao_emissoes(w, ghg):
       "**mantém a massa, declara o fator ausente e registra aviso** — nunca atribui "
       "emissão zero em silêncio.")
     w("")
-    if len(razao_bp) == 1 and razao_g <= {1.0}:
-        razao = razao_bp.pop()
-        w("**Bateria auxiliar (chumbo-ácido).** A intensidade por quilograma coincide "
-          "exatamente com a das colunas `G` do i3ET. As colunas `BP` da mesma planilha "
-          f"são **{(razao - 1) * 100:.2f}% maiores**, por uma razão localizada: elas "
-          "lançam o plástico da bateria como *Average Plastic* (IDM 10; 4,4833 kg "
-          "CO₂e/kg) enquanto as colunas `G` o lançam como *Polypropylene* (2,6074). "
-          "A base segue o polipropileno, que é o material específico e é também o que "
-          "a receita do simulador declara. O efeito é de cerca de 1,8 kg CO₂e por "
-          "veículo — menos de 0,05% do total.")
+    if razao_bp | razao_g <= {1.0}:
+        w("**Bateria auxiliar (chumbo-ácido).** Reproduz o i3ET exatamente, nas "
+          "duas famílias de configurações. Até 20/09/2026 havia aqui uma "
+          "diferença fixa de 9,87% nas colunas `BP`, atribuída a uma "
+          "inconsistência interna da planilha: elas lançam o plástico da "
+          "bateria como *Average Plastic* e as colunas `G` como *Polypropylene*. "
+          "Não era inconsistência — eram duas receitas diferentes, e a base "
+          "passou a ter as duas (§7).")
         w("")
-        w("**Ajuste sugerido no i3ET:** uniformizar o material do plástico da bateria "
-          "auxiliar entre as duas famílias de colunas. É uma inconsistência interna da "
-          "planilha, não uma divergência com a calculadora.")
-        w("")
-    w("## 7. Emissões: composição dos materiais do veículo — **duas causas identificadas**")
+    w("## 7. Emissões: composição dos materiais do veículo — **resolvido**")
     w("")
-    w("A **massa** do veículo reproduz o i3ET exatamente. A **distribuição dessa "
-      "massa entre materiais** diverge em alguns grupos, e a investigação de "
-      "20/09/2026 separou duas causas independentes. Nenhuma delas é erro de "
-      "cálculo; as duas são de dados, e cada uma pede uma decisão diferente.")
+    w("Este foi o item em aberto de 20/09/2026, e está fechado. A massa do "
+      "veículo já reproduzia o i3ET; a distribuição dessa massa entre materiais "
+      "não. A investigação mostrou que não era deriva entre cópias de uma mesma "
+      "tabela, e sim **duas receitas distintas**.")
     w("")
-    w("### 7.1 Duas receitas com o mesmo nome (apenas ICEV)")
+    w("### 7.1 Duas famílias de receitas, e não duas versões")
     w("")
-    w("O i3ET guarda as receitas de materiais em colunas nomeadas, no próprio "
-      "módulo M2 (bloco `T8:DD281`), e cada configuração escolhe a sua pela "
-      "linha 9. Existem, lado a lado, **duas colunas para a mesma receita**:")
+    w("O i3ET guarda as receitas em colunas nomeadas do próprio módulo M2 "
+      "(bloco `T8:DD281`), e a linha 9 de cada configuração nomeia a que ela "
+      "usa. Há duas famílias:")
+    w("")
+    w("| Família | Origem |")
+    w("|---|---|")
+    w("| `<PT>-BISD<n>` | receita original, de consultoria |")
+    w("| `<PT>-PBP_BISD<n>` | receita do Projeto do Berço ao Portão, que partiu da anterior e ajustou a participação de alguns materiais com informação das montadoras brasileiras |")
+    w("")
+    w("No grupo A, por exemplo:")
     w("")
     w("| Grupo A (carroceria) | `ICEV-BISD2` | `ICEV-PBP_BISD2` |")
     w("|---|---:|---:|")
@@ -259,74 +259,56 @@ def _secao_emissoes(w, ghg):
     w("| Cobre/latão | 0,018986306 | 0,000000000 |")
     w("| Alumínio forjado | 0,030699147 | 0,006139829 |")
     w("")
-    w("A base da calculadora traz `ICEV-BISD2` — **idêntica à coluna do i3ET até "
-      "a nona casa decimal**, o que descarta a hipótese de deriva entre duas "
-      "cópias. As configurações `BP01` e `BP02`, porém, apontam para "
-      "`ICEV-PBP_BISD2`, e `BP03` para `ICEV-PBP_BISD3`. São escolhas de coluna, "
-      "não versões diferentes do mesmo dado.")
+    w("A base trazia apenas a primeira, e os veículos do projeto usavam-na — daí "
+      "uma diferença de 126,8 kg de aço em `BP01`, 90,4 no grupo A e 36,4 no "
+      "grupo B, com a massa total inalterada. **As duas famílias passam a "
+      "existir na base**, com a procedência declarada em `P15.DsVMR`, e cada "
+      "cenário usa a receita que a planilha nomeia na sua coluna. Deduzir pelo "
+      "trem de força não serviria: há mais de uma receita por trem de força, e "
+      "`BP02` usa uma variante própria, `ICEV-PBP_BISD2s`, que o nome do "
+      "veículo não revela. Por isso a *fixture* de validação passou a registrar "
+      "o nome da receita de cada configuração.")
     w("")
-    w("O efeito, em `BP01`: **−126,8 kg de aço** (−90,4 no grupo A, −36,4 no "
-      "grupo B), +56,4 kg de plástico médio, +36,9 kg de alumínio fundido. A "
-      "massa total não muda — muda a quem ela é atribuída. Em emissões: +223 kg "
-      "CO₂e no grupo A e +217 kg no grupo B.")
+    w("### 7.2 Participações que a base trazia como zero")
     w("")
-    w("**As variantes `PBP_` só diferem para ICEV.** Para `HEV-PBP_BISD6`, "
-      "`PHEV-PBP_BISD8` e `BEV-PBP_BISD12` as colunas são iguais às `BISD` "
-      "correspondentes — e, de fato, `BP04` a `BP12` não apresentam nenhuma "
-      "diferença de composição.")
+    w("A importação também restaurou 36 participações não nulas que a base "
+      "arredondara para zero — entre 2 × 10⁻⁵ e 4 × 10⁻⁴: platina no grupo D, "
+      "níquel, náilon, resina fenólica, mica, zinco e óxido de zinco nos grupos "
+      "C e G.")
     w("")
-    w("**Decisão pendente:** adotar as receitas `PBP_` para `BISD2` e `BISD3`, "
-      "que é o que o i3ET usa nos veículos do projeto (diretriz D11), ou manter "
-      "as `BISD`. Convém, antes, saber o que distingue as duas na origem.")
+    w("Uma delas não é pequena no resultado: **a platina** do catalisador. Com o "
+      "fator da versão BR23, de 69.670 kg CO₂e/kg, a participação de 2 × 10⁻⁵ "
+      "vale 265 kg CO₂e em `BP01` e 152 kg em `BP07` — de 3% a 6% do veículo, "
+      "vindos de um número arredondado para zero. É o caso exemplar do "
+      "princípio da diretriz **D13**: numa tabela de fatores com cinco ordens de "
+      "grandeza de amplitude, não existe participação desprezível a priori.")
     w("")
-    w("### 7.2 Participações pequenas perdidas na transcrição")
+    w("*A verificar no i3ET:* a platina tem fator **126,5** kg CO₂e/kg nas "
+      "versões G22, G23 e G24 e **69.670** na BR23 — 550 vezes maior. Uma das "
+      "duas está errada, e a diferença decide alguns pontos percentuais do "
+      "resultado de qualquer veículo com catalisador.")
     w("")
-    w("A base traz **zero** em participações que o i3ET tem como não nulas. São "
-      "valores de 2 × 10⁻⁵ a 4 × 10⁻⁴ — platina no grupo D, níquel, náilon, "
-      "resina fenólica, mica, zinco e óxido de zinco nos grupos C e G, além da "
-      "linha `Others` em B e D. A normalização das receitas redistribuiu o peso "
-      "dessas ausências entre os demais materiais, o que explica as diferenças "
-      "de quarta casa decimal em aço e alumínio.")
+    w("### 7.3 Onde isso deixou a aderência")
     w("")
-    w("Uma delas não é pequena no resultado: **a platina**. A participação é de "
-      "2 × 10⁻⁵ nos ICEV e 1 × 10⁻⁵ nos híbridos, mas o fator de emissão da "
-      "versão BR23 é de 69.670 kg CO₂e/kg. Em `BP01` isso vale **265 kg CO₂e** e "
-      "em `BP07`, **152 kg** — de 3% a 6% do veículo, vindos de um número que a "
-      "base arredondou para zero. É o caso exemplar do princípio da diretriz "
-      "D13: em uma tabela de fatores com cinco ordens de grandeza de amplitude, "
-      "não existe participação desprezível a priori.")
-    w("")
-    w("*Nota lateral:* a mesma platina tem fator **126,5** kg CO₂e/kg nas "
-      "versões G22/G23/G24 e **69.670** na BR23 — 550 vezes maior. Com os "
-      "fatores G22, que são os das avaliações do projeto, a participação perdida "
-      "vale meio quilo de CO₂e. A discrepância entre versões merece verificação "
-      "na aba de fatores do i3ET.")
-    w("")
-    w("**Correção proposta:** importar as participações do bloco de receitas do "
-      "i3ET, restaurando as que a base perdeu. Não é mudança de critério, é "
-      "recuperar a precisão da própria fonte de registro — mas desloca os "
-      "resultados, então entra em commit próprio, com os testes de regressão "
-      "recongelados na mesma mudança.")
-    w("")
-    w("### 7.3 Efeito combinado nos doze veículos do projeto")
-    w("")
-    w("Nos ICEV as duas causas têm sinais opostos e se cancelam em parte; nos "
-      "híbridos e elétricos só a segunda atua, e ela é toda platina — nos `BEV` "
-      "nem isso, porque não há catalisador.")
-    w("")
-    w("| Configuração | Trem de força | Calculadora (kg CO₂e) | i3ET (kg CO₂e) | Dif. | Causa dominante |")
-    w("|---|---|---:|---:|---:|---|")
-    causa = {"ICEV": "§7.1 e §7.2", "HEV": "§7.2 (platina)",
-             "PHEV": "§7.2 (platina)", "BEV": "resíduo"}
-    for _rel, g in sorted((-abs((g["carro_nossa"] - g["carro_i3et"]) / g["carro_i3et"]), g)
-                          for g in ghg if g["carro_i3et"] and g["config"].startswith("BP")):
+    w("| Configuração | Receita | Calculadora (kg CO₂e) | i3ET (kg CO₂e) | Dif. relativa |")
+    w("|---|---|---:|---:|---:|")
+    for _o, g in sorted((g["config"], g) for g in ghg if g["carro_i3et"]):
         rel = (g["carro_nossa"] - g["carro_i3et"]) / g["carro_i3et"]
-        w(f"| `{g['config']}` | {g['powertrain']} | {g['carro_nossa']:,.1f} | "
-          f"{g['carro_i3et']:,.1f} | {rel:+.2%} | {causa.get(g['powertrain'], '')} |")
+        w(f"| `{g['config']}` | `{g.get('receita', '')}` | {g['carro_nossa']:,.3f} | "
+          f"{g['carro_i3et']:,.3f} | {rel:+.1e} |")
     w("")
-    w("Enquanto as duas decisões não são tomadas, o teste "
-      "`test_car_materials_stay_within_the_documented_gap` trava a distância no "
-      "patamar atual, de modo que ela não possa crescer despercebida.")
+    w("Os `ICEV` e os `BEV` reproduzem o i3ET na precisão da máquina. O resíduo "
+      "de 3 × 10⁻⁵ dos híbridos vem de uma decisão declarada: algumas colunas do "
+      "i3ET fecham a soma do grupo com um resíduo **negativo** na linha "
+      "`Others`, da ordem de 1 × 10⁻⁴. Participação mássica negativa não existe; "
+      "essas oito linhas entram como zero e a normalização redistribui a "
+      "diferença.")
+    w("")
+    w("**Ajuste sugerido no i3ET:** substituir o resíduo negativo de fechamento "
+      "por um ajuste distribuído, ou aceitar que a soma do grupo não feche "
+      "exatamente em 1 e registrar isso. Uma participação negativa num vetor de "
+      "frações mássicas é um artifício de planilha que não sobrevive à "
+      "passagem para um modelo relacional.")
     w("")
 
 

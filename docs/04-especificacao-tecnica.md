@@ -383,13 +383,15 @@ Os números são exportados com a precisão completa do `float64`. Arredondament
 | Borda | Veículo sem bateria, `GC = 0`, `Beta = 0`, receita incompleta, `EF` ausente | `tests/test_edge_cases.py` |
 
 Os testes de aderência separam massa de emissões de propósito. A massa é o
-módulo M1 e está fechada: 39 configurações exatas, 28 explicadas pelo fator de
-leveza (M5, fora de escopo), 5 pela lista de exclusão do módulo híbrido, nenhuma
-sem explicação. As emissões são o módulo M2, e ali o estado é parcial: fluidos e
-baterias reproduzem o i3ET exatamente, a composição dos materiais do veículo
-ainda não — ver §7 do Documento 5. O teste dessa parcela é um **catraca**: ele
-não aceita a diferença, apenas impede que ela cresça enquanto a decisão de
-reconstruir `P16` a partir do i3ET não é tomada.
+módulo M1: 39 configurações exatas, 28 explicadas pelo fator de leveza (M5, fora
+de escopo), 5 pela lista de exclusão do módulo híbrido, nenhuma sem explicação.
+As emissões são o módulo M2, e reproduzem o i3ET nos doze veículos do projeto —
+`ICEV` e `BEV` na precisão da máquina, híbridos com resíduo de 3 × 10⁻⁵, de
+origem conhecida e registrada no Documento 5.
+
+A comparação usa a receita de materiais que a planilha nomeia para cada
+configuração, e não uma deduzida do trem de força: a *fixture* registra esse
+nome, e um teste verifica que os cenários da base o respeitam.
 
 ### 7.1.1 Como rodar
 
