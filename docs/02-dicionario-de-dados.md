@@ -279,6 +279,7 @@ Metatabela: descreve todas as demais. É lida pelo programa para gerar a interfa
 | `GravimetricPowerDensity` | REAL | — | kW/kg | End | S | `1 / PowerDensity`, com `PowerDensity ≠ 0` |
 | `GravimetricGHGDensity` | REAL | — | kg CO₂e/kg | Exo/End | S | `HEV`: exógeno; demais: `RefGHGIDBMd / RefWeight` |
 | `EnergyGHGDensity` | REAL | — | kg CO₂e/kWh | Exo/End | S | `HEV`: `RefGHGIDBMd / RefEnergy`; demais: exógeno |
+| `GHGMethod` | TEXT | — | — | Dsc | S | `composition` (soma os materiais de `P20`), `gravimetric` (massa × `GravimetricGHGDensity`) ou `none` (sem bateria). Ver §11.5 do Documento 1 |
 | `DsBMd` | TEXT | — | — | Dsc | N | Descrição |
 
 > **Regra de divisão protegida.** Toda derivação com denominador nulo grava `NULL` e uma linha no log de validação. A linha `IDBMd = 'NA'` tem todos os campos numéricos iguais a zero e nenhuma derivação é executada sobre ela — é o que elimina o `inf` observado em `Results_ALL_tables` (divergência 8).
@@ -670,7 +671,10 @@ CREATE TABLE P19_BatteryModel (
   GravimetricPowerDensity  REAL,
   GravimetricGHGDensity    REAL,
   EnergyGHGDensity         REAL,
-  DsBMd                    TEXT
+  GHGMethod                TEXT NOT NULL DEFAULT 'composition'
+                           CHECK (GHGMethod IN ('composition','gravimetric','none')),
+  DsBMd                    TEXT,
+  CHECK (GHGMethod <> 'gravimetric' OR GravimetricGHGDensity IS NOT NULL)
 );
 
 CREATE TABLE P20_BatteryMaterialShare (

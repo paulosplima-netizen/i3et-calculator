@@ -190,7 +190,15 @@ CREATE TABLE P19_BatteryModel (
   GravimetricPowerDensity  REAL,
   GravimetricGHGDensity    REAL,
   EnergyGHGDensity         REAL,
-  DsBMd                    TEXT
+  -- How this battery's emissions are obtained. The i3ET decides by the prefix
+  -- of the identifier ("PB..."); here the choice is explicit and follows what
+  -- the data actually supports: 'composition' sums the materials of P20,
+  -- 'gravimetric' multiplies the battery mass by GravimetricGHGDensity,
+  -- 'none' is the row for vehicles without a traction battery.
+  GHGMethod                TEXT NOT NULL DEFAULT 'composition'
+                           CHECK (GHGMethod IN ('composition','gravimetric','none')),
+  DsBMd                    TEXT,
+  CHECK (GHGMethod <> 'gravimetric' OR GravimetricGHGDensity IS NOT NULL)
 );
 
 CREATE TABLE P20_BatteryMaterialShare (

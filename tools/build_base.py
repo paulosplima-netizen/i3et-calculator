@@ -223,6 +223,23 @@ for r in P08:
 note("P08: coluna ExcludedVPT criada; subgrupos excluidos por trem de forca: %s"
      % ({k: (sgname.get(k), v) for k, v in EXCL.items()} or "nenhum"))
 
+# ---- P20 : neutralizar o BMshareGG do IDM 86 -------------------------------
+# O valor original nao e participacao massica: e GravimetricEnergyDensity (kWh/kg)
+# multiplicada por um EF(86) de OUTRA versao (modelos G22 trazem o fator da G24,
+# modelos G23 trazem o da G22). Usa-lo produziria subestimativa de ~5% e, se o
+# fator fosse aplicado de novo pela regra geral, erro de ~13x. A montagem da
+# bateria e calculada pela regra documentada: GC(IDV,5) * EF(86, IDEFV do cenario).
+ORIG86 = {}
+for r in P20n:
+    if r["IDM"] == "86" and (r["BMshareGG"] or 0) > 0:
+        ORIG86[r["IDBMd"]] = r["BMshareGG"]
+        r["BMshareGG"] = 0.0
+if ORIG86:
+    note("P20: BMshareGG do IDM 86 zerado em %d modelos de bateria. O valor original nao era "
+         "participacao massica e trazia um fator de emissao de versao trocada embutido; a "
+         "montagem da bateria passa a ser calculada por GC(IDV,5) * EF(86, IDEFV do cenario). "
+         "Valores originais preservados na aba BMshare86_original." % len(ORIG86))
+
 # ---- D01 : IsUserDefined
 for r in D01:
     r["IsUserDefined"] = 0
@@ -259,6 +276,125 @@ note("D03 original: %d pares (IDV,IDVP) ausentes" % len(faltantes))
 
 ENDOG = [9, 15, 16, 18, 28, 33, 34, 35, 36, 37, 42]
 FH_ORIG = {}
+
+# ------------------------------------------------- sincronizacao com o i3ET
+# Decisao de 20/09/2026: os parametros dos veiculos BP01..BP12 passam a vir das
+# colunas homonimas do i3ET (diretriz D11). A base do simulador descrevia os
+# mesmos nomes com dimensoes e potencias diferentes -- dois instantaneos que se
+# separaram. Ver Documento 1, secao 16.6.
+I3ET = os.path.join(D, "LCA_LV_i3ET_20260919a.xlsx")
+D03_ANTES = {}
+if os.path.exists(I3ET):
+    import openpyxl as _ox
+    _wb = _ox.load_workbook(I3ET, data_only=True, read_only=True)
+    _m2 = {}
+    for _i, _row in enumerate(_wb["M2 GHG Mfg Module"].iter_rows(
+            min_row=1, max_row=80, max_col=210, values_only=True), 1):
+        for _j, _v in enumerate(_row, 1):
+            if _v is not None:
+                _m2[(_i, _j)] = _v
+    _bat = {}
+    for _i, _row in enumerate(_wb["GREET Batteries Material List"].iter_rows(
+            min_row=1, max_row=70, max_col=240, values_only=True), 1):
+        for _j, _v in enumerate(_row, 1):
+            if _v is not None:
+                _bat[(_i, _j)] = _v
+    _wb.close()
+
+    bpcol = {str(v).strip(): c for (r, c), v in _m2.items()
+             if r == 11 and str(v).strip().startswith("BP")}
+    dsv = {r["DsV"]: r["IDV"] for r in D01}
+    SYNC_SKIP = set(ENDOG) | {25, 30, 38, 39, 40, 41, 42}
+    n_mud = n_ig = 0
+    for nome, col in sorted(bpcol.items()):
+        v = dsv.get(nome)
+        if v is None:
+            continue
+        for idvp in range(2, 41):
+            if idvp in SYNC_SKIP:
+                continue
+            val = _m2.get((10 + idvp, col))
+            if val is None:
+                continue
+            antes = gc.get((v, idvp))
+            if idvp == 32:
+                novo = str(val).strip()
+                antes_s = None if antes in (None, "") else str(antes).strip()
+                if novo != antes_s:
+                    D03_ANTES[(v, idvp)] = antes_s; gc[(v, idvp)] = novo; n_mud += 1
+                else:
+                    n_ig += 1
+                continue
+            if not isinstance(val, (int, float)):
+                continue
+            try:
+                antes_f = float(antes)
+            except (TypeError, ValueError):
+                antes_f = None
+            if antes_f is None or abs(antes_f - val) > 1e-9 * max(1.0, abs(val)):
+                D03_ANTES[(v, idvp)] = antes_f; gc[(v, idvp)] = float(val); n_mud += 1
+            else:
+                n_ig += 1
+    note("D03 sincronizada com as colunas BP do i3ET: %d valores alterados, %d ja iguais, "
+         "em %d veiculos. Valores anteriores preservados na aba D03_antes_da_sincronizacao."
+         % (n_mud, n_ig, len(bpcol)))
+
+    # --- modelos de bateria do i3ET usados pelos BP (caminho gravimetrico) ---
+    BCI_ROW = 67          # 'Mass Carbon Intensity', kg CO2e/kg
+    idcol = {str(v).strip(): c for (r, c), v in _bat.items() if r == 4 and v is not None}
+    usados = {str(gc.get((v, 32))).strip() for v in dsv.values()
+              if gc.get((v, 32)) not in (None, "", "-", "NA")}
+    existentes = {r["IDBMd"] for r in P19}
+    tec = {r["IDBTe"] for r in P18}
+    tipos = {r["IDBTy"] for r in P17}
+    novos = []
+    for bmd in sorted(usados - existentes):
+        c = idcol.get(bmd)
+        if c is None:
+            note("ATENCAO: modelo de bateria %s citado pelos veiculos e ausente do i3ET" % bmd)
+            continue
+        f = lambda r: (_bat.get((r, c)) if isinstance(_bat.get((r, c)), (int, float)) else None)
+        bty = str(_bat.get((15, c)) or "").strip()
+        bte = str(_bat.get((16, c)) or "").strip()
+        if bty and bty not in tipos:
+            P17.append({"IDBTy": bty, "DsBTy": bty}); tipos.add(bty)
+        if bte and bte not in tec:
+            P18.append({"IDBTe": bte, "IDBTy": bty, "DsBTe": bte}); tec.add(bte)
+        ed, pd_ = f(6), f(5)
+        P19.append({
+            "IDBMd": bmd, "IDEFV": None,
+            "IDVPT": str(_bat.get((7, c)) or "").strip() or None,
+            "IDBTe": bte or None,
+            "RefRange": f(13), "RefEnergy": f(14), "RefPower": None,
+            "RefWeight": None, "RefGHGIDBMd": None,
+            "EnergyDensity": ed, "PowerDensity": pd_,
+            "GravimetricEnergyDensity": (1 / ed) if ed else None,
+            "GravimetricPowerDensity": (1 / pd_) if pd_ else None,
+            "GravimetricGHGDensity": f(BCI_ROW),
+            "EnergyGHGDensity": None,
+            "DsBMd": "Projeto do Berco ao Portao; emissoes por intensidade de carbono massica",
+        })
+        novos.append((bmd, ed, pd_, f(BCI_ROW)))
+    if novos:
+        note("P19: %d modelos de bateria importados do i3ET: %s"
+             % (len(novos), ", ".join(f"{b} (BCI={x} kg CO2e/kg)" for b, _, _, x in novos)))
+
+# --- metodo de calculo da emissao da bateria, explicito em P19 ---------------
+com_composicao = {r["IDBMd"] for r in P20n if (r.get("BMshareGG") or 0) > 0}
+for r in P19:
+    if r["IDBMd"] == "NA":
+        r["GHGMethod"] = "none"
+    elif r["IDBMd"] in com_composicao:
+        r["GHGMethod"] = "composition"
+    else:
+        r["GHGMethod"] = "gravimetric"
+from collections import Counter as _C
+note("P19: coluna GHGMethod definida -- %s. O i3ET escolhe pelo prefixo 'PB' do identificador; "
+     "aqui a escolha e explicita e segue a existencia de composicao de materiais em P20."
+     % dict(_C(r["GHGMethod"] for r in P19)))
+
+p19 = {r["IDBMd"]: r for r in P19}   # inclui os modelos recem-importados
+
 recalc = {}
 for v in sorted(vpt):
     pt = vpt[v]
@@ -796,7 +932,8 @@ sheet("P17", ["IDBTy","DsBTy"], P17)
 sheet("P18", ["IDBTe","IDBTy","DsBTe"], P18)
 sheet("P19", ["IDBMd","IDEFV","IDVPT","IDBTe","RefRange","RefEnergy","RefPower","RefWeight",
               "RefGHGIDBMd","EnergyDensity","PowerDensity","GravimetricEnergyDensity",
-              "GravimetricPowerDensity","GravimetricGHGDensity","EnergyGHGDensity","DsBMd"], P19)
+              "GravimetricPowerDensity","GravimetricGHGDensity","EnergyGHGDensity",
+              "GHGMethod","DsBMd"], P19)
 sheet("P20", ["IDBMd","IDGG","IDM","BMshareGG"], P20n)
 sheet("P21", ["IDAP","DsAP","IncludedInA","NotesAP"], P21)
 sheet("P22", ["IDAPV","IDAP","IDFuel","EnergyPerVehicle","FuelShare"], P22)
@@ -813,6 +950,15 @@ sheet("D03", ["IDV","IDVP","GC","GCText","IsCalculated"], D03n)
 sheet("C_Schema", ["IDTable","TableName","ChavePrimaria","ColunasDeValor","Equacao"],
       [{"IDTable":t,"TableName":n,"ChavePrimaria":pk,"ColunasDeValor":val,"Equacao":eq}
        for t,n,pk,val,eq in CALC])
+
+sheet("D03_antes_da_sincronizacao", ["IDV","IDVP","ValorAnterior","ValorNovo_i3ET"],
+      [{"IDV": k[0], "IDVP": k[1], "ValorAnterior": v, "ValorNovo_i3ET": gc.get(k)}
+       for k, v in sorted(D03_ANTES.items())])
+
+sheet("BMshare86_original", ["IDBMd","BMshareGG_original","Observacao"],
+      [{"IDBMd": k, "BMshareGG_original": v,
+        "Observacao": "= GravimetricEnergyDensity (kWh/kg) x EF(86) de outra versao; "
+                      "zerado na base, ver Documento 1 secao 16.1"} for k, v in sorted(ORIG86.items())])
 
 sheet("Normalizacao", ["IDTable","Chave","SomaOriginal","FatorAplicado","DesvioOriginal_ppm"], NORM)
 

@@ -449,6 +449,27 @@ A mesma lógica vale para o item de montagem da bateria de chumbo-ácido no grup
 
 > **Regra geral.** Todo `IDM` cuja unidade de `EF` não seja kg CO₂e/kg é um **pseudo-material de processo** e precisa de uma base de aplicação declarada. Essa base passa a ser um campo explícito da tabela de materiais (`P09.EFBasis`), eliminando exceções codificadas.
 
+### 11.5 Dois caminhos para a emissão da bateria
+
+Nem toda bateria tem composição de materiais publicada. O i3ET trata os dois casos com uma condicional sobre o identificador do modelo — se ele começa por `PB`, usa uma intensidade de carbono mássica; caso contrário, soma os materiais. A calculadora adota a mesma regra, mas torna a escolha um **dado** e não uma convenção de nomenclatura, na coluna `P19.GHGMethod`:
+
+| `GHGMethod` | Quando se aplica | Cálculo |
+|---|---|---|
+| `composition` | O modelo tem composição em `P20` | $GHG = \sum_{IDM} MassIDMpGGB_{IDM} \times EF_{IDM,IDEFV}$ |
+| `gravimetric` | O modelo não tem composição, e sim uma intensidade de carbono | $GHG = massa_{bateria} \times GravimetricGHGDensity$ |
+| `none` | `IDBMd = 'NA'`: veículo sem bateria de tração | $GHG = 0$ |
+
+Amarrar a regra ao prefixo do identificador seria frágil: bastaria renomear um modelo para mudar o resultado. Amarrá-la à existência do dado é verificável — e é o que a coluna faz.
+
+**Os dois modelos gravimétricos da base de referência**, importados do i3ET e originários do Projeto do Berço ao Portão:
+
+| `IDBMd` | Trem de força | kg/kWh | kg/kW | Tecnologia | Intensidade (kg CO₂e/kg) |
+|---|---|---|---|---|---|
+| `PBP-BEV-LFP` | BEV | 8,6383 | — | LFP | 11,17856 |
+| `PBP-HEV-NMC811` | HEV | 6,7234 | 0,38660 | NMC811 | 15,5975 |
+
+A reprodução foi verificada nos nove veículos com bateria: massa e emissão coincidem com o i3ET até a precisão da máquina.
+
 ---
 
 ## 12. Etapa 6 — Emissões de GEE dos materiais
@@ -648,6 +669,11 @@ Aplicando a diretriz D11 (prevalece o i3ET), registram-se as seguintes divergên
 | 18 | Montagem | Inexistente | `A` soma os processos 2 a 7 da aba ADR, excluindo `Paint Production` | `P21.IncludedInA`; reprodução exata dos 705,46 kg CO₂e/veículo |
 | 19 | `P16`, grupo `Iaux` | Item com `IDM = 'ND'` e participação 1 | É a montagem da bateria de chumbo-ácido | Reatribuído a `IDM 84`, marcado como `process` |
 
+| 20 | `P20.BMshareGG` do `IDM 86` | Valores entre 1,1 e 2,3, tratados como participação mássica | É `GravimetricEnergyDensity` (kWh/kg) × `EF(86)` — a emissão de montagem por quilo de bateria, com o fator já embutido, e **de versão trocada**: modelos `G22` trazem o fator da `G24`, modelos `G23` trazem o da `G22` | Zerado na base; a montagem da bateria é calculada por `GC(IDV, 5) × EF(86, IDEFV do cenário)`. Valores originais preservados na aba `BMshare86_original` |
+
+| 21 | `D03` × i3ET | Os veículos `BP01`–`BP12` da base do simulador e as colunas homônimas do i3ET divergiam em 12 a 19 dos 33 parâmetros comparáveis: comprimento, largura, altura, aro, potência, tanque, capacidade de bateria | Dois instantâneos que se separaram | `D03` sincronizada a partir do i3ET (§16.6). Valores anteriores na aba `D03_antes_da_sincronizacao` |
+| 22 | Emissão da bateria | Um único caminho, por composição de materiais | Dois caminhos, escolhidos por condicional sobre o prefixo do identificador | Coluna `P19.GHGMethod`, com a escolha ancorada na existência do dado (§11.5) |
+
 ### 16.1 Divergências que exigem decisão sua
 
 As três abaixo **não** foram resolvidas pela regra D11 sem ressalva, porque aplicá-la muda resultados. Foram implementadas conforme o i3ET e estão sinalizadas na aba `Verificacao` do Documento 3.
@@ -666,6 +692,36 @@ Dezesseis das 54 combinações (`IDVMR`, `IDGG`) de `P16` e três das nove de `P
 **Decisão: normalizar.** Cada participação foi dividida pela soma dos itens de papel `material` do seu grupo. Cinquenta grupos foram ajustados; o maior desvio original era de 1 300 ppm, na receita `BISD6`, grupo `C` (motor de tração). Depois da normalização, todas as 54 combinações de `P16` e as nove de `P20` fecham dentro de 10⁻⁶.
 
 O fator aplicado a cada grupo, a soma original e o desvio em ppm ficam registrados na aba **`Normalizacao`** do Documento 3. Nenhum ajuste é silencioso: quem quiser reverter tem o fator exato.
+
+### 16.2.1 A montagem da bateria e o fator embutido
+
+Este caso merece registro detalhado porque a estrutura da base escondia um erro que nenhuma verificação de integridade apanharia.
+
+A coluna `P20.BMshareGG` é, para todo material, uma participação mássica entre 0 e 1. Para o `IDM 86` (Lithium Ion Battery Assembly) ela trazia valores entre 1,1 e 2,3. A explicação está na unidade do fator desse pseudo-material, que é kg CO₂e/**kWh** e não kg CO₂e/kg: o coeficiente converte massa em energia. Mas ele não é o inverso da densidade energética — é esse inverso **já multiplicado por um fator de emissão**:
+
+| Modelo | kWh/kg (`P19`) | `BMshareGG(86)` | razão | corresponde ao `EF(86)` da versão |
+|---|---|---|---|---|
+| `G22-BEV200-NMC111` | 0,13505 | 1,748324 | 12,945751 | `G24` |
+| `G22-BEV200-LFP` | 0,11523 | 1,491739 | 12,945751 | `G24` |
+| `G22-SPHEV20-LFP` | 0,08583 | 1,111134 | 12,945751 | `G24` |
+| `G23-BEV150-NMC111` | 0,15229 | 2,072629 | 13,609752 | `G22` |
+| `G23-BEV200-NMC111` | 0,16033 | 2,182051 | 13,609752 | `G22` |
+| `G23-PHEV50-NMC111` | 0,17126 | 2,330806 | 13,609752 | `G22` |
+
+A razão coincide até a sexta casa decimal, o que não deixa dúvida sobre a composição do número. E a última coluna mostra o problema: **as versões estão trocadas**. Os modelos da versão 2022 carregam o fator de 2024; os de 2023 carregam o de 2022.
+
+Duas consequências, ambas verificadas numericamente com o veículo `IDV 4`:
+
+1. Usar o coeficiente **subestima a montagem da bateria em 5,129%** — 595,5 contra 626,0 kg CO₂e. A diferença é exatamente a razão entre os fatores das duas versões, 1,051291;
+2. Se o programa aplicasse `EF(86)` sobre esse resultado, como a regra genérica de `C07` faria, o total seria 8.104 kg CO₂e — **treze vezes** o correto, porque o fator entraria duas vezes.
+
+**Regra adotada.** O `BMshareGG` do `IDM 86` foi zerado na base, e a emissão de montagem da bateria é calculada pela regra que a documentação já previa:
+
+$$GHG_{86} = GC(IDV, 5) \times EF_{86,IDEFV}$$
+
+com o `IDEFV` do cenário. Isso mantém a versão consistente com o resto do cálculo e elimina a possibilidade de dupla contagem. Os valores originais ficam preservados na aba `BMshare86_original` do Documento 3, para auditoria.
+
+**Lição de projeto.** Um número pré-calculado guardado numa coluna cuja semântica é outra não é detectável por chave, por tipo nem por restrição — só por conferência dimensional. É a razão pela qual `P09.EFBasis` e `P09.ShareRole` existem: eles tornam explícito o que cada valor é, e é isso que permitiu encontrar este caso.
 
 ### 16.3 Efeito das decisões sobre a massa
 
@@ -728,6 +784,27 @@ Por isso:
 2. A aba `CoberturaEF` do Documento 3 lista todos os casos, por versão;
 3. O relatório exportado traz uma **seção de cobertura**, com a massa total cujo fator é nulo em cada cenário;
 4. A interface exibe esse percentual junto ao total — um resultado com 8% da massa sem fator não pode ser apresentado como se fosse completo.
+
+---
+
+## 16.6 Sincronização dos veículos de referência com o i3ET
+
+Ao extrair as configurações do i3ET para os testes, descobriu-se que os doze veículos `BP01`–`BP12` existem **nos dois lugares** — o mapeamento que se supunha inexistente é a identidade — e que os parâmetros divergem substancialmente:
+
+| Parâmetro divergente | Nº de veículos |
+|---|---|
+| Comprimento, largura, altura | 10 |
+| Aro da roda | 9 |
+| Potência do motor a combustão | 9 |
+| Arranque elétrico | 9 |
+
+Os parâmetros endógenos divergiam em todos os doze, mas por consequência: derivam das dimensões.
+
+**Decisão: sincronizar a partir do i3ET**, conforme a diretriz D11. Foram alterados **104 valores** e confirmados 184 já iguais. Os anteriores ficam na aba `D03_antes_da_sincronizacao` do Documento 3, com o valor antigo e o novo lado a lado.
+
+A sincronização trouxe consigo dois modelos de bateria que a base não tinha — `PBP-BEV-LFP` e `PBP-HEV-NMC811` — e com eles o segundo caminho de cálculo descrito em §11.5.
+
+**Verificação após a sincronização:** 276 parâmetros exógenos conferem com o i3ET sem uma única diferença; a massa da bateria e a emissão pelo caminho gravimétrico coincidem nos nove veículos até a precisão da máquina.
 
 ---
 
