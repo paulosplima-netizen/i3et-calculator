@@ -64,6 +64,11 @@ def calculate(base, *, log: Log | None = None) -> dict:
         vehicle = d01.loc[idv]
         rows = d03[d03["IDV"] == idv]
         gc = {int(r["IDVP"]): float(r["GC"] or 0.0) for _, r in rows.iterrows()}
+        # D03.IsCalculated = 0 num parametro endogeno significa que o valor foi
+        # informado, e valor informado nao e desfeito pela equacao (Documento 1,
+        # secao 10.4). E a mesma regra que a validacao contra o i3ET aplica.
+        supplied = {int(r["IDVP"]) for _, r in rows.iterrows()
+                    if not int(r["IsCalculated"] or 0)}
         battery_id = None
         hit = rows[rows["IDVP"] == 32]
         if len(hit):
@@ -72,5 +77,5 @@ def calculate(base, *, log: Log | None = None) -> dict:
             base, gc, powertrain=vehicle["IDVPT"], battery_id=battery_id,
             idmpv=int(cen["IDMPV"]), idvmr=cen["IDVMR"], idefv=cen["IDEFV"],
             idapv=cen["IDAPV"], boundary=cen["Boundary"],
-            ef_table=ef_table, log=log)
+            ef_table=ef_table, supplied=supplied, log=log)
     return results

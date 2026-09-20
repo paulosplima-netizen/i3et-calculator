@@ -227,6 +227,12 @@ duas, mostra a procedência de `P15.DsVMR` ao lado de cada uma e traz
 pré-selecionada a que o i3ET usa para aquele veículo. Trocar a receita muda o
 resultado, então a escolha aparece na *version bar* e em toda exportação.
 
+**Estrutura.** `app.py` declara a navegação e nada mais; cada tela é um script
+em `pages/`, na ordem em que a análise acontece. O estado do projeto e os
+componentes compartilhados ficam em `ui/`, que importa `core` — nunca o
+contrário. Os gráficos da tela saem do mesmo `core/charts.py` que desenha o
+relatório exportado, de modo que tela e arquivo não possam divergir.
+
 Elementos presentes em todas as telas:
 
 - **Version bar** no alto: as quatro versões em uso e a fronteira selecionada, sempre visíveis; versões criadas pelo usuário aparecem marcadas;
@@ -412,6 +418,7 @@ Os números são exportados com a precisão completa do `float64`. Arredondament
 | Aderência (emissões) | Fluidos, baterias e materiais, onde a massa já coincide | `tests/test_ghg_reference.py` |
 | Borda | Veículo sem bateria, `GC = 0`, `Beta = 0`, receita incompleta, `EF` ausente | `tests/test_edge_cases.py` |
 | Saídas | Tabelas `R`, reconciliação com os totais, XLSX, CSV, HTML e os gráficos | `tests/test_report.py` |
+| Telas | Cada tela abre com e sem projeto, e as ações que gravam fazem o que dizem | `tests/test_app.py` |
 
 Os testes de aderência separam massa de emissões de propósito. A massa é o
 módulo M1: 39 configurações exatas, 28 explicadas pelo fator de leveza (M5, fora

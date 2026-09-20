@@ -17,7 +17,7 @@ This repository carries three different licences. Please read before reusing any
 
 | Layer | Path | Licence |
 |---|---|---|
-| Code | `core/`, `app.py`, `tools/`, `tests/` | **MIT** — see `LICENSE` |
+| Code | `core/`, `ui/`, `pages/`, `app.py`, `tools/`, `tests/` | **MIT** — see `LICENSE` |
 | Documentation | `docs/` | **CC BY 4.0** — see `docs/LICENSE` |
 | Data | `data/` | **Not open.** GREET-derived factors are restricted to **non-commercial use** — see `data/NOTICE.md` |
 
@@ -72,19 +72,23 @@ invariant blocks export.
 
 ## Status
 
-Under development. The reference database is built and validated, and the calculation
-core reproduces the i3ET: mass on all 72 configurations of the spreadsheet (39 exact,
-33 explained by a module that is out of scope), and cradle-to-gate emissions on the
-twelve project vehicles. The web interface is next.
+Under development. The reference database is built and validated, the calculation
+core reproduces the i3ET — mass on all 72 configurations of the spreadsheet (39 exact,
+33 explained by a module that is out of scope) and cradle-to-gate emissions on the
+twelve project vehicles — and the seven screens of the web interface run. What is
+left is publication.
 
 ## Running it
 
 ```
 python -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 
+streamlit run app.py                 # the web interface, seven screens
+
 python -m pytest -q                  # the test suite
 python tools/validate_core.py        # the acceptance table against the i3ET
 python tools/report_divergences.py   # regenerates docs/05
+python tools/export_results.py       # XLSX, CSV, HTML and PDF into saidas/
 ```
 
 The same three commands run on every push, in `.github/workflows/tests.yml`.

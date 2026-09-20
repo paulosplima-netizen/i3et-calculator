@@ -223,3 +223,97 @@ def top_series(rows: list[tuple[str, dict]], *, limite: int = SERIES_SLOTS,
                                if k not in mantidas)
         novas.append((rotulo, v))
     return novas, [*mantidas, rotulo_outros]
+
+
+# --- cascata ---------------------------------------------------------------
+# Documento 4, tela 5. A cascata responde "de onde vem o total": cada coluna e
+# uma parcela, apoiada no topo da anterior, e a ultima coluna e o total,
+# ancorada na base. Uma so cor para as parcelas -- elas sao a mesma coisa vista
+# por partes -- e um cinza de chrome para o total, que nao e uma parcela.
+
+WF_WIDTH = 760
+WF_PLOT = 260
+WF_PAD_TOP = 26
+WF_PAD_BOTTOM = 56
+
+
+def waterfall(passos: list[tuple[str, float]], *, total_rotulo: str,
+              unidade: str, titulo: str = "", casas: int = 0) -> str:
+    """Parcelas empilhadas no tempo, e o total ao final."""
+    passos = [(r, float(v)) for r, v in passos if abs(float(v)) > 0]
+    if not passos:
+        return ""
+    total = sum(v for _, v in passos)
+    ticks = _nice_ticks(max(total, max(v for _, v in passos)))
+    topo = ticks[-1]
+    altura = WF_PAD_TOP + WF_PLOT + WF_PAD_BOTTOM
+    esquerda = 52
+    largura_util = WF_WIDTH - esquerda - 12
+    n = len(passos) + 1
+    passo_x = largura_util / n
+    barra = min(passo_x * 0.62, 46)
+
+    def y(v: float) -> float:
+        return WF_PAD_TOP + WF_PLOT * (1 - v / topo)
+
+    partes = []
+    for t in ticks:
+        yy = y(t)
+        partes.append(f'<line class="grid" x1="{esquerda}" y1="{yy:.2f}" '
+                      f'x2="{WF_WIDTH - 12}" y2="{yy:.2f}"/>')
+        partes.append(f'<text class="tick" x="{esquerda - 8}" y="{yy + 3:.2f}" '
+                      f'text-anchor="end">{_esc(_fmt(t))}</text>')
+
+    acumulado = 0.0
+    for i, (rotulo, valor) in enumerate(passos):
+        x = esquerda + passo_x * i + (passo_x - barra) / 2
+        y_topo = y(acumulado + valor)
+        h = max(WF_PLOT * valor / topo, 1.0)
+        partes.append(
+            f'<g class="mark">'
+            f'<title>{_esc(rotulo)}: {_esc(_fmt(valor, casas))} {_esc(unidade)}</title>'
+            f'<path class="barra" d="{_rounded_top(x, y_topo, barra, h, RADIUS)}"/>'
+            f'<text class="valor" x="{x + barra / 2:.2f}" y="{y_topo - 6:.2f}" '
+            f'text-anchor="middle">{_esc(_fmt(valor, casas))}</text>'
+            f'<text class="rotulo" x="{x + barra / 2:.2f}" '
+            f'y="{WF_PAD_TOP + WF_PLOT + 16:.2f}" text-anchor="middle">'
+            f'{_esc(rotulo)}</text></g>')
+        if i < len(passos) - 1:
+            partes.append(
+                f'<line class="ligacao" x1="{x + barra:.2f}" y1="{y_topo:.2f}" '
+                f'x2="{x + passo_x:.2f}" y2="{y_topo:.2f}"/>')
+        acumulado += valor
+
+    x = esquerda + passo_x * len(passos) + (passo_x - barra) / 2
+    y_topo = y(total)
+    partes.append(
+        f'<g class="mark">'
+        f'<title>{_esc(total_rotulo)}: {_esc(_fmt(total, casas))} {_esc(unidade)}</title>'
+        f'<path class="total" d="'
+        f'{_rounded_top(x, y_topo, barra, WF_PLOT * total / topo, RADIUS)}"/>'
+        f'<text class="valor" x="{x + barra / 2:.2f}" y="{y_topo - 6:.2f}" '
+        f'text-anchor="middle">{_esc(_fmt(total, casas))}</text>'
+        f'<text class="rotulo" x="{x + barra / 2:.2f}" '
+        f'y="{WF_PAD_TOP + WF_PLOT + 16:.2f}" text-anchor="middle">'
+        f'{_esc(total_rotulo)}</text></g>')
+
+    partes.append(f'<line class="eixo" x1="{esquerda}" '
+                  f'y1="{WF_PAD_TOP + WF_PLOT:.2f}" x2="{WF_WIDTH - 12}" '
+                  f'y2="{WF_PAD_TOP + WF_PLOT:.2f}"/>')
+    partes.append(f'<text class="unidade" x="{esquerda}" y="{altura - 8}">'
+                  f'{_esc(unidade)}</text>')
+    return (f'<svg class="grafico" viewBox="0 0 {WF_WIDTH} {altura:.0f}" '
+            f'role="img" aria-label="{_esc(titulo)}" '
+            f'preserveAspectRatio="xMidYMid meet">'
+            + (f"<title>{_esc(titulo)}</title>" if titulo else "")
+            + "".join(partes) + "</svg>")
+
+
+def _rounded_top(x: float, y: float, w: float, h: float, r: float) -> str:
+    """Uma coluna apoiada na base, arredondada so no topo -- o lado do valor."""
+    r = max(0.0, min(r, w / 2, h))
+    return (f"M{x:.2f},{y + h:.2f} V{y + r:.2f} "
+            f"A{r:.2f},{r:.2f} 0 0 1 {x + r:.2f},{y:.2f} "
+            f"H{x + w - r:.2f} "
+            f"A{r:.2f},{r:.2f} 0 0 1 {x + w:.2f},{y + r:.2f} "
+            f"V{y + h:.2f} Z")

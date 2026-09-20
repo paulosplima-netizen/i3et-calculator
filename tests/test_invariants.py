@@ -118,3 +118,23 @@ def test_every_factor_declares_its_provenance(base):
     """The Argonne terms require saying that the data was processed."""
     notes = base["P11"]["EFnotes"]
     assert notes.notna().all() and (notes.str.len() > 0).all()
+
+
+def test_every_dimensioning_parameter_is_actually_computed(base):
+    """Um parametro que dimensiona um subgrupo tem de ter valor.
+
+    Se um IDVP endogeno dimensiona um subgrupo e ninguem o calcula, aquele
+    subgrupo pesa zero em todos os veiculos, em silencio -- que e exatamente o
+    que aconteceu com o tanque de combustivel e com o grupo dos fluidos. O
+    IDVP 30 e declarado endogeno em P07, nao tem equacao implementada e nao
+    dimensiona nada: inerte, e este teste garante que continue assim.
+    """
+    from core import params as P
+
+    usados = set(base["P08"]["IDVP"])
+    endogenos = set(base["P07"].loc[base["P07"]["ParamClass"] == "End", "IDVP"])
+    calculados = set(P.ENDOGENOUS)
+    orfaos = sorted((usados & endogenos) - calculados)
+    assert not orfaos, (
+        "parametros endogenos que dimensionam subgrupos e ninguem calcula: "
+        f"{orfaos}")
