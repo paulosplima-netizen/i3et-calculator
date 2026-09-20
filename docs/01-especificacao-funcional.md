@@ -121,6 +121,14 @@ A fronteira "berço ao portão da montadora" compreende:
 | Descarte e reciclagem (DR) | Fora — é o "portão ao túmulo" |
 | Transporte do veículo pronto até o cliente | Fora — não modelado no i3ET |
 | Leveza (*lightweighting*) | Fora da v1 — ver §15.3 |
+| Veículos a célula a combustível (`FCV`) | Fora da v1 — decisão de 20/09/2026 |
+
+**Célula a combustível.** Os `FCV` têm massa no i3ET, mas nenhuma receita de
+materiais: as famílias `BISD` e `PBP_BISD` não trazem coluna para esse trem de
+força, e o grupo `H` (sistema auxiliar da célula) fica sem composição. Calcular
+massa sem emissões seria oferecer meia resposta, então a v1 não os inclui. A
+divergência do módulo híbrido em `FCV`, registrada no Documento 5, continua
+valendo para quando forem incorporados.
 
 ### 3.3 Unidade funcional
 

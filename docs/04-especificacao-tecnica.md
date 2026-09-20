@@ -219,6 +219,14 @@ Sete telas, na ordem em que a análise acontece. Cada uma corresponde a um capí
 | 6 | **Emission factors** | Consulta as versões da base e permite criar versões próprias (`D04`/`D05`), herdando de uma versão existente e alterando apenas os materiais desejados | §16.4 |
 | 7 | **Export** | Botão único **"Generate and export all tables"**; escolha entre XLSX e CSV | §6 deste documento |
 
+**A receita de materiais é escolha do usuário** (decisão de 20/09/2026). A base
+traz as duas famílias que o i3ET traz — a receita original de consultoria
+(`BISD*`) e a do Projeto do Berço ao Portão (`PBP_BISD*`), construída sobre a
+primeira com informação das montadoras brasileiras. A tela **Scenario** lista as
+duas, mostra a procedência de `P15.DsVMR` ao lado de cada uma e traz
+pré-selecionada a que o i3ET usa para aquele veículo. Trocar a receita muda o
+resultado, então a escolha aparece na *version bar* e em toda exportação.
+
 Elementos presentes em todas as telas:
 
 - **Version bar** no alto: as quatro versões em uso e a fronteira selecionada, sempre visíveis; versões criadas pelo usuário aparecem marcadas;
@@ -412,6 +420,8 @@ A aceitação do cálculo é um comando, não a lembrança de ter conferido.
 ### 7.3 Teste de suficiência da documentação
 
 Conforme §17.3 do Documento 1: implementar o núcleo apenas a partir destes quatro documentos e comparar com o i3ET. Toda lacuna volta para a documentação.
+
+**Quando.** Depois do aplicativo pronto (decisão de 20/09/2026). Fazê-lo agora mediria uma documentação que ainda vai mudar; o valor do teste está em aplicá-lo à versão que será publicada.
 
 ---
 
