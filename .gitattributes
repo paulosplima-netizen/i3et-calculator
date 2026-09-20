@@ -1,0 +1,18 @@
+# Line endings: normalise to LF everywhere, in the repository and in the working
+# tree. This project is worked on from more than one machine; without this, the
+# same file would show as modified just for having been opened on Windows.
+* text=auto eol=lf
+
+# Binary files: never normalise, never diff as text.
+*.sqlite binary
+*.xlsx   binary
+*.xlsm   binary
+*.docx   binary
+*.pptx   binary
+*.pdf    binary
+*.png    binary
+*.jpg    binary
+
+# Data files: keep them as text so the history is readable line by line, which
+# is the reason the base is versioned as CSV and not only as a database file.
+*.csv text eol=lf
