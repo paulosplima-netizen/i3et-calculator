@@ -72,8 +72,24 @@ invariant blocks export.
 
 ## Status
 
-Under development. Current state: reference database built and validated; calculation
-core in progress.
+Under development. The reference database is built and validated, and the calculation
+core reproduces the i3ET: mass on all 72 configurations of the spreadsheet (39 exact,
+33 explained by a module that is out of scope), and cradle-to-gate emissions on the
+twelve project vehicles. The web interface is next.
+
+## Running it
+
+```
+python -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+
+python -m pytest -q                  # the test suite
+python tools/validate_core.py        # the acceptance table against the i3ET
+python tools/report_divergences.py   # regenerates docs/05
+```
+
+The same three commands run on every push, in `.github/workflows/tests.yml`.
+`data/csv/` carries the whole reference base as CSV, and `data/base_referencia.sqlite`
+opens in any SQLite viewer — neither needs Python to be read.
 
 ## Documentation
 

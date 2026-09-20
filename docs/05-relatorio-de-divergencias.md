@@ -133,7 +133,7 @@ A importação também restaurou 36 participações não nulas que a base arredo
 
 Uma delas não é pequena no resultado: **a platina** do catalisador. Com o fator da versão BR23, de 69.670 kg CO₂e/kg, a participação de 2 × 10⁻⁵ vale 265 kg CO₂e em `BP01` e 152 kg em `BP07` — de 3% a 6% do veículo, vindos de um número arredondado para zero. É o caso exemplar do princípio da diretriz **D13**: numa tabela de fatores com cinco ordens de grandeza de amplitude, não existe participação desprezível a priori.
 
-*A verificar no i3ET:* a platina tem fator **126,5** kg CO₂e/kg nas versões G22, G23 e G24 e **69.670** na BR23 — 550 vezes maior. Uma das duas está errada, e a diferença decide alguns pontos percentuais do resultado de qualquer veículo com catalisador.
+*Discrepância conhecida e mantida:* a platina tem fator **126,5** kg CO₂e/kg nas versões G22, G23 e G24 e **69.670** na BR23 — 550 vezes maior. A diferença decide alguns pontos percentuais do resultado de qualquer veículo com catalisador. **Decisão de 20/09/2026: manter como está**, por ser discrepância já conhecida na tabela de fatores. A calculadora usa o fator da versão que o cenário escolher, e a escolha fica visível no resultado.
 
 ### 7.3 Onde isso deixou a aderência
 
@@ -154,13 +154,15 @@ Uma delas não é pequena no resultado: **a platina** do catalisador. Com o fato
 
 Os `ICEV` e os `BEV` reproduzem o i3ET na precisão da máquina. O resíduo de 3 × 10⁻⁵ dos híbridos vem de uma decisão declarada: algumas colunas do i3ET fecham a soma do grupo com um resíduo **negativo** na linha `Others`, da ordem de 1 × 10⁻⁴. Participação mássica negativa não existe; essas oito linhas entram como zero e a normalização redistribui a diferença.
 
-**Ajuste sugerido no i3ET:** substituir o resíduo negativo de fechamento por um ajuste distribuído, ou aceitar que a soma do grupo não feche exatamente em 1 e registrar isso. Uma participação negativa num vetor de frações mássicas é um artifício de planilha que não sobrevive à passagem para um modelo relacional.
+**Decisão de 20/09/2026: normalizar.** Uma participação negativa num vetor de frações mássicas é um artifício de planilha que não sobrevive à passagem para um modelo relacional — o invariante I1 existe justamente para impedir que ele passe despercebido. As oito linhas entram como zero, a normalização redistribui, e o resíduo de 3 × 10⁻⁵ nos híbridos é o preço declarado dessa decisão.
 
 ## 8. Conclusão
 
 **Toda diferença material está explicada.** Nenhuma decorre de erro de cálculo da calculadora: elas vêm de um módulo fora do escopo desta versão (leveza) e de uma inconsistência identificada na lista de exclusão do módulo híbrido do i3ET.
 
-Os **doze veículos de referência `BP01`–`BP12` reproduzem o i3ET na precisão da máquina**, com erro relativo entre 0 e 2,6 × 10⁻¹⁶.
+Os **doze veículos de referência `BP01`–`BP12` reproduzem o i3ET em massa na precisão da máquina**, com erro relativo entre 0 e 2,6 × 10⁻¹⁶.
+
+Em **emissões**, os mesmos doze veículos também reproduzem o i3ET: a maior diferença relativa é de 3e-05, e vem de uma decisão declarada — a normalização das participações negativas (§7.3). Fluidos, bateria de tração e bateria auxiliar coincidem exatamente.
 
 ---
 

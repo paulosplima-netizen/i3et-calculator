@@ -283,10 +283,13 @@ def _secao_emissoes(w, ghg):
       "princípio da diretriz **D13**: numa tabela de fatores com cinco ordens de "
       "grandeza de amplitude, não existe participação desprezível a priori.")
     w("")
-    w("*A verificar no i3ET:* a platina tem fator **126,5** kg CO₂e/kg nas "
-      "versões G22, G23 e G24 e **69.670** na BR23 — 550 vezes maior. Uma das "
-      "duas está errada, e a diferença decide alguns pontos percentuais do "
-      "resultado de qualquer veículo com catalisador.")
+    w("*Discrepância conhecida e mantida:* a platina tem fator **126,5** kg "
+      "CO₂e/kg nas versões G22, G23 e G24 e **69.670** na BR23 — 550 vezes "
+      "maior. A diferença decide alguns pontos percentuais do resultado de "
+      "qualquer veículo com catalisador. **Decisão de 20/09/2026: manter como "
+      "está**, por ser discrepância já conhecida na tabela de fatores. A "
+      "calculadora usa o fator da versão que o cenário escolher, e a escolha "
+      "fica visível no resultado.")
     w("")
     w("### 7.3 Onde isso deixou a aderência")
     w("")
@@ -304,11 +307,12 @@ def _secao_emissoes(w, ghg):
       "essas oito linhas entram como zero e a normalização redistribui a "
       "diferença.")
     w("")
-    w("**Ajuste sugerido no i3ET:** substituir o resíduo negativo de fechamento "
-      "por um ajuste distribuído, ou aceitar que a soma do grupo não feche "
-      "exatamente em 1 e registrar isso. Uma participação negativa num vetor de "
-      "frações mássicas é um artifício de planilha que não sobrevive à "
-      "passagem para um modelo relacional.")
+    w("**Decisão de 20/09/2026: normalizar.** Uma participação negativa num "
+      "vetor de frações mássicas é um artifício de planilha que não sobrevive à "
+      "passagem para um modelo relacional — o invariante I1 existe justamente "
+      "para impedir que ele passe despercebido. As oito linhas entram como "
+      "zero, a normalização redistribui, e o resíduo de 3 × 10⁻⁵ nos híbridos é "
+      "o preço declarado dessa decisão.")
     w("")
 
 
@@ -417,8 +421,16 @@ def write_report(findings, fx, path, ghg=None):
         w(f"Restam **{len(por_causa['a investigar'])} configurações** sem explicação, "
           "listadas em §4. Nenhuma conclusão deve ser tirada antes de analisá-las.")
     w("")
-    w("Os **doze veículos de referência `BP01`–`BP12` reproduzem o i3ET na precisão "
-      "da máquina**, com erro relativo entre 0 e 2,6 × 10⁻¹⁶.")
+    w("Os **doze veículos de referência `BP01`–`BP12` reproduzem o i3ET em massa "
+      "na precisão da máquina**, com erro relativo entre 0 e 2,6 × 10⁻¹⁶.")
+    if ghg:
+        pior = max(abs(g["carro_nossa"] - g["carro_i3et"]) / g["carro_i3et"]
+                   for g in ghg if g["carro_i3et"])
+        w("")
+        w("Em **emissões**, os mesmos doze veículos também reproduzem o i3ET: "
+          f"a maior diferença relativa é de {pior:.0e}, e vem de uma decisão "
+          "declarada — a normalização das participações negativas (§7.3). "
+          "Fluidos, bateria de tração e bateria auxiliar coincidem exatamente.")
     w("")
     w("---")
     w("")
