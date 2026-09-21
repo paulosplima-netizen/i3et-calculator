@@ -9,4 +9,4 @@ See docs/01-especificacao-funcional.md for the equations and
 docs/02-dicionario-de-dados.md for the data model.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.9.0"

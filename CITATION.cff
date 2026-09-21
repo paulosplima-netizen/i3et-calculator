@@ -1,0 +1,29 @@
+# Como citar esta calculadora. O GitHub le este arquivo e oferece o botao
+# "Cite this repository"; o Zenodo usa o .zenodo.json, que traz os mesmos dados.
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "i3ET Calculator: Light Vehicle Cradle-to-Gate Carbon Footprint"
+type: software
+version: 0.9.0
+date-released: 2026-09-21
+authors:
+  - family-names: Lima
+    given-names: Paulo Sergio Pinheiro
+    orcid: "https://orcid.org/0009-0002-7474-6342"
+    affiliation: "Núcleo Interdisciplinar de Planejamento Energético (NIPE), Universidade Estadual de Campinas (UNICAMP)"
+repository-code: "https://github.com/paulosplima-netizen/i3et-calculator"
+license: MIT
+abstract: >-
+  Mass and cradle-to-gate greenhouse gas emissions of light passenger
+  vehicles, reimplementing modules M1 and M2 of the i3ET model as an
+  auditable, testable program with a web interface. kg CO2e, GWP-100,
+  IPCC AR6. Code under MIT; documentation under CC BY 4.0; GREET-derived
+  data for non-commercial use only (see data/NOTICE.md).
+keywords:
+  - life cycle assessment
+  - cradle to gate
+  - carbon footprint
+  - light vehicles
+  - electric vehicles
+  - GREET
+  - i3ET

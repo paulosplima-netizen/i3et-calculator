@@ -111,6 +111,16 @@ The specification is written to be sufficient on its own: someone should be able
 rebuild this program from `docs/` alone, without reading the source. That claim is
 tested, not assumed.
 
+## How to cite
+
+Lima, P. S. P. (2026). *i3ET Calculator: Light Vehicle Cradle-to-Gate Carbon
+Footprint* (version 0.9.0). NIPE/UNICAMP.
+https://github.com/paulosplima-netizen/i3et-calculator
+
+The citation metadata live in `CITATION.cff` (GitHub's *Cite this repository*)
+and `.zenodo.json` (the archived record and its DOI). Each release on GitHub is
+archived by Zenodo with its own DOI.
+
 ## Data sources
 
 - **GREET** (Argonne National Laboratory), versions 2022, 2023 and 2024 — material
