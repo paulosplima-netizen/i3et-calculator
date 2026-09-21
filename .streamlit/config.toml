@@ -1,0 +1,19 @@
+# Configuracao do aplicativo -- vale localmente e no Streamlit Community Cloud.
+
+[theme]
+# O azul da paleta categorica validada (slot 1), a mesma dos graficos. Sem isso
+# os controles saem no vermelho padrao do Streamlit, que nesta interface e a cor
+# de "erro de validacao" -- um botao de radio nao deveria parecer um alarme.
+primaryColor = "#2a78d6"
+font = "sans serif"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+# Um projeto pesa cerca de 1 MB. O limite protege o servidor gratuito de um
+# arquivo que nao e projeto nenhum.
+maxUploadSize = 50
+
+[client]
+toolbarMode = "minimal"

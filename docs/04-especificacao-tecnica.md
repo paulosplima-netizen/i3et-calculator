@@ -466,8 +466,26 @@ Conforme §17.3 do Documento 1: implementar o núcleo apenas a partir destes qua
 3. requirements.txt com versoes fixadas
 4. Streamlit Community Cloud apontando para app.py na branch main
 5. cada push na main republica a aplicacao
-6. tags de versao (v1.0.0, ...) e DOI via Zenodo para citacao academica
+6. tags de versao e DOI via Zenodo para citacao academica
 ```
+
+**Configuração no Streamlit Community Cloud.** Repositório
+`paulosplima-netizen/i3et-calculator`, *branch* `main`, arquivo principal
+`app.py`, Python **3.12** — a mesma versão da integração contínua, escolhida em
+*Advanced settings*. O tema e os limites do servidor ficam em
+`.streamlit/config.toml`, versionado junto com o código.
+
+**`packages.txt` contém apenas nomes de pacote**, um por linha, sem
+comentários: o arquivo é passado ao `apt-get` da imagem Debian 11 (*bullseye*)
+do Community Cloud, e a documentação da plataforma não garante que linhas de
+comentário sejam ignoradas. Os quatro pacotes são os que o WeasyPrint 63 pede
+(Pango e HarfBuzz) mais uma família de fontes para o PDF. Se falharem, o
+cálculo e o HTML não são afetados.
+
+**Versão e DOI.** A primeira *release* registra o DOI. Ela é anterior a `1.0.0`
+de propósito: o teste de suficiência da documentação (§7.3), critério de
+aceitação da diretriz D3, fica para depois do aplicativo pronto. A `1.0.0` é a
+versão que passa nele.
 
 **O repositório é público desde o início.** A decisão não é apenas de conveniência: um repositório público torna verificável a afirmação central do projeto — que a calculadora reproduz o i3ET. Qualquer pessoa pode clonar, rodar os testes de aderência e conferir. Em um repositório privado, a transparência prometida pela diretriz D3 seria uma declaração, não um fato comprovável.
 
@@ -486,7 +504,8 @@ Três cuidados que a abertura impõe:
 | Licenciamento | **resolvido** — três licenças, ver §8.2.1 |
 | Redistribuição dos fatores GREET | **resolvida** — permitida para uso não comercial, sob as quatro condições do §18.3 do Documento 1 |
 | Fatores do Projeto Berço ao Portão (FGV/Unicamp — Fundep/Move) | a incorporar como versões `IDEFV` adicionais |
-| DOI (Zenodo) para citação | recomendado |
+| Conta no Streamlit Community Cloud | **resolvida** — entrada pelo GitHub |
+| DOI (Zenodo) para citação | **em andamento** — conta vinculada ao GitHub, repositório listado |
 
 ### 8.2.1 Licenciamento em três camadas
 
