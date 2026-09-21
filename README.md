@@ -1,5 +1,7 @@
 # i3ET Calculator
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22867012.svg)](https://doi.org/10.5281/zenodo.22867012)
+
 **Light Vehicle Cradle-to-Gate Carbon Footprint**
 
 A calculator for the mass and the cradle-to-gate greenhouse gas emissions of light
@@ -114,12 +116,17 @@ tested, not assumed.
 ## How to cite
 
 Lima, P. S. P. (2026). *i3ET Calculator: Light Vehicle Cradle-to-Gate Carbon
-Footprint* (version 0.9.0). NIPE/UNICAMP.
-https://github.com/paulosplima-netizen/i3et-calculator
+Footprint* (version 0.9.0) [Software]. Zenodo.
+https://doi.org/10.5281/zenodo.22867013
+
+Cite the version you used: each release on GitHub is archived by Zenodo with its
+own DOI, so a result can always be traced to the exact code that produced it.
+To refer to the calculator in general, whatever the version, use the concept DOI
+[10.5281/zenodo.22867012](https://doi.org/10.5281/zenodo.22867012), which always
+resolves to the latest release.
 
 The citation metadata live in `CITATION.cff` (GitHub's *Cite this repository*)
-and `.zenodo.json` (the archived record and its DOI). Each release on GitHub is
-archived by Zenodo with its own DOI.
+and `.zenodo.json` (what Zenodo reads for every release).
 
 ## Data sources
 

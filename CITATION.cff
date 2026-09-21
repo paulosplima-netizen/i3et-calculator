@@ -12,6 +12,16 @@ authors:
     orcid: "https://orcid.org/0009-0002-7474-6342"
     affiliation: "Núcleo Interdisciplinar de Planejamento Energético (NIPE), Universidade Estadual de Campinas (UNICAMP)"
 repository-code: "https://github.com/paulosplima-netizen/i3et-calculator"
+# DOI conceito: resolve sempre para a versao mais recente. O DOI desta versao
+# vai em identifiers, para quem precisa citar exatamente o codigo que usou.
+doi: 10.5281/zenodo.22867012
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22867013
+    description: "Version 0.9.0"
+  - type: doi
+    value: 10.5281/zenodo.22867012
+    description: "All versions (concept DOI)"
 license: MIT
 abstract: >-
   Mass and cradle-to-gate greenhouse gas emissions of light passenger
