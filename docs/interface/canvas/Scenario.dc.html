@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scenario</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&amp;family=Source+Code+Pro&amp;display=swap">
+<style>
+body{margin:0;font-family:"Source Sans Pro","Source Sans 3",sans-serif;color:#31333f;background:#ffffff}
+a{color:#2a78d6}a:hover{color:#1d5fae}
+code{font-family:"Source Code Pro",monospace;font-size:12px;color:#09ab3b;background:#f8f9fb;padding:1px 4px;border-radius:4px}
+table.df{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.df th{background:#f8f9fb;color:rgba(49,51,63,0.6);font-weight:400;text-align:left;height:35px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap}
+table.df td{height:34px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+table.df td.n{text-align:right}
+table.df td.none{color:rgba(49,51,63,0.4)}
+svg.grafico{width:100%;height:auto;display:block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+svg .grid{stroke:rgba(128,128,128,0.25);stroke-width:1}
+svg .eixo{stroke:rgba(128,128,128,0.55);stroke-width:1}
+svg .ligacao{stroke:rgba(128,128,128,0.55);stroke-width:1;stroke-dasharray:3 3}
+svg .barra{fill:#2a78d6}
+svg .total{fill:#52514e}
+svg .rotulo,svg .legenda{fill:#31333f;opacity:0.75;font-size:12px}
+svg .valor,svg .tick,svg .unidade{fill:#31333f;opacity:0.8;font-size:11px;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1936px; display: flex; background: #ffffff; overflow: hidden;">
+<nav aria-label="Pages" style="width: 336px; flex-shrink: 0; background: #f0f2f6;">
+<dc-import name="Sidebar" active="Scenario" hint-size="336px,900px"></dc-import>
+</nav>
+<main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 96px 80px 96px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h1 style="margin: 0; padding: 0; font-size: 44px; line-height: 1.2; font-weight: 700; color: #31333f;">Scenario</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Specified in docs/01-especificacao-funcional.md, §3 and §6</p>
+<dc-import name="VersionBar" hint-size="944px,84px"></dc-import>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #31333f;">Two results are comparable only if the versions behind them are stated. That is why they are a choice, and why they travel with every exported table.</p>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Vehicle</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>BP01</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+<div style="display: flex; gap: 16px; align-items: flex-start;">
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Material recipe</h3>
+<div role="radiogroup" style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Which composition to apply</label><div style="display: flex; flex-direction: column; gap: 4px;"><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; border: 1px solid rgba(49, 51, 63, 0.2); background: #f0f2f6; flex-shrink: 0;"></span><span>BISD2  ·  consultoria</span></label><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; border: 1px solid rgba(49, 51, 63, 0.2); background: #f0f2f6; flex-shrink: 0;"></span><span>BISD3  ·  consultoria</span></label><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; background: {{primary}}; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #ffffff;"></span></span><span>PBP_BISD2  ·  Berço ao Portão</span></label><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; border: 1px solid rgba(49, 51, 63, 0.2); background: #f0f2f6; flex-shrink: 0;"></span><span>PBP_BISD2s  ·  Berço ao Portão</span></label><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; border: 1px solid rgba(49, 51, 63, 0.2); background: #f0f2f6; flex-shrink: 0;"></span><span>PBP_BISD3  ·  Berço ao Portão</span></label></div></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Receita do Projeto do Berco ao Portao (FGV/Unicamp para a Fundep, Programa Move): partiu da receita de consultoria BISD2 e ajustou a participacao de alguns materiais com informacao das montadoras brasileiras. Coluna ICEV-PBP_BISD2 do i3ET.</p>
+<div role="status" style="padding: 16px; border-radius: 8px; background: rgba(28, 131, 225, 0.1); color: #004280; font-size: 16px; line-height: 1.6;"><strong>The two families.</strong> <code>BISD*</code> is the original recipe, produced by a consultancy. <code>PBP_BISD*</code> is the one the Projeto do Berço ao Portão built on top of it, adjusting the share of some materials with data from the Brazilian manufacturers. Same vehicle mass, different distribution among materials — and therefore different emissions.</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Versions</h3>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Emission factors</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>G22</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">GREET 2022 · AR6-100</p>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Mass parameters</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>1</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Assembly parameters</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>A-EF</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Method <code>from_EF</code> — Montagem lida da tabela de fatores (IDM 99), conforme a versao IDEFV</p>
+<div role="radiogroup" style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Boundary</label><div style="display: flex; flex-direction: column; gap: 4px;"><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; background: {{primary}}; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #ffffff;"></span></span><span>materials + assembly (cradle to gate)</span></label><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; border: 1px solid rgba(49, 51, 63, 0.2); background: #f0f2f6; flex-shrink: 0;"></span><span>materials only</span></label></div></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">In <code>MAT</code> the assembly is still calculated and reported — it simply is not added to the total.</p>
+</div>
+</div>
+</div>
+<div style="display: flex;"><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; background: {{primary}}; color: #ffffff; border: 1px solid {{primary}}; font: inherit; font-size: 16px; line-height: 1.6;">Apply to this vehicle</button></div>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">What each vehicle is set to</h3>
+<div style="position: relative; border: 1px solid #e3e4e7; border-radius: 8px; overflow: hidden; height: 458px; box-sizing: border-box;"><table class="df"><thead><tr><th>IDV</th><th>DsV</th><th>IDVPT</th><th>IDMPV</th><th>IDVMR</th><th>IDEFV</th><th>IDAPV</th><th>Boundary</th></tr></thead><tbody><tr><td class="n">1</td><td>BP01</td><td>ICEV</td><td class="n">1</td><td>PBP_BISD2</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">2</td><td>BP02</td><td>ICEV</td><td class="n">1</td><td>PBP_BISD2s</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">3</td><td>BP03</td><td>ICEV</td><td class="n">1</td><td>PBP_BISD3</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">4</td><td>BP04</td><td>BEV</td><td class="n">1</td><td>PBP_BISD12</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">5</td><td>BP05</td><td>BEV</td><td class="n">1</td><td>PBP_BISD12</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">6</td><td>BP06</td><td>BEV</td><td class="n">1</td><td>PBP_BISD12</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">7</td><td>BP07</td><td>HEV</td><td class="n">1</td><td>PBP_BISD6</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">8</td><td>BP08</td><td>HEV</td><td class="n">1</td><td>PBP_BISD6</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">9</td><td>BP09</td><td>HEV</td><td class="n">1</td><td>PBP_BISD6</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">10</td><td>BP10</td><td>PHEV</td><td class="n">1</td><td>PBP_BISD8</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">11</td><td>BP11</td><td>PHEV</td><td class="n">1</td><td>PBP_BISD8</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">12</td><td>BP12</td><td>PHEV</td><td class="n">1</td><td>PBP_BISD8</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr></tbody></table></div>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 4px; border: 1px solid rgba(49, 51, 63, 0.2); background: #f0f2f6;"></span><span>Compare the two recipe families on this vehicle</span></label>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"primary": {"editor": "color", "default": "#2a78d6", "options": ["#2a78d6", "#1d5fae", "#0b6e4f", "#52514e"], "section": "Tema (.streamlit/config.toml)"}, "$preview": {"width": 1440, "height": 1936}}'>
+class Component extends DCLogic {
+renderVals() {
+return { primary: this.props.primary ?? '#2a78d6' };
+}
+}
+</script>
+</body>
+</html>

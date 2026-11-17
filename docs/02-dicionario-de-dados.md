@@ -1,7 +1,9 @@
 # Dicionário de Dados e Modelo Relacional
 ## Calculadora da Pegada de Carbono de Veículos Leves — do Berço ao Portão
 
-**Documento 2 de 4** · Versão `20260919a` · Projeto NIPE/UNICAMP
+**Documento 2** · Versão `20261116a` · Projeto NIPE/UNICAMP
+
+> **Estado em 16/11/2026.** Este documento continua sendo a definição das tabelas da versão 0.9.0. O esquema 0.10, da Fase A, acrescenta 21 tabelas e está definido coluna a coluna no Documento 7 (`07-dicionario-de-dados-fase-a.md`); o §11 daqui resume o que mudou.
 
 Este documento é a evolução da tabela `P01` do arquivo `LVManufacturingMassGHGSimulator`. Ele define, para cada tabela e cada coluna, o tipo, a unidade, o domínio, a obrigatoriedade, a classificação (exógeno / endógeno / resultado), as chaves e as restrições de integridade, e encerra com o DDL SQL completo, suficiente para criar a base do zero.
 
@@ -19,6 +21,7 @@ Este documento é a evolução da tabela `P01` do arquivo `LVManufacturingMassGH
 8. [Regras de integridade além das chaves](#8-regras-de-integridade-além-das-chaves)
 9. [Versionamento e reprodutibilidade](#9-versionamento-e-reprodutibilidade)
 10. [DDL SQL completo](#10-ddl-sql-completo)
+11. [Esquema 0.10 — Fase A](#11-esquema-010--fase-a)
 
 ---
 
@@ -215,11 +218,13 @@ Metatabela: descreve todas as demais. É lida pelo programa para gerar a interfa
 |---|---|---|---|---|
 | P12 | `IDVPT` | TEXT | PK | `ICEV`, `HEV`, `PHEV`, `BEV`, `SHEV`, `SPHEV`, `FCEV` |
 | P12 | `DsVPT` | TEXT | — | Descrição |
+| P12 | `IsCalculable` | INTEGER | — | *(0.10)* 1 quando o núcleo calcula a motorização. `MHEV` e `FCEV` entram no catálogo com 0 |
 
 > **Nota.** A complexidade híbrida `fH` **não** é atributo do trem de força: ela é exógena por veículo e reside em `D03`, no `IDVP 29`. Na base de referência ela vale **1 para todos os veículos**, como na linha 39 do módulo M2 do i3ET. Duplicá-la em `P12` criaria duas fontes de verdade.
 
 | P13 | `IDVDT` | TEXT | PK | `Hatchback`, `Sedan`, `SUV`, `PUT` |
 | P13 | `DsVDT` | TEXT | — | Descrição |
+| P13 | `IsCalculable` | INTEGER | — | *(0.10)* 1 quando o núcleo calcula a carroceria. `Van` e `Chassis` entram no catálogo com 0 |
 | P14 | `IDVS` | TEXT | PK | `Subcompact`, `Compact`, `Midsize`, `Large`, `Pickup` |
 | P14 | `DsVS` | TEXT | — | Descrição |
 
@@ -484,7 +489,7 @@ Um resultado da calculadora só é reproduzível se for possível recuperar, sem
 
 1. **Versões como chave** — `IDMPV`, `IDVMR`, `IDEFV` e `IDAPV` acompanham cada linha de `D02` e são restituídas em toda exportação;
 2. **Base imutável** — as tabelas `P` da base de referência não são alteradas pelo usuário; criar variantes significa criar uma nova versão, com novo identificador e data;
-3. **Impressão digital da base** — o programa calcula um *hash* SHA-256 sobre o conteúdo ordenado das tabelas `P` e o grava em toda exportação. Dois relatórios com o mesmo *hash* usaram exatamente os mesmos parâmetros;
+3. **Impressão digital da base** — o programa calcula um *hash* SHA-256 sobre o conteúdo ordenado das tabelas `P` e o grava em toda exportação. Dois relatórios com o mesmo *hash* usaram exatamente os mesmos parâmetros. Na 0.10 a conta passa a cobrir também as tabelas de parâmetros da Fase A, com as linhas na ordem da chave primária (`schema.param_base_hash`); o valor da base mudou de `ccba9488…` para `26971e5d…`, e os resultados dos doze veículos não mudaram;
 4. **Arquivo de projeto** — o SQLite do usuário contém as tabelas `D`, o *hash* da base e as tabelas `C` da última execução. Reabri-lo reproduz a análise integralmente.
 
 Tabela de controle correspondente:
@@ -927,4 +932,33 @@ CREATE INDEX ix_C04_M     ON C04_GHGByMaterialGroup  (IDM);
 
 ---
 
-*Documento gerado em 19/09/2026 — versão `a`.*
+## 11. Esquema 0.10 — Fase A
+
+O DDL do capítulo 10 continua valendo sem alteração: são os blocos S1 a S4 de `core/schema.py`. O esquema 0.10 é acrescentado pelos blocos S5 a S10, e toda a definição está no Documento 7. Resumo:
+
+| Camada | Tabelas | Conteúdo |
+|---|---|---|
+| Parâmetros (bloco S5) | `P26`, `P27`, `P54` | Veículos de mercado, seus valores e o catálogo dos 58 parâmetros da Market Vehicles |
+| | `P28`, `P36`, `P50`, `P55` | Registros, edições e campos do PBEV/INMETRO, e o vínculo com os veículos |
+| | `P29`, `P30` | Categorias A0 a A5 e catálogo dos 205 parâmetros do Control Panel |
+| | `P35`, `P49` | Regras de valor padrão e suas versões |
+| | `P51`, `P52` | Indicadores da tabela de saídas e valores gravados na planilha |
+| | `P53`, `P56` | Fatores de uso combinado: padrão por motorização e arbitrados por configuração da planilha |
+| Usuário (bloco S6) | `D06`, `D07`, `D08`, `D12` | Análise, casos, parâmetros alterados e ajuste dos fatores de potência combinada |
+| | `D09`, `R45`, `R46` | Rodada congelada, seu resultado e a visão que compara rodadas |
+| Metadados (bloco S7) | `M03` | Identidade do projeto |
+
+Mudanças em tabelas deste documento:
+
+- `P12` e `P13` ganham `IsCalculable` (§4);
+- `P10` e `P11` ganham sete listas de fatores (`GLO23`, `BR23` e cinco variantes), sem alterar as seis existentes;
+- `P12` ganha `MHEV` e `FCEV`, e `P13` ganha `Van` e `Chassis`, todas fora do cálculo;
+- `P15` e `P16` ganham as 30 receitas da família GREET 2024 (`ICEV-G21`, `HEV-G22`, …), ao lado das 12 da 0.9.0;
+- `P01` ganha as 187 colunas das tabelas novas;
+- `M00_BaseInfo` ganha as chaves `FaseAWorkbook`, `FaseABuiltAt` e, num projeto, `FaseABaseHash`.
+
+As regras de integridade continuam em I16 a I27 (Documento 7, §6). A migração de um arquivo da 0.9.0 (`schema.migrate`) e a entrega dos parâmetros da Fase A a um projeto antigo (`schema.sync_fase_a`) estão no Documento 7, §7.
+
+---
+
+*Documento gerado em 19/09/2026 — versão `a`. Revisto em 16/11/2026 (cabeçalho, §4, §9 e §11).*

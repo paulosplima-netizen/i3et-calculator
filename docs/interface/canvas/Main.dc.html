@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&amp;family=Source+Code+Pro&amp;display=swap">
+<style>
+body{margin:0;font-family:"Source Sans Pro","Source Sans 3",sans-serif;color:#31333f;background:#ffffff}
+a{color:#2a78d6}a:hover{color:#1d5fae}
+code{font-family:"Source Code Pro",monospace;font-size:12px;color:#09ab3b;background:#f8f9fb;padding:1px 4px;border-radius:4px}
+table.df{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.df th{background:#f8f9fb;color:rgba(49,51,63,0.6);font-weight:400;text-align:left;height:35px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap}
+table.df td{height:34px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+table.df td.n{text-align:right}
+table.df td.none{color:rgba(49,51,63,0.4)}
+svg.grafico{width:100%;height:auto;display:block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+svg .grid{stroke:rgba(128,128,128,0.25);stroke-width:1}
+svg .eixo{stroke:rgba(128,128,128,0.55);stroke-width:1}
+svg .ligacao{stroke:rgba(128,128,128,0.55);stroke-width:1;stroke-dasharray:3 3}
+svg .barra{fill:#2a78d6}
+svg .total{fill:#52514e}
+svg .rotulo,svg .legenda{fill:#31333f;opacity:0.75;font-size:12px}
+svg .valor,svg .tick,svg .unidade{fill:#31333f;opacity:0.8;font-size:11px;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1432px; display: flex; background: #ffffff; overflow: hidden;">
+<nav aria-label="Pages" style="width: 336px; flex-shrink: 0; background: #f0f2f6;">
+<dc-import name="Sidebar" active="Home" hint-size="336px,900px"></dc-import>
+</nav>
+<main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 96px 80px 96px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h1 style="margin: 0; padding: 0; font-size: 44px; line-height: 1.2; font-weight: 700; color: #31333f;">Light vehicle carbon footprint — cradle to gate</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Modules M1 (mass) and M2 (manufacturing GHG) of the i3ET model · NIPE/UNICAMP · kg CO₂e, GWP-100, IPCC AR6</p>
+<div style="display: flex; gap: 16px; align-items: flex-start;">
+<div style="flex: 1.4 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Project</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #31333f;">A project is one SQLite file: the reference parameters, plus your own vehicles, scenarios and emission factor versions. Creating one copies the reference base — you edit your copy, and the reference is never modified.</p>
+<div role="status" style="padding: 16px; border-radius: 8px; background: rgba(33, 195, 84, 0.1); color: #177233; font-size: 16px; line-height: 1.6;"><strong>meu-projeto</strong> is open.</div>
+<div style="display: flex;"><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; background: #ffffff; color: #31333f; border: 1px solid rgba(49, 51, 63, 0.2); font: inherit; font-size: 16px; line-height: 1.6;">Download this project</button></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Sessions in the cloud are temporary. Download the project to keep your work.</p>
+<div style="display: flex;"><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; background: #ffffff; color: #31333f; border: 1px solid rgba(49, 51, 63, 0.2); font: inherit; font-size: 16px; line-height: 1.6;">Close project</button></div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Reference base</h3>
+<div style="display: flex; flex-direction: column; gap: 0;"><div style="font-size: 14px; line-height: 1.6; color: #31333f;">Parameter hash</div><div style="font-size: 36px; line-height: 1.2; color: #31333f; font-variant-numeric: tabular-nums;">ccba94884589e1e2</div></div>
+<div style="display: flex; flex-direction: column; gap: 0;"><div style="font-size: 14px; line-height: 1.6; color: #31333f;">Vehicles in the project</div><div style="font-size: 36px; line-height: 1.2; color: #31333f; font-variant-numeric: tabular-nums;">12</div></div>
+<div style="display: flex; flex-direction: column; gap: 0;"><div style="font-size: 14px; line-height: 1.6; color: #31333f;">Scenarios</div><div style="font-size: 36px; line-height: 1.2; color: #31333f; font-variant-numeric: tabular-nums;">12</div></div>
+<div style="display: flex; flex-direction: column; gap: 0;"><div style="font-size: 14px; line-height: 1.6; color: #31333f;">Program version</div><div style="font-size: 36px; line-height: 1.2; color: #31333f; font-variant-numeric: tabular-nums;">0.9.0</div></div>
+</div>
+</div>
+</div>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<dc-import name="VersionBar" hint-size="944px,84px"></dc-import>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Where to go next</h3>
+<ol style="margin: 0; padding-left: 24px; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column; gap: 4px;"><li><strong>Vehicles</strong> — the vehicles in the project, and your own</li><li><strong>Vehicle parameters</strong> — the values each vehicle is described by</li><li><strong>Scenario</strong> — which versions the calculation uses</li><li><strong>Results</strong> — mass and emissions, group by group and material by material</li><li><strong>Emission factors</strong> — the published versions, and your own</li><li><strong>Export</strong> — every table, in the format you need</li></ol>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Emission factors derived from GREET © UChicago Argonne, LLC — redistributed for non-commercial use, input values modified (extracted and processed by the i3ET). Brazilian factors: Projeto do Berço ao Portão — FGV/Unicamp for Fundep, Programa Move.</p>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"primary": {"editor": "color", "default": "#2a78d6", "options": ["#2a78d6", "#1d5fae", "#0b6e4f", "#52514e"], "section": "Tema (.streamlit/config.toml)"}, "$preview": {"width": 1440, "height": 1432}}'>
+class Component extends DCLogic {
+renderVals() {
+return { primary: this.props.primary ?? '#2a78d6' };
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Emission factors</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&amp;family=Source+Code+Pro&amp;display=swap">
+<style>
+body{margin:0;font-family:"Source Sans Pro","Source Sans 3",sans-serif;color:#31333f;background:#ffffff}
+a{color:#2a78d6}a:hover{color:#1d5fae}
+code{font-family:"Source Code Pro",monospace;font-size:12px;color:#09ab3b;background:#f8f9fb;padding:1px 4px;border-radius:4px}
+table.df{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.df th{background:#f8f9fb;color:rgba(49,51,63,0.6);font-weight:400;text-align:left;height:35px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap}
+table.df td{height:34px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+table.df td.n{text-align:right}
+table.df td.none{color:rgba(49,51,63,0.4)}
+svg.grafico{width:100%;height:auto;display:block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+svg .grid{stroke:rgba(128,128,128,0.25);stroke-width:1}
+svg .eixo{stroke:rgba(128,128,128,0.55);stroke-width:1}
+svg .ligacao{stroke:rgba(128,128,128,0.55);stroke-width:1;stroke-dasharray:3 3}
+svg .barra{fill:#2a78d6}
+svg .total{fill:#52514e}
+svg .rotulo,svg .legenda{fill:#31333f;opacity:0.75;font-size:12px}
+svg .valor,svg .tick,svg .unidade{fill:#31333f;opacity:0.8;font-size:11px;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1440px; height: 2256px; display: flex; background: #ffffff; overflow: hidden;">
+<nav aria-label="Pages" style="width: 336px; flex-shrink: 0; background: #f0f2f6;">
+<dc-import name="Sidebar" active="Emission factors" hint-size="336px,900px"></dc-import>
+</nav>
+<main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 96px 80px 96px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h1 style="margin: 0; padding: 0; font-size: 44px; line-height: 1.2; font-weight: 700; color: #31333f;">Emission factors</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Specified in docs/01-especificacao-funcional.md, §16.4</p>
+<dc-import name="VersionBar" hint-size="944px,84px"></dc-import>
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Versions in this project</h3>
+<div style="position: relative; border: 1px solid #e3e4e7; border-radius: 8px; overflow: hidden; height: 248px; box-sizing: border-box;"><table class="df"><thead><tr><th>IDEFV</th><th>DsEFV</th><th>DateIDEFV</th><th>GWPSet</th><th>Source</th><th>SourceEFV</th></tr></thead><tbody><tr><td>G22</td><td>GREET 2022</td><td>2022-12-31</td><td>AR6-100</td><td>reference</td><td>GREET 2022 (Argonne National Laboratory)</td></tr><tr><td>G23</td><td>GREET 2023</td><td>2023-12-31</td><td>AR6-100</td><td>reference</td><td>GREET 2023 (Argonne National Laboratory)</td></tr><tr><td>G24</td><td>GREET 2024</td><td>2024-12-31</td><td>AR6-100</td><td>reference</td><td>GREET 2024 (Argonne National Laboratory)</td></tr><tr><td>BR25BR</td><td>BR 2025 100% BR</td><td>2025-08-18</td><td>AR6-100</td><td>reference</td><td>FGV/Unicamp - Berco ao Portao (Fundep / Programa Move) - 100% BR</td></tr><tr><td>BR25m</td><td>BR 2025 market</td><td>2025-08-18</td><td>AR6-100</td><td>reference</td><td>FGV/Unicamp - Berco ao Portao (Fundep / Programa Move) - mercado BR</td></tr><tr><td>BR25GLO</td><td>BR 2025 International</td><td>2025-08-18</td><td>AR6-100</td><td>reference</td><td>FGV/Unicamp - Berco ao Portao (Fundep / Programa Move) - internacional</td></tr></tbody></table></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Redistribution of the GREET-derived values is allowed for non-commercial use, with attribution and the statement that input values were modified. The licence text of each version is in the <code>LicenseEFV</code> column and travels into every export.</p>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Browse the factors</h3>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Version</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>G22</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+<div style="display: flex; gap: 16px; align-items: flex-start;">
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 0;"><div style="font-size: 14px; line-height: 1.6; color: #31333f;">Materials in this version</div><div style="font-size: 36px; line-height: 1.2; color: #31333f; font-variant-numeric: tabular-nums;">104</div></div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 0;"><div style="font-size: 14px; line-height: 1.6; color: #31333f;">Without a published factor</div><div style="font-size: 36px; line-height: 1.2; color: #31333f; font-variant-numeric: tabular-nums;">36</div></div>
+</div>
+</div>
+<div style="position: relative; border: 1px solid #e3e4e7; border-radius: 8px; overflow: hidden; height: 388px; box-sizing: border-box;"><table class="df"><thead><tr><th>IDM</th><th>DsM</th><th>EFBasis</th><th>EF</th><th>IsUserDefined</th><th>EFnotes</th></tr></thead><tbody><tr><td>1</td><td>Steel</td><td>mass</td><td class="n">2.4512</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>2</td><td>Stainless Steel</td><td>mass</td><td class="n">0.9013</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>3</td><td>Cast Iron</td><td>mass</td><td class="n">0.9337</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>4</td><td>Wrought Aluminum</td><td>mass</td><td class="n">11.9382</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>4a</td><td>Aluminum Sheet (Automotive)</td><td>mass</td><td class="n">11.9382</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>4b</td><td>Aluminum Extrusion (Automotive)</td><td>mass</td><td class="n">4.7703</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>5</td><td>Cast Aluminum</td><td>mass</td><td class="n">3.2234</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>6</td><td>Copper/Brass</td><td>mass</td><td class="n">4.4901</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>7</td><td>Zinc</td><td>mass</td><td class="n">2.7265</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr><tr><td>8</td><td>Magnesium</td><td>mass</td><td class="n">32.0194</td><td class="n">0</td><td>GREET 2022 (Argonne National Laboratory). Valor extraido da aba &#x27;Emission Factors GREET and BR&#x27; do LCA_LV_i3ET, coluna G22; nao e o arquivo GREET original (dado de entrada processado - ver Documento 1, secao 18.3).</td></tr></tbody></table><div aria-hidden="true" style="position: absolute; right: 2px; top: 38px; width: 6px; height: 33px; border-radius: 3px; background: rgba(49, 51, 63, 0.25);"></div></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">A missing factor is absence of data, never zero emissions: the mass of those materials is reported in <code>MassNoFactor</code> on every result.</p>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Create a version of your own</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #31333f;">It starts from a published version and keeps everything you do not change. Saying where your values come from is required — a factor without provenance is not usable by whoever reads the result.</p>
+<form style="margin: 0; padding: 16px; border: 1px solid rgba(49, 51, 63, 0.2); border-radius: 8px; display: flex; flex-direction: column; gap: 16px;"><div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; gap: 16px; align-items: flex-start;">
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Identifier</label><div style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; border-radius: 8px; background: #f0f2f6; color: #31333f; font-size: 16px;">MEUS-FATORES</div></div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Inherit from</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>G22</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Description</label><div style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; border-radius: 8px; background: #f0f2f6; color: #31333f; font-size: 16px;">Fatores próprios</div></div>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Where do these values come from?</label><div style="height: 96px; box-sizing: border-box; padding: 8px 12px; border-radius: 8px; background: #f0f2f6; color: rgba(49, 51, 63, 0.6); font-size: 16px; line-height: 1.6;">Ex.: inventário do fornecedor, medição própria, artigo com DOI, versão do GREET não incluída na base…</div></div>
+<div style="display: flex;"><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; background: {{primary}}; color: #ffffff; border: 1px solid {{primary}}; font: inherit; font-size: 16px; line-height: 1.6;">Create version</button></div>
+</div></form>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"primary": {"editor": "color", "default": "#2a78d6", "options": ["#2a78d6", "#1d5fae", "#0b6e4f", "#52514e"], "section": "Tema (.streamlit/config.toml)"}, "$preview": {"width": 1440, "height": 2256}}'>
+class Component extends DCLogic {
+renderVals() {
+return { primary: this.props.primary ?? '#2a78d6' };
+}
+}
+</script>
+</body>
+</html>

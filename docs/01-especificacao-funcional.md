@@ -1,7 +1,9 @@
 # Especificação Funcional e Metodológica
 ## Calculadora da Pegada de Carbono de Veículos Leves — do Berço ao Portão
 
-**Documento 1 de 4** · Versão `20260919a` · Projeto NIPE/UNICAMP
+**Documento 1** · Versão `20261116a` · Projeto NIPE/UNICAMP
+
+> **Estado em 16/11/2026.** Este documento especifica o cálculo do berço ao portão (módulos M1 e M2), que não mudou desde a versão 0.9.0. A Fase A, em construção, acrescenta projeto, configuração da análise, catálogo de parâmetros e rodada congelada, sem alterar nenhuma equação daqui. Ela está especificada nos Documentos 6, 7 e 8 (§18.1) e resumida no §19.
 
 ---
 
@@ -25,6 +27,7 @@
 16. [Divergências encontradas na documentação inicial](#16-divergências-encontradas-na-documentação-inicial)
 17. [Critérios de validação e aceitação](#17-critérios-de-validação-e-aceitação)
 18. [Referências](#18-referências)
+19. [Fase A (versão 0.10.0, em construção)](#19-fase-a-versão-0100-em-construção)
 
 ---
 
@@ -191,6 +194,9 @@ Os nomes de tabelas e de colunas permanecem **em inglês**, ainda que a document
 | `D` | Dados do cenário (veículos e suas escolhas) | Editável pelo usuário |
 | `C` | Tabelas calculadas | Escritas pelo programa |
 | `R` | Tabelas de relatório (exportação) | Escritas pelo programa |
+| `M` | Metadados: execuções, log de validação e identidade do projeto | Escritas pelo programa |
+
+Na Fase A, uma tabela `R` passa a ficar gravada no projeto: `R45`, o resultado de uma rodada congelada (Documento 7, §4).
 
 ---
 
@@ -914,10 +920,16 @@ O critério da diretriz D3 é verificado por reconstrução: o núcleo de cálcu
 
 | Documento | Arquivo |
 |---|---|
-| 1 — Especificação Funcional e Metodológica | `EspecificacaoFuncional_CalculadoraBP_20260919a.md` (este) |
-| 2 — Dicionário de Dados e Modelo Relacional | `DicionarioDeDados_ModeloRelacional_20260919a.md` |
+| 1 — Especificação Funcional e Metodológica | `EspecificacaoFuncional_CalculadoraBP_20261116a.md` (este) |
+| 2 — Dicionário de Dados e Modelo Relacional | `DicionarioDeDados_ModeloRelacional_20261117a.md` |
 | 3 — Base de Dados da Calculadora | `BaseDeDados_CalculadoraBP_20260919a.xlsx` |
-| 4 — Especificação Técnica, Arquitetura e Saídas | `EspecificacaoTecnica_ArquiteturaESaidas_20260919a.md` |
+| 4 — Especificação Técnica, Arquitetura e Saídas | `EspecificacaoTecnica_ArquiteturaESaidas_20261117a.md` |
+| 5 — Relatório de Divergências, e seu anexo da Fase A | `RelatorioDeDivergencias_i3ET_20261116a.md`, `DivergenciasFaseA_20261117a.md` |
+| 6 — Fase A: navegação, projeto e análise | `EspecificacaoFaseA_NavegacaoProjetoEAnalise_20261117a.md` |
+| 7 — Dicionário de Dados da Fase A (esquema 0.10) | `DicionarioDeDados_FaseA_20261117a.md` |
+| 8 — Fixtures da Fase A | `FixturesFaseA_20261117a.md` |
+
+No repositório os mesmos documentos têm nomes estáveis: `docs/01` a `docs/08`, e `docs/05a` para o anexo.
 
 ### 18.2 Fontes de dados
 
@@ -947,4 +959,25 @@ Fontes: [Argonne GREET — Copyright](https://greet.anl.gov/copyright); [Argonne
 
 ---
 
-*Documento gerado em 19/09/2026 — versão `a`.*
+## 19. Fase A (versão 0.10.0, em construção)
+
+A adoção das Interfaces Revisadas T01–T46, de 16/11/2026, é feita em três fases: **A**, navegação, projeto e análise; **B**, os demais módulos do i3ET, um por vez; **C**, contas e compartilhamento. O método é o mesmo deste documento, em oito passos.
+
+O que a Fase A acrescenta, sem alterar o cálculo:
+
+| Tema | Resumo | Onde está |
+|---|---|---|
+| Projeto | Identidade neutra (`PRJ-` mais oito caracteres), edição ou leitura, projetos de exemplo | Doc. 6, §4 |
+| Análise | Comparação equalizada (seis motorizações a partir de um ICEV de referência) ou livre (um a sete casos) | Doc. 6, §5 |
+| Parâmetros | Catálogo dos 205 parâmetros do Control Panel, em três níveis | Doc. 6, §5.3 |
+| Rodada | Entradas congeladas, com impressão digital; resultado gravado | Doc. 6, §5.4 |
+| Potência combinada | A regra do `IDVP 15` deixa de ser fixa: soma por padrão, configurável por motorização | Doc. 6, §6 |
+| Selo de origem | Todo valor em tela é `Calculated`, `Excel reference` ou `Preview` | Doc. 6, §7 |
+
+**Única mudança que toca este documento.** O §7.2 descreve a potência combinada (`IDVP 15`) como o motor elétrico nos híbridos em série e o maior valor nos demais. Essa continua sendo a regra em vigor quando `core/params.resolve` roda sem fatores. Na Fase A a potência combinada passa a ser `FatorICE × P_ICE + FatorEE × P_EE`, com os fatores lidos de `P53`, `P56` e `D12` (Doc. 6, §6).
+
+Situação em 16/11/2026: passos 1 (documentação), 2 (base e esquema) e 3 (fixtures) concluídos; passos 4 a 8 por fazer.
+
+---
+
+*Documento gerado em 19/09/2026 — versão `a`. Revisto em 16/11/2026 (cabeçalho, §4.4, §18.1 e §19).*

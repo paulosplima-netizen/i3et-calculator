@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vehicle parameters</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&amp;family=Source+Code+Pro&amp;display=swap">
+<style>
+body{margin:0;font-family:"Source Sans Pro","Source Sans 3",sans-serif;color:#31333f;background:#ffffff}
+a{color:#2a78d6}a:hover{color:#1d5fae}
+code{font-family:"Source Code Pro",monospace;font-size:12px;color:#09ab3b;background:#f8f9fb;padding:1px 4px;border-radius:4px}
+table.df{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.df th{background:#f8f9fb;color:rgba(49,51,63,0.6);font-weight:400;text-align:left;height:35px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap}
+table.df td{height:34px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+table.df td.n{text-align:right}
+table.df td.none{color:rgba(49,51,63,0.4)}
+svg.grafico{width:100%;height:auto;display:block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+svg .grid{stroke:rgba(128,128,128,0.25);stroke-width:1}
+svg .eixo{stroke:rgba(128,128,128,0.55);stroke-width:1}
+svg .ligacao{stroke:rgba(128,128,128,0.55);stroke-width:1;stroke-dasharray:3 3}
+svg .barra{fill:#2a78d6}
+svg .total{fill:#52514e}
+svg .rotulo,svg .legenda{fill:#31333f;opacity:0.75;font-size:12px}
+svg .valor,svg .tick,svg .unidade{fill:#31333f;opacity:0.8;font-size:11px;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1440px; height: 2488px; display: flex; background: #ffffff; overflow: hidden;">
+<nav aria-label="Pages" style="width: 336px; flex-shrink: 0; background: #f0f2f6;">
+<dc-import name="Sidebar" active="Vehicle parameters" hint-size="336px,900px"></dc-import>
+</nav>
+<main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 96px 80px 96px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h1 style="margin: 0; padding: 0; font-size: 44px; line-height: 1.2; font-weight: 700; color: #31333f;">Vehicle parameters</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Specified in docs/01-especificacao-funcional.md, §7.2</p>
+<dc-import name="VersionBar" hint-size="944px,84px"></dc-import>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Vehicle</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>BP01</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #31333f;">Exogenous values describe the vehicle and are yours to set. Endogenous ones are computed from them — shown here in grey, with the equation beside each. A value you supply is never undone by the equation that would have produced it; the <code>IsCalculated</code> column records which is which.</p>
+<div role="status" style="padding: 16px; border-radius: 8px; background: rgba(28, 131, 225, 0.1); color: #004280; font-size: 16px; line-height: 1.6;">This is a reference vehicle: its parameters are read-only. Create a copy on the <strong>Vehicles</strong> screen to change anything.</div>
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Exogenous — what you set</h3>
+<div style="position: relative; border: 1px solid #e3e4e7; border-radius: 8px; overflow: hidden; height: 388px; box-sizing: border-box;"><table class="df"><thead><tr><th>IDVP</th><th>Parameter</th><th>Unit</th><th>Stored</th><th>Text</th></tr></thead><tbody><tr><td class="n">2</td><td>ICE - Internal Combustion Engine Power</td><td>kW</td><td class="n">79.0998</td><td class="none">None</td></tr><tr><td class="n">3</td><td>EE - Electric Engine Power</td><td>kW</td><td class="n">0</td><td class="none">None</td></tr><tr><td class="n">4</td><td>Utilities Battery</td><td>kWh</td><td class="n">0.72</td><td class="none">None</td></tr><tr><td class="n">5</td><td>Energy Battery</td><td>kWh</td><td class="n">0</td><td class="none">None</td></tr><tr><td class="n">6</td><td>Wheel Size</td><td>inchs</td><td class="n">15</td><td class="none">None</td></tr><tr><td class="n">7</td><td>Car length</td><td>m</td><td class="n">4.1101</td><td class="none">None</td></tr><tr><td class="n">8</td><td>Car width</td><td>m</td><td class="n">1.7346</td><td class="none">None</td></tr><tr><td class="n">10</td><td>Number of doors and lids</td><td>un (*2)</td><td class="n">6</td><td class="none">None</td></tr><tr><td class="n">11</td><td>Number of airbags and seat belts</td><td>un (*3)</td><td class="n">7</td><td class="none">None</td></tr><tr><td class="n">12</td><td>Number of seats positions</td><td>un (*4)</td><td class="n">5</td><td class="none">None</td></tr></tbody></table><div aria-hidden="true" style="position: absolute; right: 2px; top: 38px; width: 6px; height: 145px; border-radius: 3px; background: rgba(49, 51, 63, 0.25);"></div></div>
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Endogenous — computed from the above</h3>
+<div style="position: relative; border: 1px solid #e3e4e7; border-radius: 8px; overflow: hidden; height: 388px; box-sizing: border-box;"><table class="df"><thead><tr><th>IDVP</th><th>Parameter</th><th>Unit</th><th>Computed</th><th>Stored</th><th>IsCalculated</th><th>Equation</th></tr></thead><tbody><tr><td class="n">9</td><td>Car area (length X width)</td><td>m2 (*1)</td><td class="n">7.1292</td><td class="n">7.1292</td><td class="n">1</td><td>GC(9) = GC(7) * GC(8)</td></tr><tr><td class="n">15</td><td>Combined Power</td><td>kW</td><td class="n">79.0998</td><td class="n">79.0998</td><td class="n">1</td><td>GC(15) = GC(3) se IDVPT em {SHEV,SPHEV}; senao MAX(GC(2),GC(3))</td></tr><tr><td class="n">16</td><td>fR = Robustness (PowerXCarAreaXfT)</td><td>KW*m2*fT (*5)</td><td class="n">563.9142</td><td class="n">563.9142</td><td class="n">1</td><td>GC(16) = GC(15) * GC(9) * GC(14) * GC(29)</td></tr><tr><td class="n">18</td><td>Electric Starter Engine</td><td>kW</td><td class="n">3.164</td><td class="n">3.164</td><td class="n">1</td><td>GC(18) = 0.04 * GC(2)</td></tr><tr><td class="n">28</td><td>fB = Body Size (CarAreaXHeight)</td><td>m2*m (*7)</td><td class="n">10.5794</td><td class="n">10.5794</td><td class="n">1</td><td>GC(28) = GC(9) * GC(27)</td></tr><tr><td class="n">33</td><td>Battery Power Density</td><td>kg/kW</td><td class="n">0</td><td class="n">0</td><td class="n">1</td><td>GC(33) = P19.PowerDensity(GC(32)); &#x27;ND&#x27; se ausente</td></tr><tr><td class="n">34</td><td>Battery Energy Density</td><td>kg/kWh</td><td class="n">0</td><td class="n">0</td><td class="n">1</td><td>GC(34) = P19.EnergyDensity(GC(32)); &#x27;ND&#x27; se ausente</td></tr><tr><td class="n">35</td><td>Battery Weight</td><td>kg</td><td class="n">0</td><td class="n">0</td><td class="n">1</td><td>se GC(33)=&#x27;ND&#x27;: (se GC(34)=&#x27;ND&#x27; -&gt; 0; senao GC(34)*GC(5)); senao: …</td></tr><tr><td class="n">36</td><td>Battery Reference Energy Capacity</td><td>kWh</td><td class="n">0</td><td class="n">0</td><td class="n">1</td><td>GC(36) = P19.RefEnergy(GC(32))</td></tr><tr><td class="n">37</td><td>ICE Power/fH</td><td>kW</td><td class="n">79.0998</td><td class="n">79.0998</td><td class="n">1</td><td>GC(37) = GC(2) / GC(29)</td></tr></tbody></table><div aria-hidden="true" style="position: absolute; right: 2px; top: 38px; width: 6px; height: 316px; border-radius: 3px; background: rgba(49, 51, 63, 0.25);"></div></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);"><strong>Computed</strong> is what the equation gives for the current values. <strong>Stored</strong> is what the project file holds; when <code>IsCalculated</code> is 0, the stored value was supplied and it is the one used.</p>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Resulting mass</h3>
+<div style="display: flex; gap: 16px; align-items: flex-start;">
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 0;"><div style="font-size: 14px; line-height: 1.6; color: #31333f;">Vehicle mass (kg)</div><div style="font-size: 36px; line-height: 1.2; color: #31333f; font-variant-numeric: tabular-nums;">1.157,7</div></div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 0;"><div style="font-size: 14px; line-height: 1.6; color: #31333f;">Cradle to gate (kg CO₂e)</div><div style="font-size: 36px; line-height: 1.2; color: #31333f; font-variant-numeric: tabular-nums;">4.075,0</div></div>
+</div>
+</div>
+<details style="border: 1px solid rgba(49, 51, 63, 0.2); border-radius: 8px;"><summary style="height: 44px; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; gap: 8px; font-size: 16px; list-style: none; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg><span>How was this calculated? — Mass of one subgroup</span></summary></details>
+<div style="position: relative; border: 1px solid #e3e4e7; border-radius: 8px; overflow: hidden; height: 388px; box-sizing: border-box;"><table class="df"><thead><tr><th>IDSG</th><th>IDVP</th><th>GC</th><th>Beta</th><th>GCR</th><th>MR</th><th>fLM</th><th>ME</th></tr></thead><tbody><tr><td class="n">1</td><td class="n">28</td><td class="n">10.5794</td><td class="n">0.3522</td><td class="n">12</td><td class="n">379.0228</td><td class="n">1</td><td class="n">362.5724</td></tr><tr><td class="n">2</td><td class="n">9</td><td class="n">7.1292</td><td class="n">0.8874</td><td class="n">9</td><td class="n">39.34</td><td class="n">1</td><td class="n">31.9912</td></tr><tr><td class="n">3</td><td class="n">28</td><td class="n">10.5794</td><td class="n">0.6675</td><td class="n">14.592</td><td class="n">9.979</td><td class="n">1</td><td class="n">8.0514</td></tr><tr><td class="n">4</td><td class="n">28</td><td class="n">10.5794</td><td class="n">0.6675</td><td class="n">14.592</td><td class="n">34.0194</td><td class="n">1</td><td class="n">27.448</td></tr><tr><td class="n">5</td><td class="n">11</td><td class="n">7</td><td class="n">1</td><td class="n">10</td><td class="n">9.9</td><td class="n">1</td><td class="n">6.93</td></tr><tr><td class="n">6</td><td class="n">12</td><td class="n">5</td><td class="n">1</td><td class="n">5</td><td class="n">54.3742</td><td class="n">1</td><td class="n">54.3742</td></tr><tr><td class="n">7</td><td class="n">28</td><td class="n">10.5794</td><td class="n">0.6675</td><td class="n">14.592</td><td class="n">45.586</td><td class="n">1</td><td class="n">36.7803</td></tr><tr><td class="n">8</td><td class="n">28</td><td class="n">10.5794</td><td class="n">0.6675</td><td class="n">14.592</td><td class="n">12.3</td><td class="n">1</td><td class="n">9.924</td></tr><tr><td class="n">9</td><td class="n">28</td><td class="n">10.5794</td><td class="n">0.3522</td><td class="n">14.592</td><td class="n">39.9161</td><td class="n">1</td><td class="n">35.6424</td></tr><tr><td class="n">10</td><td class="n">9</td><td class="n">7.1292</td><td class="n">1.9851</td><td class="n">9</td><td class="n">38.2408</td><td class="n">1</td><td class="n">24.0783</td></tr></tbody></table><div aria-hidden="true" style="position: absolute; right: 2px; top: 38px; width: 6px; height: 80px; border-radius: 3px; background: rgba(49, 51, 63, 0.25);"></div></div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"primary": {"editor": "color", "default": "#2a78d6", "options": ["#2a78d6", "#1d5fae", "#0b6e4f", "#52514e"], "section": "Tema (.streamlit/config.toml)"}, "$preview": {"width": 1440, "height": 2488}}'>
+class Component extends DCLogic {
+renderVals() {
+return { primary: this.props.primary ?? '#2a78d6' };
+}
+}
+</script>
+</body>
+</html>

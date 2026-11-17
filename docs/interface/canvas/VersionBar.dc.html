@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Version bar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&amp;family=Source+Code+Pro&amp;display=swap">
+<style>
+body{margin:0;font-family:"Source Sans Pro","Source Sans 3",sans-serif;color:#31333f;background:#ffffff}
+a{color:#2a78d6}a:hover{color:#1d5fae}
+code{font-family:"Source Code Pro",monospace;font-size:12px;color:#09ab3b;background:#f8f9fb;padding:1px 4px;border-radius:4px}
+table.df{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.df th{background:#f8f9fb;color:rgba(49,51,63,0.6);font-weight:400;text-align:left;height:35px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap}
+table.df td{height:34px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+table.df td.n{text-align:right}
+table.df td.none{color:rgba(49,51,63,0.4)}
+svg.grafico{width:100%;height:auto;display:block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+svg .grid{stroke:rgba(128,128,128,0.25);stroke-width:1}
+svg .eixo{stroke:rgba(128,128,128,0.55);stroke-width:1}
+svg .ligacao{stroke:rgba(128,128,128,0.55);stroke-width:1;stroke-dasharray:3 3}
+svg .barra{fill:#2a78d6}
+svg .total{fill:#52514e}
+svg .rotulo,svg .legenda{fill:#31333f;opacity:0.75;font-size:12px}
+svg .valor,svg .tick,svg .unidade{fill:#31333f;opacity:0.8;font-size:11px;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 944px; height: 84px; background: #ffffff; display: flex; flex-direction: column; gap: 8px;">
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #31333f;"><strong>Mass params</strong> <code>1</code> &nbsp;·&nbsp; <strong>Material recipe</strong> <code>PBP_BISD12, PBP_BISD2 +4</code> &nbsp;·&nbsp; <strong>Emission factors</strong> <code>G22</code> &nbsp;·&nbsp; <strong>Assembly</strong> <code>A-EF</code> &nbsp;·&nbsp; <strong>Boundary</strong> <code>MAT_ASM</code> &nbsp;·&nbsp; <strong>Project</strong> <code>meu-projeto</code></p>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Reference base <code>ccba94884589e1e2</code> · program 0.9.0</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 944, "height": 84}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

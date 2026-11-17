@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vehicles</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&amp;family=Source+Code+Pro&amp;display=swap">
+<style>
+body{margin:0;font-family:"Source Sans Pro","Source Sans 3",sans-serif;color:#31333f;background:#ffffff}
+a{color:#2a78d6}a:hover{color:#1d5fae}
+code{font-family:"Source Code Pro",monospace;font-size:12px;color:#09ab3b;background:#f8f9fb;padding:1px 4px;border-radius:4px}
+table.df{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.df th{background:#f8f9fb;color:rgba(49,51,63,0.6);font-weight:400;text-align:left;height:35px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap}
+table.df td{height:34px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+table.df td.n{text-align:right}
+table.df td.none{color:rgba(49,51,63,0.4)}
+svg.grafico{width:100%;height:auto;display:block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+svg .grid{stroke:rgba(128,128,128,0.25);stroke-width:1}
+svg .eixo{stroke:rgba(128,128,128,0.55);stroke-width:1}
+svg .ligacao{stroke:rgba(128,128,128,0.55);stroke-width:1;stroke-dasharray:3 3}
+svg .barra{fill:#2a78d6}
+svg .total{fill:#52514e}
+svg .rotulo,svg .legenda{fill:#31333f;opacity:0.75;font-size:12px}
+svg .valor,svg .tick,svg .unidade{fill:#31333f;opacity:0.8;font-size:11px;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1456px; display: flex; background: #ffffff; overflow: hidden;">
+<nav aria-label="Pages" style="width: 336px; flex-shrink: 0; background: #f0f2f6;">
+<dc-import name="Sidebar" active="Vehicles" hint-size="336px,900px"></dc-import>
+</nav>
+<main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 96px 80px 96px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h1 style="margin: 0; padding: 0; font-size: 44px; line-height: 1.2; font-weight: 700; color: #31333f;">Vehicles</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Specified in docs/01-especificacao-funcional.md, §7</p>
+<dc-import name="VersionBar" hint-size="944px,84px"></dc-import>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #31333f;">The twelve reference vehicles come with the base and are never modified. Vehicles you create are marked as yours, and live only in your project file.</p>
+<div style="position: relative; border: 1px solid #e3e4e7; border-radius: 8px; overflow: hidden; height: 458px; box-sizing: border-box;"><table class="df"><thead><tr><th>IDV</th><th>DsV</th><th>IDVPT</th><th>IDVDT</th><th>IDVS</th><th>IDLR</th><th>Source</th><th>IDMPV</th><th>IDVMR</th><th>IDEFV</th><th>IDAPV</th><th>Boundary</th></tr></thead><tbody><tr><td class="n">1</td><td>BP01</td><td>ICEV</td><td>Hatchback</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD2</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">2</td><td>BP02</td><td>ICEV</td><td>SUV</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD2s</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">3</td><td>BP03</td><td>ICEV</td><td>SUV</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD3</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">4</td><td>BP04</td><td>BEV</td><td>Hatchback</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD12</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">5</td><td>BP05</td><td>BEV</td><td>Sedan</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD12</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">6</td><td>BP06</td><td>BEV</td><td>SUV</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD12</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">7</td><td>BP07</td><td>HEV</td><td>Hatchback</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD6</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">8</td><td>BP08</td><td>HEV</td><td>Sedan</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD6</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">9</td><td>BP09</td><td>HEV</td><td>SUV</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD6</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">10</td><td>BP10</td><td>PHEV</td><td>Hatchback</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD8</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">11</td><td>BP11</td><td>PHEV</td><td>Sedan</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD8</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr><tr><td class="n">12</td><td>BP12</td><td>PHEV</td><td>SUV</td><td>Midsize</td><td>Regular</td><td>reference</td><td class="n">1</td><td>PBP_BISD8</td><td>G22</td><td>A-EF</td><td>MAT_ASM</td></tr></tbody></table></div>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">Create a vehicle</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #31333f;">A new vehicle starts as a copy of an existing one of the same powertrain, with every inherited value marked, so you change what differs instead of filling in forty parameters.</p>
+<form style="margin: 0; padding: 16px; border: 1px solid rgba(49, 51, 63, 0.2); border-radius: 8px; display: flex; flex-direction: column; gap: 16px;"><div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; gap: 16px; align-items: flex-start;">
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Copy from</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>BP01</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Name</label><div style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; border-radius: 8px; background: #f0f2f6; color: #31333f; font-size: 16px;">MEU01</div></div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Size</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>Compact</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+</div>
+</div>
+<div style="display: flex; gap: 16px; align-items: flex-start;">
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Powertrain</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>BEV</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Body</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>Hatchback</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+</div>
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Material recipe</label><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; border-radius: 8px; background: #f0f2f6; color: #31333f; font: inherit; font-size: 16px; text-align: left;"><span>BISD2</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button></div>
+</div>
+</div>
+<div style="display: flex;"><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; background: {{primary}}; color: #ffffff; border: 1px solid {{primary}}; font: inherit; font-size: 16px; line-height: 1.6;">Create</button></div>
+</div></form>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"primary": {"editor": "color", "default": "#2a78d6", "options": ["#2a78d6", "#1d5fae", "#0b6e4f", "#52514e"], "section": "Tema (.streamlit/config.toml)"}, "$preview": {"width": 1440, "height": 1456}}'>
+class Component extends DCLogic {
+renderVals() {
+return { primary: this.props.primary ?? '#2a78d6' };
+}
+}
+</script>
+</body>
+</html>

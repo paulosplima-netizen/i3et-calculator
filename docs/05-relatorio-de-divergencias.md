@@ -166,4 +166,10 @@ Em **emissões**, os mesmos doze veículos também reproduzem o i3ET: a maior di
 
 ---
 
+## 9. Divergências do levantamento da Fase A
+
+Os levantamentos da planilha `LCA_LV_i3ET_20261101.xlsx` para a Fase A (potência combinada, regras de valor padrão, Control Panel, fatores e receitas, rótulos) estão no anexo `05a-divergencias-fase-a.md`, escrito à mão. Este relatório continua tratando só da aderência do cálculo.
+
+---
+
 *Gerado por `tools/report_divergences.py`.*

@@ -77,8 +77,14 @@ invariant blocks export.
 Under development. The reference database is built and validated, the calculation
 core reproduces the i3ET — mass on all 72 configurations of the spreadsheet (39 exact,
 33 explained by a module that is out of scope) and cradle-to-gate emissions on the
-twelve project vehicles — and the seven screens of the web interface run. What is
-left is publication.
+twelve project vehicles — and the seven screens of the web interface run. Version
+0.9.0 is published.
+
+**Version 0.10.0 ("Fase A") is in progress**: project identity, analysis setup
+(equalized or free comparison), the catalogue of control-panel parameters and frozen
+runs. Schema 0.10 and the reference data extracted from the i3ET spreadsheet are in
+place (`docs/06` to `docs/08`); the calculation core for them and the new screens are
+not written yet. No result of the twelve project vehicles changed.
 
 ## Running it
 
@@ -91,6 +97,7 @@ python -m pytest -q                  # the test suite
 python tools/validate_core.py        # the acceptance table against the i3ET
 python tools/report_divergences.py   # regenerates docs/05
 python tools/export_results.py       # XLSX, CSV, HTML and PDF into saidas/
+python tools/load_fase_a.py          # reloads data/csv/fase_a into the reference base
 ```
 
 The same three commands run on every push, in `.github/workflows/tests.yml`.
@@ -108,6 +115,10 @@ Full specification, in Portuguese, in `docs/`:
 | `03-ferramentas.md` | Tooling inventory |
 | `04-especificacao-tecnica.md` | Architecture, algorithm, interface, output tables, export, tests, publication |
 | `05-relatorio-de-divergencias.md` | Where and why the calculator differs from the i3ET spreadsheet, and what to adjust there |
+| `05a-divergencias-fase-a.md` | What the survey of the spreadsheet for Fase A found: combined power, default rules, control panel, factors, labels |
+| `06-fase-a-navegacao-projeto-e-analise.md` | Fase A specification: navigation, project, analysis, combined-power rule, provenance badge, screens, parity matrix |
+| `07-dicionario-de-dados-fase-a.md` | Schema 0.10, column by column, integrity rules I16–I27, migration |
+| `08-fase-a-fixtures.md` | Where each Fase A table comes from, how to rebuild it, what the extraction found |
 
 The specification is written to be sufficient on its own: someone should be able to
 rebuild this program from `docs/` alone, without reading the source. That claim is

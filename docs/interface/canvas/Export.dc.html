@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Export</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&amp;family=Source+Code+Pro&amp;display=swap">
+<style>
+body{margin:0;font-family:"Source Sans Pro","Source Sans 3",sans-serif;color:#31333f;background:#ffffff}
+a{color:#2a78d6}a:hover{color:#1d5fae}
+code{font-family:"Source Code Pro",monospace;font-size:12px;color:#09ab3b;background:#f8f9fb;padding:1px 4px;border-radius:4px}
+table.df{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.df th{background:#f8f9fb;color:rgba(49,51,63,0.6);font-weight:400;text-align:left;height:35px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap}
+table.df td{height:34px;padding:0 8px;border-bottom:1px solid #e3e4e7;border-right:1px solid #e3e4e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+table.df td.n{text-align:right}
+table.df td.none{color:rgba(49,51,63,0.4)}
+svg.grafico{width:100%;height:auto;display:block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+svg .grid{stroke:rgba(128,128,128,0.25);stroke-width:1}
+svg .eixo{stroke:rgba(128,128,128,0.55);stroke-width:1}
+svg .ligacao{stroke:rgba(128,128,128,0.55);stroke-width:1;stroke-dasharray:3 3}
+svg .barra{fill:#2a78d6}
+svg .total{fill:#52514e}
+svg .rotulo,svg .legenda{fill:#31333f;opacity:0.75;font-size:12px}
+svg .valor,svg .tick,svg .unidade{fill:#31333f;opacity:0.8;font-size:11px;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1392px; display: flex; background: #ffffff; overflow: hidden;">
+<nav aria-label="Pages" style="width: 336px; flex-shrink: 0; background: #f0f2f6;">
+<dc-import name="Sidebar" active="Export" hint-size="336px,900px"></dc-import>
+</nav>
+<main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 96px 80px 96px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<h1 style="margin: 0; padding: 0; font-size: 44px; line-height: 1.2; font-weight: 700; color: #31333f;">Export</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">Specified in docs/01-especificacao-funcional.md, §6 of Documento 4</p>
+<dc-import name="VersionBar" hint-size="944px,84px"></dc-import>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #31333f;">Every exported set is self-contained: the results, and exactly the parameters that produced them. Whoever receives the file can redo the arithmetic without this program.</p>
+<div style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">Formats</label><div style="min-height: 40px; box-sizing: border-box; padding: 4px 12px 4px 8px; display: flex; align-items: center; gap: 8px; border-radius: 8px; background: #f0f2f6;"><span style="height: 28px; box-sizing: border-box; padding: 0 10px; display: inline-flex; align-items: center; gap: 6px; border-radius: 4px; background: {{primary}}; color: #ffffff; font-size: 14px;">XLSX<svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2l6 6M8 2l-6 6"></path></svg></span><span style="height: 28px; box-sizing: border-box; padding: 0 10px; display: inline-flex; align-items: center; gap: 6px; border-radius: 4px; background: {{primary}}; color: #ffffff; font-size: 14px;">HTML<svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2l6 6M8 2l-6 6"></path></svg></span><span style="flex-grow: 1;"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></div></div>
+<div role="radiogroup" style="display: flex; flex-direction: column;"><label style="display: block; margin-bottom: 4px; font-size: 14px; line-height: 1.6; color: #31333f;">CSV convention</label><div style="display: flex; flex-direction: row; gap: 24px;"><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; background: {{primary}}; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #ffffff;"></span></span><span>Brazilian — ; separator, , decimal</span></label><label style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6;"><span style="width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; border: 1px solid rgba(49, 51, 63, 0.2); background: #f0f2f6; flex-shrink: 0;"></span><span>ISO — , separator, . decimal (R, Python, Stata)</span></label></div></div>
+<div style="display: flex;"><button type="button" style="height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; background: {{primary}}; color: #ffffff; border: 1px solid {{primary}}; font: inherit; font-size: 16px; line-height: 1.6;">Generate and export all tables</button></div>
+<hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(49, 51, 63, 0.2); height: 0;">
+<h3 style="margin: 0; padding-top: 8px; font-size: 28px; line-height: 1.2; font-weight: 600; color: #31333f;">What comes out</h3>
+<div style="position: relative; border: 1px solid #e3e4e7; border-radius: 8px; overflow: hidden; height: 388px; box-sizing: border-box;"><table class="df"><thead><tr><th>Tabela</th><th>Conteudo</th><th>Linhas</th><th>Colunas</th></tr></thead><tbody><tr><td>R00</td><td>Metadados da execucao</td><td class="n">10</td><td class="n">2</td></tr><tr><td>R01</td><td>Veiculos e cenarios</td><td class="n">12</td><td class="n">14</td></tr><tr><td>R02</td><td>Parametros do veiculo</td><td class="n">432</td><td class="n">13</td></tr><tr><td>R03</td><td>Massa por subgrupo</td><td class="n">516</td><td class="n">17</td></tr><tr><td>R04</td><td>Massa por grupo GREET</td><td class="n">144</td><td class="n">10</td></tr><tr><td>R05</td><td>Massa e GEE por material e grupo</td><td class="n">1500</td><td class="n">19</td></tr><tr><td>R06</td><td>Massa e GEE da bateria por material</td><td class="n">9</td><td class="n">19</td></tr><tr><td>R07</td><td>Massa e GEE por grupo GREET</td><td class="n">144</td><td class="n">11</td></tr><tr><td>R08</td><td>Massa e GEE por material</td><td class="n">633</td><td class="n">11</td></tr><tr><td>R09</td><td>GEE da montagem por processo</td><td class="n">12</td><td class="n">11</td></tr></tbody></table><div aria-hidden="true" style="position: absolute; right: 2px; top: 38px; width: 6px; height: 94px; border-radius: 3px; background: rgba(49, 51, 63, 0.25);"></div></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(49, 51, 63, 0.6);">An empty table is not a defect: a scenario that reads the assembly from the factor table has no energy rows to report.</p>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"primary": {"editor": "color", "default": "#2a78d6", "options": ["#2a78d6", "#1d5fae", "#0b6e4f", "#52514e"], "section": "Tema (.streamlit/config.toml)"}, "$preview": {"width": 1440, "height": 1392}}'>
+class Component extends DCLogic {
+renderVals() {
+return { primary: this.props.primary ?? '#2a78d6' };
+}
+}
+</script>
+</body>
+</html>

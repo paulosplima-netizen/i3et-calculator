@@ -1,0 +1,114 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-09-21T11:20:18Z"
+ },
+ "title": "Telas da Calculadora Berço ao Portão",
+ "launch": {
+  "view": "canvas"
+ },
+ "pages": [],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1432,
+   "title": "1 · Home"
+  },
+  "Vehicles.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 1456,
+   "title": "2 · Vehicles"
+  },
+  "VehicleParameters.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 2488,
+   "title": "3 · Vehicle parameters"
+  },
+  "Scenario.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 1936,
+   "title": "4 · Scenario"
+  },
+  "Results.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 2936,
+   "title": "5 · Results"
+  },
+  "EmissionFactors.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 2256,
+   "title": "6 · Emission factors"
+  },
+  "Export.dc.html": {
+   "x": 9120,
+   "y": 0,
+   "w": 1440,
+   "h": 1392,
+   "title": "7 · Export"
+  },
+  "Sidebar.dc.html": {
+   "x": 0,
+   "y": 3056,
+   "w": 336,
+   "h": 900,
+   "title": "Peça comum · barra lateral"
+  },
+  "VersionBar.dc.html": {
+   "x": 416,
+   "y": 3056,
+   "w": 944,
+   "h": 84,
+   "title": "Peça comum · barra de versões"
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "Vehicles.dc.html",
+  "VehicleParameters.dc.html",
+  "Scenario.dc.html",
+  "Results.dc.html",
+  "EmissionFactors.dc.html",
+  "Export.dc.html",
+  "Sidebar.dc.html",
+  "VersionBar.dc.html"
+ ],
+ "notes": {
+  "titulo": {
+   "x": 0,
+   "y": -300,
+   "text": "As sete telas · v0.9.0 · estado de referência (BP01, projeto aberto)",
+   "kind": "title1",
+   "maxW": 10560
+  },
+  "pecas": {
+   "x": 1440,
+   "y": 3056,
+   "w": 520,
+   "size": "m",
+   "color": "blue",
+   "text": "Peças comuns: a barra lateral e a barra de versões aparecem em todas as telas. Edite aqui e a mudança vale para as sete.\n\nRegra do Streamlit: sem posicionamento livre. Ajuste ordem, colunas (pesos), textos, cores e tamanhos; cada prancheta é montável com st.columns, st.tabs, st.expander, st.form e st.divider.\n\nCor de destaque: botão Tweaks de cada tela (primaryColor do .streamlit/config.toml)."
+  }
+ },
+ "designSystems": [
+  {
+   "title": "i3ET Calculator",
+   "namespace": "i3et",
+   "artifact": "https://claude.ai/artifact/BeBGr6H1hTj3twPKDX89d9",
+   "version": null,
+   "copiedAt": "2026-09-21T11:20:18Z"
+  }
+ ]
+}

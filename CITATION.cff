@@ -4,8 +4,8 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "i3ET Calculator: Light Vehicle Cradle-to-Gate Carbon Footprint"
 type: software
-version: 0.9.0
-date-released: 2026-09-21
+version: 0.10.0
+date-released: 2026-11-17
 authors:
   - family-names: Lima
     given-names: Paulo Sergio Pinheiro
@@ -18,7 +18,7 @@ doi: 10.5281/zenodo.22867012
 identifiers:
   - type: doi
     value: 10.5281/zenodo.22867013
-    description: "Version 0.9.0"
+    description: "Version 0.10.0"
   - type: doi
     value: 10.5281/zenodo.22867012
     description: "All versions (concept DOI)"
