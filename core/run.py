@@ -1,0 +1,203 @@
+"""Rodada: congelar, executar e gravar o resultado (Fase A, passo 4).
+
+Congelar grava em D09 um JSON canonico de tudo o que entra no calculo e o seu
+SHA-256. Executar calcula cada caso (menos os Pending) com o nucleo e grava R45.
+Duas rodadas com o mesmo `InputHash` e o mesmo `ParamBaseHash` dao o mesmo R45
+(regra I24).
+
+Blocos:
+    RN1  verificacao previa
+    RN2  congelar
+    RN3  executar
+    RN4  gravar R45
+
+Este modulo nao importa streamlit.
+"""
+
+from __future__ import annotations
+
+import datetime as dt
+import hashlib
+import json
+import secrets
+import sqlite3
+
+from . import battery as battery_mod, calc, control_params, loader, power_rule, provenance
+from .log import Log
+from .validate import check_analysis
+
+#: Indicadores calculados pelo nucleo (P51.CalcStatus = Calculated) e de onde
+#: vem cada um: IDVP de D03, ou um dos nomes especiais.
+_GC_INDICATORS = {"O10": 2, "O11": 3, "O12": 15, "O13": 7, "O14": 8, "O15": 27, "O16": 14,
+                  "O17": 31, "O19": 5}
+
+
+def _rows(conn, sql, args=()):
+    cur = conn.execute(sql, args)
+    names = [d[0] for d in cur.description]
+    return [dict(zip(names, r)) for r in cur.fetchall()]
+
+
+# --------------------------------------------------------------------------
+# BLOCO RN1 -- verificacao previa
+#   Devolve : lista de problemas (vazia: pode congelar); as regras I16 a I23 e
+#             I28 ficam em validate.check_analysis.
+# --------------------------------------------------------------------------
+def precheck(conn: sqlite3.Connection, ida: int) -> list[str]:
+    return check_analysis(conn, ida)
+
+
+# --------------------------------------------------------------------------
+# BLOCO RN2 -- congelar
+#   Le      : D06, D07, D02, D03, D12, P30/D08 e a base.
+#   Devolve : RunID. Grava M01 e D09 (Status Frozen).
+# --------------------------------------------------------------------------
+def _snapshot(conn, ida: int, *, calculator_version: str, base_hash: str,
+              reference_workbook: str) -> dict:
+    d06 = _rows(conn, "SELECT * FROM D06_Analysis WHERE IDA = ?", (ida,))[0]
+    defaults, fits = power_rule.load_defaults(conn), power_rule.load_fits(conn)
+    overrides = power_rule.load_overrides(conn, ida)
+    cases = []
+    for c in _rows(conn, "SELECT * FROM D07_AnalysisVehicle WHERE IDA = ? ORDER BY IDCase", (ida,)):
+        f = power_rule.effective_factors(
+            c["IDVPT"], rule=d06["CombinedPowerRule"], case_key=c["CaseKey"],
+            idcase=c["IDCase"], defaults=defaults, fits=fits, overrides=overrides)
+        cases.append({
+            "case": c,
+            "vehicle": _rows(conn, "SELECT * FROM D01_Vehicle WHERE IDV = ?", (c["IDV"],))[0],
+            "alternative": _rows(conn, "SELECT * FROM D02_EvaluationAlternative "
+                                 "WHERE IDV = ? AND IDEA = ?", (c["IDV"], c["IDEA"]))[0],
+            "params": _rows(conn, "SELECT IDVP, GC, GCText, IsCalculated FROM "
+                            "D03_VehicleParamValue WHERE IDV = ? ORDER BY IDVP", (c["IDV"],)),
+            "power_factors": {"ice": f.ice, "ee": f.ee, "origin": f.origin,
+                              "provisional": f.provisional},
+        })
+    eff = control_params.effective_values(conn, ida, d06["ParamProfile"])
+    return {"analysis": d06, "cases": cases,
+            "control_params": {k: [e.value, e.text, e.source] for k, e in sorted(eff.items())},
+            "versions": {"calculator": calculator_version, "param_base_hash": base_hash,
+                         "reference_workbook": reference_workbook}}
+
+
+def canonical(obj) -> str:
+    return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def freeze(conn: sqlite3.Connection, ida: int, *, calculator_version: str,
+           reference_workbook: str, project_name: str | None = None) -> str:
+    problems = precheck(conn, ida)
+    if problems:
+        raise ValueError("cannot freeze: " + "; ".join(problems))
+    base_hash = conn.execute(
+        "SELECT Value FROM M00_BaseInfo WHERE Key = 'ParamBaseHash'").fetchone()[0]
+    snap = canonical(_snapshot(conn, ida, calculator_version=calculator_version,
+                               base_hash=base_hash, reference_workbook=reference_workbook))
+    now = dt.datetime.now().isoformat(timespec="seconds")
+    run_id = "RUN-" + dt.datetime.now().strftime("%Y%m%d%H%M%S") + "-" + secrets.token_hex(2)
+    seq = conn.execute("SELECT COALESCE(MAX(RunSeq), 0) + 1 FROM D09_Run WHERE IDA = ?",
+                       (ida,)).fetchone()[0]
+    conn.execute("INSERT INTO M01_RunMetadata (RunID, RunTimestamp, CalculatorVersion, "
+                 "ParamBaseHash, ProjectName, ValidationStatus) VALUES (?,?,?,?,?,'Frozen')",
+                 (run_id, now, calculator_version, base_hash, project_name))
+    conn.execute(
+        "INSERT INTO D09_Run (RunID, IDA, RunSeq, FrozenAt, InputSnapshot, InputHash, "
+        "ParamBaseHash, ReferenceWorkbook, CalculatorVersion, Status) "
+        "VALUES (?,?,?,?,?,?,?,?,?,'Frozen')",
+        (run_id, ida, seq, now, snap, hashlib.sha256(snap.encode("utf-8")).hexdigest(),
+         base_hash, reference_workbook, calculator_version))
+    conn.commit()
+    return run_id
+
+
+# --------------------------------------------------------------------------
+# BLOCO RN3 -- executar
+#   Calcula cada caso do instantaneo congelado, nao o estado atual do projeto.
+#   `db_path` e o arquivo do projeto (o nucleo le as tabelas de parametros dele).
+# --------------------------------------------------------------------------
+def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
+    snap = json.loads(conn.execute("SELECT InputSnapshot FROM D09_Run WHERE RunID = ?",
+                                   (run_id,)).fetchone()[0])
+    base = loader.load_sqlite(db_path)
+    ef_table = loader.effective_emission_factors(base)
+    log = Log()
+    results = {}
+    cp_values = {k: v[0] for k, v in snap["control_params"].items()}
+    try:
+        for c in snap["cases"]:
+            if c["case"]["SizingOrigin"] == "Pending":
+                continue
+            alt, pf = c["alternative"], c["power_factors"]
+            gc = {p["IDVP"]: float(p["GC"] or 0.0) for p in c["params"]}
+            supplied = {p["IDVP"] for p in c["params"] if not p["IsCalculated"]}
+            battery = next((p["GCText"] for p in c["params"] if p["IDVP"] == 32), None)
+            battery = battery if battery not in (None, "", "ND") else None
+            results[c["case"]["CaseKey"]] = (c, calc.calculate_vehicle(
+                base, gc, powertrain=c["vehicle"]["IDVPT"], battery_id=battery,
+                idmpv=alt["IDMPV"], idvmr=alt["IDVMR"], idefv=alt["IDEFV"], idapv=alt["IDAPV"],
+                boundary=alt["Boundary"], ef_table=ef_table, supplied=supplied,
+                power_factors=(pf["ice"], pf["ee"]),
+                generic_battery=battery_mod.generic_model(base.get("P58"), battery, cp_values),
+                log=log))
+    except Exception:
+        conn.execute("UPDATE D09_Run SET Status = 'Failed' WHERE RunID = ?", (run_id,))
+        conn.commit()
+        raise
+    write_results(conn, run_id, results, snap)
+    return results
+
+
+# --------------------------------------------------------------------------
+# BLOCO RN4 -- gravar R45
+#   Indicadores calculados: origem Calculated. Indicadores que so existem na
+#   planilha: ExcelReference, so para a configuracao gravada (P52).
+# --------------------------------------------------------------------------
+def write_results(conn: sqlite3.Connection, run_id: str, results: dict, snap: dict) -> None:
+    status = dict(conn.execute("SELECT IDInd, CalcStatus FROM P51_OutputIndicator "
+                               "WHERE IsHeader = 0"))
+    refs = {}
+    for case_key, idind, val, txt in conn.execute(
+            "SELECT CaseKey, IDInd, Value, ValueText FROM P52_ExcelReferenceValue "
+            "WHERE RefSet IN ('CP_OUT_EC','CP_OUT_FC')"):
+        refs[(case_key, idind)] = (val, txt)
+    conn.execute("DELETE FROM R45_PowertrainSummary WHERE RunID = ?", (run_id,))
+    by_case = {c["case"]["CaseKey"]: c for c in snap["cases"]}
+    for key, c in by_case.items():
+        pt = c["case"]["IDVPT"]
+        recorded = c["case"]["SizingOrigin"] == "ExcelReference"
+        out = results.get(key)
+        for idind, st in status.items():
+            val = txt = None
+            if st == "Calculated" and out is not None:
+                _, res = out
+                gc = res["gc"]
+                if idind in _GC_INDICATORS:
+                    val = float(gc[_GC_INDICATORS[idind]])
+                elif idind == "O9":
+                    txt = c["vehicle"]["DsV"]
+                elif idind == "O18":
+                    txt = next((p["GCText"] for p in c["params"] if p["IDVP"] == 32), None)
+                elif idind == "O28":
+                    txt = c["alternative"]["IDVMR"]
+                elif idind == "O20":
+                    val = float(res["totals"]["MassIDV"])   # massa calculada, nao a de entrada
+                elif idind == "O29":
+                    val = float(res["totals"]["GHGCradleToGate"])
+                else:
+                    continue
+            seal = provenance.classify(st, is_recorded_case=recorded,
+                                       has_reference=(key, idind) in refs)
+            if seal.origin == provenance.EXCEL_REFERENCE:
+                val, txt = refs[(key, idind)]
+            elif st == "Calculated" and out is not None:
+                seal = provenance.Seal(provenance.CALCULATED)
+            else:
+                continue
+            if val is None and txt is None:
+                continue
+            conn.execute("INSERT INTO R45_PowertrainSummary (RunID, CaseKey, IDVPT, IDInd, "
+                         "Value, ValueText, ValueOrigin) VALUES (?,?,?,?,?,?,?)",
+                         (run_id, key, pt, idind, val, txt, seal.origin))
+    conn.execute("UPDATE D09_Run SET Status = 'Calculated' WHERE RunID = ?", (run_id,))
+    conn.execute("UPDATE M01_RunMetadata SET ValidationStatus = 'Calculated' WHERE RunID = ?",
+                 (run_id,))
+    conn.commit()

@@ -31,7 +31,9 @@ HYBRID_COMBINATION = ("HEV", "PHEV")
 
 
 def resolve(gc: dict[int, float], *, powertrain: str, battery_id, p19: pd.DataFrame,
-            supplied: set[int] | None = None, log=None) -> dict[int, float]:
+            supplied: set[int] | None = None, log=None,
+            power_factors: tuple[float, float] | None = None,
+            generic_battery: dict | None = None) -> dict[int, float]:
     """Return a copy of `gc` with the endogenous parameters computed.
 
     `gc` maps IDVP to value. Missing parameters count as zero: a component that
@@ -69,9 +71,15 @@ def resolve(gc: dict[int, float], *, powertrain: str, battery_id, p19: pd.DataFr
     if not keep(9):
         g[9] = v(7) * v(8)
 
-    # 15 — combined power: series hybrids run on the electric motor alone
+    # 15 — combined power. With `power_factors` (FactorICE, FactorEE, see
+    # core/power_rule.py) it is FactorICE*P_ICE + FactorEE*P_EE. Without them the
+    # 0.9.0 rule stands: series hybrids run on the electric motor alone, the
+    # others take the larger of the two.
     if not keep(15):
-        g[15] = v(3) if powertrain in ("SHEV", "SPHEV") else max(v(2), v(3))
+        if power_factors is not None:
+            g[15] = power_factors[0] * v(2) + power_factors[1] * v(3)
+        else:
+            g[15] = v(3) if powertrain in ("SHEV", "SPHEV") else max(v(2), v(3))
 
     # 29 — fH is exogenous; absent means 1, never 0, or fR would collapse
     if not v(29):
@@ -103,6 +111,12 @@ def resolve(gc: dict[int, float], *, powertrain: str, battery_id, p19: pd.DataFr
     # power density exists, by energy otherwise.
     if keep(35):
         pass
+    elif generic_battery is not None and bat is None:
+        # Modelo parametrico (P58): massa por kW da potencia eletrica ou por kWh.
+        if generic_battery["basis"] == "Power":
+            g[35] = generic_battery["mass_per_unit"] * (v(24) if v(24) > 0 else v(3))
+        else:
+            g[35] = generic_battery["mass_per_unit"] * v(5)
     elif not g[33]:
         g[35] = g[34] * v(5) if g[34] else 0.0
     else:

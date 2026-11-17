@@ -1,0 +1,57 @@
+﻿IDVMR;IDVPT;IDVDT;IDVS;DsVMR
+ICEV-G01;ICEV;;;Composicao da configuracao ICEV-G01 do GREET 2022 (carro de passeio, serie G01), extraida da coluna T do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-G02;HEV;;;Composicao da configuracao HEV-G02 do GREET 2022 (carro de passeio, serie G02), extraida da coluna U do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-G03;PHEV;;;Composicao da configuracao PHEV-G03 do GREET 2022 (carro de passeio, serie G03), extraida da coluna V do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-G04;BEV;;;Composicao da configuracao BEV-G04 do GREET 2022 (carro de passeio, serie G04), extraida da coluna W do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-G05;FCEV;;;Composicao da configuracao FCV-G05 do GREET 2022 (carro de passeio, serie G05), extraida da coluna X do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-G06;ICEV;;;Composicao da configuracao ICEV-G06 do GREET 2022 (carro de passeio, serie G06), extraida da coluna Y do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-G07;HEV;;;Composicao da configuracao HEV-G07 do GREET 2022 (carro de passeio, serie G07), extraida da coluna Z do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-G08;PHEV;;;Composicao da configuracao PHEV-G08 do GREET 2022 (carro de passeio, serie G08), extraida da coluna AA do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-G09;BEV;;;Composicao da configuracao BEV-G09 do GREET 2022 (carro de passeio, serie G09), extraida da coluna AB do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-G10;FCEV;;;Composicao da configuracao FCV-G10 do GREET 2022 (carro de passeio, serie G10), extraida da coluna AC do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-G11;ICEV;;;Composicao da configuracao ICEV-G11 do GREET 2023 (carro de passeio, serie G11), extraida da coluna AF do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-G12;HEV;;;Composicao da configuracao HEV-G12 do GREET 2023 (carro de passeio, serie G12), extraida da coluna AG do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-G13;PHEV;;;Composicao da configuracao PHEV-G13 do GREET 2023 (carro de passeio, serie G13), extraida da coluna AH do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-G14;BEV;;;Composicao da configuracao BEV-G14 do GREET 2023 (carro de passeio, serie G14), extraida da coluna AI do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-G15;FCEV;;;Composicao da configuracao FCV-G15 do GREET 2023 (carro de passeio, serie G15), extraida da coluna AJ do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-G16;ICEV;;;Composicao da configuracao ICEV-G16 do GREET 2023 (carro de passeio, serie G16), extraida da coluna AK do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-G17;HEV;;;Composicao da configuracao HEV-G17 do GREET 2023 (carro de passeio, serie G17), extraida da coluna AL do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-G18;PHEV;;;Composicao da configuracao PHEV-G18 do GREET 2023 (carro de passeio, serie G18), extraida da coluna AM do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-G19;BEV;;;Composicao da configuracao BEV-G19 do GREET 2023 (carro de passeio, serie G19), extraida da coluna AN do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-G20;FCEV;;;Composicao da configuracao FCV-G20 do GREET 2023 (carro de passeio, serie G20), extraida da coluna AO do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-G21;ICEV;;;Composicao da configuracao ICEV-G21 do GREET 2024 (carro de passeio, serie G21), extraida da coluna AR do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-G22;HEV;;;Composicao da configuracao HEV-G22 do GREET 2024 (carro de passeio, serie G22), extraida da coluna AS do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-G23;PHEV;;;Composicao da configuracao PHEV-G23 do GREET 2024 (carro de passeio, serie G23), extraida da coluna AT do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-G24;BEV;;;Composicao da configuracao BEV-G24 do GREET 2024 (carro de passeio, serie G24), extraida da coluna AU do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-G25;FCEV;;;Composicao da configuracao FCV-G25 do GREET 2024 (carro de passeio, serie G25), extraida da coluna AV do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-G26;ICEV;;;Composicao da configuracao ICEV-G26 do GREET 2024 (carro de passeio, serie G26), extraida da coluna AW do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-G27;HEV;;;Composicao da configuracao HEV-G27 do GREET 2024 (carro de passeio, serie G27), extraida da coluna AX do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-G28;PHEV;;;Composicao da configuracao PHEV-G28 do GREET 2024 (carro de passeio, serie G28), extraida da coluna AY do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-G29;BEV;;;Composicao da configuracao BEV-G29 do GREET 2024 (carro de passeio, serie G29), extraida da coluna AZ do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-G30;FCEV;;;Composicao da configuracao FCV-G30 do GREET 2024 (carro de passeio, serie G30), extraida da coluna BA do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-GL21;ICEV;;;Composicao da configuracao ICEV-GL21 do GREET 2024 (carro de passeio, serie GL21), extraida da coluna BB do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-GL26;ICEV;;;Composicao da configuracao ICEV-GL26 do GREET 2024 (carro de passeio, serie GL26), extraida da coluna BC do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-S21;ICEV;SUV;;Composicao da configuracao ICEV-S21 do GREET 2024 (SUV, serie S21), extraida da coluna BD do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-S22;HEV;SUV;;Composicao da configuracao HEV-S22 do GREET 2024 (SUV, serie S22), extraida da coluna BE do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-S23;PHEV;SUV;;Composicao da configuracao PHEV-S23 do GREET 2024 (SUV, serie S23), extraida da coluna BF do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-S24;BEV;SUV;;Composicao da configuracao BEV-S24 do GREET 2024 (SUV, serie S24), extraida da coluna BG do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-S25;FCEV;SUV;;Composicao da configuracao FCV-S25 do GREET 2024 (SUV, serie S25), extraida da coluna BH do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-S26;ICEV;SUV;;Composicao da configuracao ICEV-S26 do GREET 2024 (SUV, serie S26), extraida da coluna BI do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-S27;HEV;SUV;;Composicao da configuracao HEV-S27 do GREET 2024 (SUV, serie S27), extraida da coluna BJ do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-S28;PHEV;SUV;;Composicao da configuracao PHEV-S28 do GREET 2024 (SUV, serie S28), extraida da coluna BK do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-S29;BEV;SUV;;Composicao da configuracao BEV-S29 do GREET 2024 (SUV, serie S29), extraida da coluna BL do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-S30;FCEV;SUV;;Composicao da configuracao FCV-S30 do GREET 2024 (SUV, serie S30), extraida da coluna BM do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-SL21;ICEV;SUV;;Composicao da configuracao ICEV-SL21 do GREET 2024 (SUV, serie SL21), extraida da coluna BN do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-SL26;ICEV;SUV;;Composicao da configuracao ICEV-SL26 do GREET 2024 (SUV, serie SL26), extraida da coluna BO do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-P21;ICEV;PUT;;Composicao da configuracao ICEV-P21 do GREET 2024 (picape, serie P21), extraida da coluna BP do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-P22;HEV;PUT;;Composicao da configuracao HEV-P22 do GREET 2024 (picape, serie P22), extraida da coluna BQ do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-P23;PHEV;PUT;;Composicao da configuracao PHEV-P23 do GREET 2024 (picape, serie P23), extraida da coluna BR do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-P24;BEV;PUT;;Composicao da configuracao BEV-P24 do GREET 2024 (picape, serie P24), extraida da coluna BS do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-P25;FCEV;PUT;;Composicao da configuracao FCV-P25 do GREET 2024 (picape, serie P25), extraida da coluna BT do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-P26;ICEV;PUT;;Composicao da configuracao ICEV-P26 do GREET 2024 (picape, serie P26), extraida da coluna BU do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+HEV-P27;HEV;PUT;;Composicao da configuracao HEV-P27 do GREET 2024 (picape, serie P27), extraida da coluna BV do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+PHEV-P28;PHEV;PUT;;Composicao da configuracao PHEV-P28 do GREET 2024 (picape, serie P28), extraida da coluna BW do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+BEV-P29;BEV;PUT;;Composicao da configuracao BEV-P29 do GREET 2024 (picape, serie P29), extraida da coluna BX do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+FCV-P30;FCEV;PUT;;Composicao da configuracao FCV-P30 do GREET 2024 (picape, serie P30), extraida da coluna BY do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-PL21;ICEV;PUT;;Composicao da configuracao ICEV-PL21 do GREET 2024 (picape, serie PL21), extraida da coluna BZ do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).
+ICEV-PL26;ICEV;PUT;;Composicao da configuracao ICEV-PL26 do GREET 2024 (picape, serie PL26), extraida da coluna CA do bloco de receitas do i3ET (LCA_LV_i3ET_20261101.xlsx, M2, T8:DD281).

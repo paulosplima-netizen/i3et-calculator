@@ -1,0 +1,48 @@
+﻿IDInd;DsInd;utInd;SourceModule;PanelRow;IsHeader;ValueKind;FuelScenario;CalcStatus
+O9;ID Vehicle;;M2 GHG Mfg Module;9;0;Text;;Calculated
+O10;ICE - Internal Combustion Engine Power;kW;M2 GHG Mfg Module;10;0;Num;;Calculated
+O11;EE - Electric Engine Power;kW;M2 GHG Mfg Module;11;0;Num;;Calculated
+O12;Combined Power;kW;M2 GHG Mfg Module;12;0;Num;;Calculated
+O13;Car length;m;M2 GHG Mfg Module;13;0;Num;;Calculated
+O14;Car width;m;M2 GHG Mfg Module;14;0;Num;;Calculated
+O15;Height;m;M2 GHG Mfg Module;15;0;Num;;Calculated
+O16;fT = 2WT (1,0) or 4WT (1,2);dimensionless;M2 GHG Mfg Module;16;0;Num;;Calculated
+O17;Generator;kW;M2 GHG Mfg Module;17;0;Num;;Calculated
+O18;Battery ID;;M2 GHG Mfg Module;18;0;Text;;Calculated
+O19;Energy Battery;kWh;M2 GHG Mfg Module;19;0;Num;;Calculated
+O20;Vehicle weight (without driver and fuel);kg;M2 GHG Mfg Module;20;0;Num;;Calculated
+O21;Vehicle weight (with driver and fuel);kg;M4 GHG CTG Module;21;0;Num;;ExcelReference
+O22;Energy Intensity;MJ/km;M4 GHG CTG Module;22;0;Num;;ExcelReference
+O23;Fuel Economy (Ethanol E100 equivalent);km/liter;calc;23;0;Num;;ExcelReference
+O24;Fuel Economy (electricity equivalent);km/kWh;calc;24;0;Num;;ExcelReference
+O25;Efficiency from Pump or Plug to Wheel (without RB and idle);;M4 GHG CTG Module;25;0;Num;;ExcelReference
+O26;Overall Apparent Efficiency from Pump or Plug to Wheel;;M4 GHG CTG Module;26;0;Num;;ExcelReference
+O27;Vehicle GHG CTGate (Cradle to Gate);;;27;1;Num;;ExcelReference
+O28;Material Composition;;M2 GHG Mfg Module;28;0;Text;;Calculated
+O29;Manufacturing GHG CTGate;kg CO2e/v;M2 GHG Mfg Module;29;0;Num;;Calculated
+O30;Vehicle (Manufacturing+Consumables+EoL) GHG CTGrave;kg CO2e/v;M4 GHG CTG Module;30;0;Num;;ExcelReference
+O31;Vehicle GHG CTGrave (without fuel);kg CO2e/kg of v;calc;31;0;Num;;ExcelReference
+O32;Vehicle GHG CTGrave (without fuel) per km;g CO2e/km;M4 GHG CTG Module;32;0;Num;;ExcelReference
+O33;GHG from Fuels WTW and LCA CTGrave;;;33;1;Num;;ExcelReference
+O34;GHG from fuel: hydrated ethanol E100 + electricity;g CO2e/km;M4 GHG CTG Module;34;0;Num;Ethanol E100;ExcelReference
+O35;GHG from fuel + manufacturing: hydrated ethanol E100 + electricity;g CO2e/km;M4 GHG CTG Module;35;0;Num;Ethanol E100;ExcelReference
+O36;GHG from fuel: gasoline E30 + electricity;g CO2e/km;M4 GHG CTG Module;36;0;Num;Gasoline E30;ExcelReference
+O37;GHG from fuel + manufacturing: gasoline E30 + electricity;g CO2e/km;M4 GHG CTG Module;37;0;Num;Gasoline E30;ExcelReference
+O38;GHG from fuel: gasoline A + electricity;g CO2e/km;M4 GHG CTG Module;38;0;Num;Gasoline A;ExcelReference
+O39;GHG from fuel + manufacturing: gasoline A + electricity;g CO2e/km;M4 GHG CTG Module;39;0;Num;Gasoline A;ExcelReference
+O40;GHG from fuel: diesel B15 + electricity;g CO2e/km;M4 GHG CTG Module;40;0;Num;Diesel B15;ExcelReference
+O41;GHG from fuel + manufacturing: diesel B15 + electricity;g CO2e/km;M4 GHG CTG Module;41;0;Num;Diesel B15;ExcelReference
+O42;GHG from fuel: gas VMB B0 + electricity;g CO2e/km;M4 GHG CTG Module;42;0;Num;Gas VMB B0;ExcelReference
+O43;GHG from fuel + manufacturing: gas VMB B0 + electricity;g CO2e/km;M4 GHG CTG Module;43;0;Num;Gas VMB B0;ExcelReference
+O44;LCC - Life Cycle Cost - LCA CTGrave;Ethanol E100;;44;1;Num;;ExcelReference
+O45;Car Consumer Price;US$/v;M6 TCO and LCC Module;45;0;Num;;ExcelReference
+O46;Levelized cost per vehicle;US$/v;M6 TCO and LCC Module;46;0;Num;;ExcelReference
+O47;Levelized cost per km;US$/km;M6 TCO and LCC Module;47;0;Num;;ExcelReference
+O48;Car  Sale;US$/km;M6 TCO and LCC Module;48;0;Num;;ExcelReference
+O49;Loan;US$/km;M6 TCO and LCC Module;49;0;Num;;ExcelReference
+O50;Liquid Fuel + Electricity Cost;US$/km;M6 TCO and LCC Module;50;0;Num;;ExcelReference
+O51;Insurance & License;US$/km;M6 TCO and LCC Module;51;0;Num;;ExcelReference
+O52;Maintenance & Repair;US$/km;M6 TCO and LCC Module;52;0;Num;;ExcelReference
+O53;Taxes & Fees;US$/km;M6 TCO and LCC Module;53;0;Num;;ExcelReference
+O54;Chargers & Extra ILB;US$/km;M6 TCO and LCC Module;54;0;Num;;ExcelReference
+O55;Carbon Emissions;US$/km;M6 TCO and LCC Module;55;0;Num;;ExcelReference

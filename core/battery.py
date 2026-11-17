@@ -24,15 +24,48 @@ def model_of(p19: pd.DataFrame, battery_id):
     return None if hit.empty else hit.iloc[0]
 
 
+# --------------------------------------------------------------------------
+# Bateria parametrica (P58). O i3ET tem modelos `PB-<tipo>-indefinido` sem
+# composicao: a massa e a intensidade de carbono sao parametros do Control Panel.
+#   Le      : P58 e o valor efetivo de cada parametro de controle {IDCP: valor}.
+#   Devolve : dict (id, basis, mass_per_unit, carbon_intensity) ou None quando o
+#             identificador nao esta em P58.
+# --------------------------------------------------------------------------
+def generic_model(p58, battery_id, cp_values: dict):
+    if p58 is None or battery_id in (None, "", "-", "NA"):
+        return None
+    hit = p58[p58["IDBMd"] == battery_id]
+    if hit.empty:
+        return None
+    row = hit.iloc[0]
+    for col in ("IDCPMass", "IDCPCarbon"):
+        if row[col] not in cp_values or cp_values[row[col]] is None:
+            raise KeyError(f"parametro de controle {row[col]} sem valor para {battery_id}")
+    return {"id": battery_id, "basis": row["SizingBasis"],
+            "mass_per_unit": float(cp_values[row["IDCPMass"]]),
+            "carbon_intensity": float(cp_values[row["IDCPCarbon"]])}
+
+
 def by_material(p19: pd.DataFrame, p20: pd.DataFrame, p09: pd.DataFrame,
                 ef_table: pd.DataFrame, gc: dict[int, float], *,
-                battery_id, idefv: str, log=None) -> pd.DataFrame:
+                battery_id, idefv: str, generic: dict | None = None,
+                log=None) -> pd.DataFrame:
     """C06 joined with C07: mass and emissions of the traction battery."""
     empty = pd.DataFrame(columns=["IDBMd", "IDGG", "IDM", "DsM", "BMshareGG",
                                   "MassIDMpGGB", "Quantity", "EF", "GHGIDMpGGB",
                                   "HasFactor", "CountsAsMass"])
     mass_total = float(gc.get(IDVP_BATTERY_MASS, 0.0) or 0.0)
     model = model_of(p19, battery_id)
+    if model is None and generic is not None:
+        if mass_total == 0:
+            return empty
+        ci = generic["carbon_intensity"]
+        return pd.DataFrame([{
+            "IDBMd": battery_id, "IDGG": IPRINC, "IDM": None,
+            "DsM": "Bateria de tracao parametrica (intensidade de carbono massica)",
+            "BMshareGG": 1.0, "MassIDMpGGB": mass_total, "Quantity": mass_total,
+            "EF": ci, "GHGIDMpGGB": mass_total * ci, "HasFactor": 1, "CountsAsMass": 1,
+        }])
     if model is None:
         if battery_id in (None, "", "-", "NA"):
             return empty

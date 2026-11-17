@@ -1,0 +1,206 @@
+﻿IDCP;Cell;Section;Level;DsCP;utCP;IsCalculated;DefaultValue;DefaultText;BasicValue;BasicCell;MinValue;MostFrequent;MaxValue;Distribution;StdDev;Reference;UsedByModule
+X19;Z19;UPP;B;Fuel considered in Graphs;Ethanol E100, Gasoline E30, Diesel B15, Gas VMB B0;0;;Ethanol E100;;;;;;;;;UI
+X20;Z20;UPP;E;Gasoline C (blended) Anhydrous Ethanol content;% vol/vol;0;0.3;;;;0;0.3;0.32;;;;M4
+X21;Z21;UPP;E;Diesel B Biodiesel content;% vol/vol;0;0.15;;;;0;0.14;0.2;;;;M4
+X22;Z22;UPP;E;Vehicular Methane Blend (VMB) CBM content;% vol/vol;0;0;;;;0;0;1;;;;M4
+X23;Z23;UPP;B;BEV Electric Range Autonomy (BEV AER);km;0;400;;400;AY18;200;400;500;Triangular;50;"Madani et al.; Paffumi et al.; Branco et al.; Mandev";M4
+X24;Z24;UPP;B;PHEV Electric Range Autonomy (PHEV AER);km;0;100;;100;AY19;50;100;150;Triangular;16.666666666666668;"Madani et al.; Paffumi et al.; Branco et al.; Mandev";M4
+X25;Z25;UPP;E;Average daily distance below PHEV AER;km;1;28.64512954374197;;;;;;;;;;M4
+X26;Z26;UPP;E;Average daily distance above PHEV AER;km;1;164.48183152807115;;;;;;;;;;M4
+X27;Z27;UPP;E;Daily Distance CDF;"NBR_16567; SAE_J2841_EPA_USA; WLTC_EU;";0;;SAE_J2841_EPA_USA;;;;;;;;;UI
+X28;Z28;UPP;B;Days below AER;days/year;1;0.9227468456500001;;;;0;0.9671232876712329;1;;;;M4
+X29;Z29;UPP;B;Battery recharging failure factor (BRF);% of days;0;0.15;;;;0.05;0.15;0.5;;;;M4
+X30;Z30;UPP;B;Utility Factor;%;1;0.7418159050858829;;;;0.25;0.7612917847025495;0.85;Triangular;0.09999999999999999;"Hamza et al.;Plotz et al.;Paffumi et al.";M4
+X31;Z31;UPP;E;Test Cycle;NBR EPA NEDC WLTC;0;;NBR;;;;;;;;NBR is based on FTP75;UI
+X32;Z32;UPP;E;Average Velocity (including stops);km/h;1;53.622618083717526;;;;;;;;;"ECE15; EUDC; NEDV, NBR/FTP-75";M4
+X33;Z33;UPP;E;Maximum Velocity;km/h;1;96.4;;;;;;;;;"ECE15; EUDC; NEDV, NBR/FTP-75";M4
+X35;Z35;PET;B;GE Compact - ICEV engine Efficiency;%;0;0.24;;0.30143317290607463;AY24;0.22;0.24;0.26;Triangular;0.006666666666666668;Experts, INMETRO, JEC v.5, Bosch, Naunheimer et al.;M3
+X36;Z36;PET;E;GE Compact - LPS - Load Point Shifting ICEV->HEV;;0;1.15;;;;1.1;1.15;1.2;Triangular;;;M3
+X37;Z37;PET;E;GE Compact - HEV engine Efficiency;%;1;0.27599999999999997;;;;0.24200000000000002;0.27599999999999997;0.33;Triangular;;estimated based on Experts, INMETRO and JEC v.5;M3
+X38;Z38;PET;E;GE Compact - LPS - Load Point Shifting HEV->PHEV;;0;1.05;;;;1;1.05;1.1;Triangular;;;M3
+X39;Z39;PET;E;GE Compact - PHEV engine Efficiency;%;1;0.2898;;;;0.24200000000000002;0.2898;0.3465;Triangular;;estimated based on Experts, INMETRO and JEC v.5;M3
+X40;Z40;PET;E;GE ICEV engine Efficiency;%;0;0.22;;;;0.2;0.22;0.25;Triangular;0.008333333333333331;Experts, INMETRO, JEC v.5, Bosch, Naunheimer et al.;M3
+X41;Z41;PET;E;GE LPS - Load Point Shifting ICEV->HEV;;0;1.2;;;;1.15;1.2;1.25;Triangular;;;M3
+X42;Z42;PET;E;GE HEV engine Efficiency;%;1;0.264;;;;0.22999999999999998;0.264;0.34;Triangular;;estimated based on Experts, INMETRO and JEC v.5;M3
+X43;Z43;PET;E;GE LPS - Load Point Shifting HEV->PHEV;;0;1.1;;;;1;1.1;1.15;Triangular;;;M3
+X44;Z44;PET;E;GE PHEV engine Efficiency;%;1;0.29040000000000005;;;;0.22999999999999998;0.29040000000000005;0.374;Triangular;;estimated based on Experts, INMETRO and JEC v.5;M3
+X45;Z45;PET;E;Diesel - ICEV engine Efficiency;%;0;0.29;;;;0.28;0.32;0.35;Triangular;0.011666666666666659;Experts, INMETRO, JEC v.5, Bosch, Naunheimer et al.;M3
+X46;Z46;PET;E;Diesel - LPS - Load Point Shifting ICEV->HEV;;0;1.1;;;;1.08;1.1;1.12;;;;M3
+X47;Z47;PET;E;Diesel - Diesel - HEV engine Efficiency;%;1;0.319;;;;0.30240000000000006;0.35200000000000004;0.392;Triangular;;estimated based on Experts, INMETRO and JEC v.5;M3
+X48;Z48;PET;E;Diesel - LPS - Load Point Shifting HEV->PHEV;;0;1.05;;;;1.02;1.05;1.08;Triangular;;;M3
+X49;Z49;PET;E;Diesel - PHEV engine Efficiency;%;1;0.33495;;;;0.30844800000000006;0.36960000000000004;0.42336000000000007;Triangular;;estimated based on Experts, INMETRO and JEC v.5;M3
+X50;Z50;PET;E;CV Mechanical Transmission Efficiency;%;0;0.95;;;;0.92;0.95;0.96;Triangular;0.006666666666666654;Experts, Bosch, Naunheimer et al.;M3
+X51;Z51;PET;E;Range Extender Combustion Engine Efficiency;%;0;0.4;;;;0.32;0.41;0.45;Triangular;0.021666666666666667;Experts, INMETRO and JEC v.5;M3
+X52;Z52;PET;E;Generator & Rectification Efficiency;%;0;0.88;;;;0.83;0.88;0.94;Triangular;0.01833333333333333;Albatayneh et al.;M3
+X53;Z53;PET;E;BEV lifetime-average Usable Battery Capacity factor;%;0;0.75;;;;0.6;0.8;0.85;Triangular;0.041666666666666664;"Geotab, NLR, OSTI, Madani et al.;Yao et al.";M3
+X54;Z54;PET;E;PHEV lifetime-average Usable Battery Capacity factor;%;0;0.6;;;;0.55;0.68;0.8;Triangular;0.041666666666666664;"Geotab, NLR, OSTI, Madani et al.;Yao et al.";M3
+X55;Z55;PET;E;AC Plug-in Charging Efficiency, including on-board charger (OBC);%;0;0.88;;;;0.82;0.88;0.92;Triangular;;;M3
+X56;Z56;PET;E;DC Plug-in Charging Efficiency, including off-board converter;%;0;0.93;;;;0.9;0.93;0.96;Triangular;;;M3
+X57;Z57;PET;E;Share of Fast Charging (DC) over Total Charging;%;0;0.5;;;;0;0.5;1;Triangular;;;M3
+X58;Z58;PET;E;Plug-in Charging Efficiency;%;1;0.905;;;;0.82;0.905;0.96;Triangular;0.023333333333333334;Albatayneh et al.;M3
+X59;Z59;PET;E;Battery Roundtrip Efficiency (RTE);%;0;0.92;;;;0.85;0.92;0.96;Triangular;0.01833333333333333;Albatayneh et al.;M3
+X60;Z60;PET;E;Traction Power Electronic Efficiency (incl. inverter);%;0;0.95;;;;0.92;0.95;0.97;Triangular;0.008333333333333323;Albatayneh et al.;M3
+X61;Z61;PET;E;Traction Electric Motor Efficiency;%;0;0.93;;;;0.88;0.93;0.96;Triangular;0.013333333333333327;Experts, INMETRO and JEC v.5;M3
+X62;Z62;PET;E;EV Mechanical Transmission Efficiency;%;0;0.97;;;;0.95;0.97;0.98;Triangular;0.0050000000000000044;Experts, Bosch, Naunheimer et al.;M3
+X63;Z63;PET;E;Regenerative braking usage;%;0;0.88;;;;0.72;0.88;0.98;Triangular;0.043333333333333335;Experts, INMETRO and JEC v.5;M3
+X64;Z64;PET;E;CV Auxiliary Systems;MJ/km;0;0;;;;0.072;0.39;0.96;;;;M3
+X65;Z65;PET;E;EV Auxiliary Systems;MJ/km;0;0;;;;0.022;0.117;0.96;;;;M3
+X66;Z66;PET;B;Energy Battery Density;kWh/kg;0;0.172;;0.17;AY25;0.12894999999999998;0.1719234375;0.23809523809523808;Triangular;0.018190873015873018;GREET;M3
+X67;Z67;PET;E;Energy Battery Density (reciprocal);kg/kWh;1;5.813953488372094;;;;7.75494377665762;5.816542610718797;4.2;;;;M3
+X68;Z68;PET;E;PHEV/BEV Battery Density factor;;0;0.97;;;;0.95;0.97;0.99;Triangular;;;M3
+X69;Z69;PET;B;PHEV Battery Density;kWh/kg;1;0.16684;;;;0.13034;0.16628874999999999;0.19672;Triangular;0;;M3
+X70;Z70;PET;E;PHEV Battery Density (reciprocal);kg/kWh;1;5.993766482857828;;;;7.672241829062451;6.013635919447347;5.08336722244815;;;;M3
+X71;Z71;PET;E;Power Battery Density;kW/kg;0;2.15;;;;1.97242;2.2036466666666668;2.33273;Triangular;0.06005166666666669;GREET;M3
+X72;Z72;PET;E;Power Battery Density (reciprocal);kg/kW;1;0.46511627906976744;;;;0.5069914115654881;0.4537932578423038;0.428682273559306;;;;M3
+X74;Z74;LMP;E;Vehicle Lifespan;103 km;0;200;;;;150;200;300;;;https://climate.ec.europa.eu/system/files/2020-09/2020_study_main_report_en.pdf;M4
+X75;Z75;LMP;E;Battery Lifespan;103 km;0;200;;;;100;200;300;;;;M4
+X76;Z76;LMP;E;EoL - Vehicle without Battery;kg CO2e/kg;0;0.2;;;;0.15;0.2;0.25;;;"Malik et al.; Ecoinvent (reatment of used glider, passenger car, shredding)";M4
+X77;Z77;LMP;E;EoL - Vehicle Battery;kg CO2e/kWh;1;20;;;;15;20;30;Triangular;2.5;Abdelbaky et al.;M4
+X79;Z79;FEF;B;Grid Electricity;g CO2e/MJ;0;25.64;;28.68;AY28;19.13;25.64;39.26;Triangular;3.355;EPE, ANEEL, ONS;M4
+X80;Z80;FEF;B;Hydrated Ethanol;g CO2e/MJ;1;22.73;;22.73;AY29;21.08;22.73;35.73;Triangular;2.4416666666666664;"EPE, ANP; Unica, Seabra et al.; Ramos et al.";M4
+X81;Z81;FEF;E;Compressed BioMethane (CBM);g CO2e/MJ;0;8.35;;;;-20;8.35;50;;;;M4
+X83;Z83;MEF;B;Energy Battery Carbon Intensity;kg CO2e/kg;0;9.6;;11.5;AY26;3.22375;9.595133321426413;12.553345720820078;Triangular;1.5549326201366795;"GREET; Albatayneh et al.";M1M2
+X84;Z84;MEF;E;Energy Battery Carbon Intensity (reciprocal);kg CO2e/kWh;1;55.81395348837209;;;;25.000000000000004;55.81050181960452;52.72405202744433;;;;M1M2
+X85;Z85;MEF;E;PHEV/BEV  Battery Carbon Intensity factor;;0;1.06;;;;1.03;1.06;1.09;Triangular;;;M1M2
+X86;Z86;MEF;E;PHEV  Battery Carbon Intensity;kg CO2e/kg;1;10.176;;;;3.3204625;10.170841320711999;13.683146835693886;Triangular;;;M1M2
+X87;Z87;MEF;E;PHEV  Battery Carbon Intensity (reciprocal);kg CO2e/kWh;1;60.99256772956126;;;;25.47539128433328;61.16373669723297;69.55646012451142;;;;M1M2
+X88;Z88;MEF;E;Power Battery Carbon Intensity;kg CO2e/kg;0;8;;;;6.132695583966135;7.931656171851312;10.62017191357313;Triangular;0.7479127216011657;GREET;M1M2
+X89;Z89;MEF;E;Power Battery Carbon Intensity (reciprocal);kg CO2e/kW;1;3.7209302325581395;;;;3.109223990816426;3.599332094309423;4.552679441501215;;;;M1M2
+X90;Z90;MEF;E;Emission Factors List;"G22; G23; G24; GLO23; BR23";0;;BR23;;;;;;;;;M1M2
+X91;Z91;MEF;E;Steel Process losses (only for EF List BR23);%;0;0.15;;;;0;0.15;0.6;;;;M1M2
+X92;Z92;MEF;E;Recycled Steel (BR23 only);%;0;0.253;;;;0.1;0.253;1;;;;M1M2
+X93;Z93;MEF;E;Charcoal Steel (BR23 only);%;0;0.08;;;;0;0.08;1;;;;M1M2
+X94;Z94;MEF;E;Green Steel (#1) (BR23 only);%;0;0;;;;0;0;1;;;(#1) Green Steel: DRI using Biogás or Hydrogen from Water Electrolyses using Eolic Electricity;M1M2
+X95;Z95;MEF;E;Imported Steel (within components);%;0;0.2;;;;0;0.2;1;;;;M1M2
+X96;Z96;MEF;E;Steel EF;kg CO2e/kg;1;3.0331802352941177;;;;2;3.25;4;Triangular;0.3333333333333333;"FGV & Unicamp; Worldsteel";M1M2
+X97;Z97;MEF;E;Aluminum Process losses (only for EF List BR23);%;0;0.05;;;;0;0.05;0.6;;;;M1M2
+X98;Z98;MEF;E;Recycled Aluminum (BR23 only);%;0;0.418;;;;0;0.418;1;;;;M1M2
+X99;Z99;MEF;E;Prebaked/(Prebaked + Sordeberg) (BR23 only);%;1;0.666666666666667;;;;0;0.6666666666666666;1;;;;M1M2
+X100;Z100;MEF;E;Green Aluminum (#2) (BR23 only);%;0;0;;;;0;0;1;;;(#2) Green Aluminum using Eolic Electricity;M1M2
+X101;Z101;MEF;E;Imported Aluminum (within components);%;0;0.3;;;;0;0.3;1;;;;M1M2
+X102;Z102;MEF;E;Stamped Sheet Aluminum EF;kg CO2e/kg;1;8.375058496839161;;;;4;5.891125931806501;8.5;Triangular;0.75;"FGV & Unicamp; IAI";M1M2
+X103;Z103;MEF;E;Extruded Aluminum EF;kg CO2e/kg;1;6.057609601900101;;;;4;5.93882518458395;8.5;Triangular;0.75;"FGV & Unicamp; IAI";M1M2
+X104;Z104;MEF;E;Cast Aluminum EF;kg CO2e/kg;1;8.375058496839161;;;;4;5.351908621096036;8.5;Triangular;0.75;"FGV & Unicamp; IAI";M1M2
+X106;Z106;AUC;E;BEV Battery unit price per stored energy;US$/kWh;0;187.5;;;;150;187.5;206.25000000000003;Triangular;9.375000000000005;"ICCT; IEA; BloombergNEF";M6
+X107;Z107;AUC;E;PHEV/BEV prices ratio;;0;1.5;;;;1.2;1.5;3;Triangular;;;M6
+X108;Z108;AUC;E;PHEV Battery unit price per stored energy;US$/kWh;1;281.25;;;;180;281.25;618.7500000000001;Triangular;;;M6
+X109;Z109;AUC;E;HEV/BEV prices ratio;;0;3;;;;1.2;3;6;Triangular;;;M6
+X110;Z110;AUC;E;HEV Battery unit price per stored energy;US$/kWh;1;562.5;;;;180;562.5;1237.5000000000002;Triangular;0;;M6
+X111;Z111;AUC;E;Body + Chassis;US$/kg;0;20.43026537065826;;;;16.34421229652661;20.43026537065826;22.47329190772409;Triangular;1.0215132685329131;ICCT - Assessment of light-duty electric vehicle costs and consumer benefits in the United States in the 2022-2035 time frame;M6
+X112;Z112;AUC;E;Powertrain + Transmission;US$/kg;0;27.62500577803796;;;;22.10000462243037;27.62500577803796;30.387506355841758;Triangular;1.3812502889018983;ICCT - Assessment of light-duty electric vehicle costs and consumer benefits in the United States in the 2022-2035 time frame;M6
+X113;Z113;AUC;E;Electric Traction + Generator + Controller;US$/kg;0;46.374940313785075;;;;37.099952251028064;46.374940313785075;51.012434345163584;Triangular;2.318747015689253;ICCT - Assessment of light-duty electric vehicle costs and consumer benefits in the United States in the 2022-2035 time frame;M6
+X114;Z114;AUC;E;Compact Hatch Price Factor (Brazil/USA);ICEV-A01;0;0.95;;;;0.8;0.8399289127259805;2;;;Fiat Argo;M6
+X115;Z115;AUC;E;Compact SUV Price Factor (Brazil/USA);ICEV-A11;0;1.28;;;;0.8;1.5249484957778272;2;;;Hyundai Creta;M6
+X116;Z116;AUC;E;Midsize Sedan Price Factor (Brazil/USA);ICEV-A21;0;1.09;;;;0.8;1.1282749352224761;2;;;VW Virtus;M6
+X117;Z117;AUC;E;Large SUV Price Factor (Brazil/USA);ICEV-A31;0;1;;;;0.8;1.293239876626942;2;;;JEEP COMPASS;M6
+X118;Z118;AUC;E;PUT Price Factor (Brazil/USA);ICEV-A41;0;1.63;;;;0.8;1.6539992124809149;2;;;Ford Ranger;M6
+X119;Z119;AUC;E;Pickup Price Factor (Brazil/USA);ICEV-A51;0;1.1564;;;;0.8;1.1;2;;;Fiat Strada;M6
+X120;Z120;AUC;E;Energy Price;US$/MJ;0;0.035;;;;0;0.035;0.2;;;;M6
+X121;Z121;AUC;E;Global Market Carbon Value;US$/t CO2e;1;100;;;;10;100;200;;;https://www.statista.com/statistics/1474898/global-average-carbon-prices/;M6
+X122;Z122;AUC;E;Steel;US$/kg;0;0.65;;;;0.21666666666666667;0.65;1.3;;;;M6
+X123;Z123;AUC;E;High Strenght Low Alloy Steel;US$/kg;0;0.95;;;;0.31666666666666665;0.95;1.9;;;;M6
+X124;Z124;AUC;E;Aluminum Sheet (Automotive);US$/kg;1;3.201836065573769;;;;1.0666666666666667;3.2;6.4;;;;M6
+X125;Z125;AUC;E;Aluminum Extrusion (Automotive);US$/kg;1;5.803327868852461;;;;1.9333333333333333;5.8;11.6;;;;M6
+X126;Z126;AUC;E;Carbon Fiber-Reinforced Plastic for General Use;US$/kg;0;60;;;;20;60;120;;;;M6
+X127;Z127;AUC;E;Glass Fiber-Reinforced Plastic;US$/kg;0;25;;;;8.333333333333334;25;50;;;;M6
+X128;Z128;AUC;E;Magnesium;US$/kg;0;4.5;;;;1.5;4.5;9;;;;M6
+X130;Z130;LWP;E;Is Lightweighting on?;yes or no;1;;No;;;;;;;;;M5
+X131;Z131;LWP;E;Regular Steel replacement (body+chassi);;1;0.5;;;;;;;;;;M5
+X132;Z132;LWP;E;High Strenght Low Alloy Steel BS replacement;%;0;0;;;;0;0;0.9;;;;M5
+X133;Z133;LWP;E;Aluminum Sheet (Automotive) BS replacement;%;1;0.3333333333333333;;;;0;0;0.6;;;;M5
+X134;Z134;LWP;E;Aluminum Extrusion (Automotive) BS replacement;%;1;0.16666666666666666;;;;0;0;0.4;;;;M5
+X135;Z135;LWP;E;Carbon Fiber-Reinforced Plastic for General Use BS replacement;%;0;0;;;;0;0;0.2;;;;M5
+X136;Z136;LWP;E;Glass Fiber-Reinforced Plastic BS replacement;%;0;0;;;;0;0;0.6;;;;M5
+X137;Z137;LWP;E;Magnesium BS replacement;%;0;0;;;;0;0;0.3;;;;M5
+X138;Z138;LWP;E;MSR Material Substitution Rate (vs. Mild Steel);kg of material/kg steel;0;;;;;;;;;;;M5
+X139;Z139;LWP;E;High Strenght Low Alloy Steel MSR;HSLA Steel (ASTM A572 Gr.50);0;0.9;;;;0.35;0.9;0.9;;;;M5
+X140;Z140;LWP;E;Aluminum Sheet (Automotive) MSR;Aluminium 6061-T6;0;0.5;;;;0.3;0.5;0.55;;;;M5
+X141;Z141;LWP;E;Aluminum Extrusion (Automotive) MSR;Aluminium 7075-T6;0;0.3;;;;0.3;0.55;0.55;;;;M5
+X142;Z142;LWP;E;Carbon Fiber-Reinforced Plastic for General Use MSR;CFRP – Unidirectional Prepreg (UD, PAN-based);0;0.2;;;;0.2;0.3;0.3;;;;M5
+X143;Z143;LWP;E;Glass Fiber-Reinforced Plastic MSR;CFRP – Chopped / Sheet Moulding Compound (SMC);0;0.6;;;;0.55;0.6;0.6;;;;M5
+X144;Z144;LWP;E;Magnesium MSR;Magnesium AZ31B (Wrought);0;0.4;;;;0.4;0.45;0.45;;;;M5
+F20;P20;UPP;X;Days above AER;days;1;28.197401337749966;;12;AY20;0;12;365;;;;M4
+F23;P23;UPP;X;Average annual distance above ER;km/year;1;1818.2200825902014;;;;;2400;;;;;M4
+F25;P25;UPP;X;Days of battery charging failure (i.e. use ICE);days;1;54.75;;30;AY21;0;30;365;;;;M4
+F27;P27;UPP;X;Average annual distance of battery charging failure;km/year;1;-1870.1241304686125;;;;;1010.1173613921491;;;;;M4
+F28;P28;UPP;X;Average annual distance using liquid fuel;km/year;1;3688.3442130588155;;;;;3410.117361392149;;;;;M4
+F29;P29;UPP;X;Average annual distance using electricity;km/year;1;10597.37007265547;;;;;10875.596924322137;;;;;M4
+F31;P31;UPP;X;Utility Factor (UF);%;1;0.7418159050858829;;;;;0.7612917847025495;;;;;M4
+F32;P32;UPP;X;Vehicle lifespam;km;1;200000;;;;;200000;;;;;M4
+F33;P33;UPP;X;Vehicle lifespam;years;1;14;;;;;14;;;;;M4
+F34;P34;UPP;X;Annual distance;km/year;1;14285.714285714286;;;;;14285.714285714286;;;;;M4
+F36;P36;UPP;X;Road Inclination for Power sizing;%;0;0.1;;;;;0.1;;;;;M4
+F40;P40;PET;X;SHEV overall efficiency (without RB);%;1;0.29544240000000005;;;;0.19782737920000001;0.30282845999999997;0.37814169599999997;;;;M3
+F41;P41;PET;X;Combustion Technology;%;1;0.22799999999999998;;;;0.2024;0.22799999999999998;0.2496;;;;M3
+F59;P59;PET;X;Electrified Technology;%;1;0.7135340370000001;;;;0.5360766399999999;0.7135340370000001;0.8410300416;;;;M3
+F78;P78;PET;X;Energy Consumption;;0;;;;;;;;;;;M3
+F79;P79;PET;X;mass factor to consider  angular moment;dimensioless;0;1.08;;;;1.04;1.06772;1.2;;;"Guzzella & Sciarretta, Vehicle Propulsion Systems, 3ª ed., Springer, 2013; Wallentowitz (2004); IntechOpen Numerical Simulation for Vehicle Powertrain (2011)";M3
+F80;P80;PET;X;rolling resistance coefficient;dimensioless;1;0.010584968859860449;;;;0.008;0.01;0.02;;;"Bosch Automotive Handbook, 9ª ed. (2014), Tab. 28.1; x-engineer.org — Rolling Resistance (2023); SAE J2452 (2017)";M3
+F81;P81;PET;X;vehicle drag coefficient;dimensioless;1;0.33261921587522525;;;;0.25;0.25;0.45;;;"Wikipedia Automobile Drag Coefficient (2024); Hucho, W.-H. (Ed.), Aerodynamics of Road Vehicles, 4ª ed., SAE, 1998";M3
+F82;P82;PET;X;sea level gravity;m/s2;0;9.81;;;;9.78;9.787;9.832;;;"Valor para latitude de Campinas/SP (~23°S): g ≈ 9,787 m/s². Correção por altitude: g(h) = g₀ (1 − 3,086×10⁻⁷·h), com h em metros. Para Brasília (~1.000 m): g ≈ 9,784 m/s². Ref.: IBGE, Rede Altimétrica de Alta Precisão (2023); Moritz, H., J. Geod., 2000";M3
+F83;P83;PET;X;specific mass of air;kg/m3;0;1.1838;;;;1.146;1.225;1.293;;;"ISA (ICAO Doc 7488): ρ = 1,225 kg/m³ @ 15 °C, 101,325 kPa. Para o Planalto Central (Brasília ~1.000 m), ρ ≈ 1,11 kg/m³. Recomenda-se ajuste pela altitude local. Ref.: ICAO (1993); Bosch Automotive Handbook, 9ª ed., 2014";M3
+F84;P84;PET;X;ICEV Start Stop Idle Energy Saving;%;0;0;;;;0;0.5;0.8;;;"Start-stop systems impose a restart fuel penalty that is commonly approximated as about 7–10 seconds of engine idling. Therefore, net fuel savings are achieved only when the engine-off stop duration exceeds that threshold; for very short stops, the system can provide little benefit or even increase net fuel consumption relative to a conventional vehicle. As a result, the fraction of idle energy actually recovered depends strongly on the driving cycle, especially on total stop time and the number and duration of stop events. In certification cycles with a relatively high stop share, such as the NEDC, start-stop can recover roughly one-half to two-thirds of the theoretical maximum idle-saving potential when restart losses are included. In the WLTC, which has a lower stop share than the NEDC, the potential benefit is smaller. In real-world severe stop-and-go traffic, recovery efficiency can be much higher when stop durations are consistently well above the restart threshold, but any percentage claim should be treated as route- and calibration-dependent rather than universal.";M3
+F85;P85;PET;X;HEV Start Stop Idle Energy Saving;%;0;0.9;;;;0;0.9;1;;;"Start-stop systems impose a restart fuel penalty that is commonly approximated as about 7–10 seconds of engine idling. Therefore, net fuel savings are achieved only when the engine-off stop duration exceeds that threshold; for very short stops, the system can provide little benefit or even increase net fuel consumption relative to a conventional vehicle. As a result, the fraction of idle energy actually recovered depends strongly on the driving cycle, especially on total stop time and the number and duration of stop events. In certification cycles with a relatively high stop share, such as the NEDC, start-stop can recover roughly one-half to two-thirds of the theoretical maximum idle-saving potential when restart losses are included. In the WLTC, which has a lower stop share than the NEDC, the potential benefit is smaller. In real-world severe stop-and-go traffic, recovery efficiency can be much higher when stop durations are consistently well above the restart threshold, but any percentage claim should be treated as route- and calibration-dependent rather than universal.";M3
+F86;P86;PET;X;SHEV, PHEV and SPHEV Start Stop Idle Energy Saving;%;0;1;;;;0;1;1;;;"Start-stop systems impose a restart fuel penalty that is commonly approximated as about 7–10 seconds of engine idling. Therefore, net fuel savings are achieved only when the engine-off stop duration exceeds that threshold; for very short stops, the system can provide little benefit or even increase net fuel consumption relative to a conventional vehicle. As a result, the fraction of idle energy actually recovered depends strongly on the driving cycle, especially on total stop time and the number and duration of stop events. In certification cycles with a relatively high stop share, such as the NEDC, start-stop can recover roughly one-half to two-thirds of the theoretical maximum idle-saving potential when restart losses are included. In the WLTC, which has a lower stop share than the NEDC, the potential benefit is smaller. In real-world severe stop-and-go traffic, recovery efficiency can be much higher when stop durations are consistently well above the restart threshold, but any percentage claim should be treated as route- and calibration-dependent rather than universal.";M3
+F87;P87;PET;X;vehicle's frontal projection area;m2;1;2.1589309329976083;;;;2;2.65690112;4;;;"proxy: 84% height x width EcoModder Wiki (2018); x-engineer.org — Aerodynamic Drag (2023)";M3
+F91;P91;LMP;X;Vehicle lifespam (to calculate LCC and GHG profile);years;0;14;;;;;14;;;;;M4
+F94;P94;LMP;X;EoL - Vehicle (unique standard value -> to be replaced);kg CO2e/Vehicle;0;177.68;;;;105;180;2900;;;;M4
+F97;P97;FEF;X;Electricity energy: unit conversion factor;MJ/kWh;0;3.6;;;;;3.6;;;;;M4
+F99;P99;FEF;X;Hydrated ethanol energy intensity;MJ/liter;0;21.34;;;;;21.34;;;;;M4
+F100;P100;FEF;X;Anhydrous ethanol GHG WTW emissions intensity;g CO2e/MJ;1;22.38905;;;;;22.38905;;;;;M4
+F101;P101;FEF;X;Anhydrous ethanol energy intensity;MJ/liter;0;22.36;;;;;22.36;;;;;M4
+F102;P102;FEF;X;Compressed Natural Gas (CNG) Fossil;g CO2e/MJ;0;76.85;;;;60;76.85;85;;;;M4
+F103;P103;FEF;X;CNG energy intensity;MJ/Nm3;0;36.6;;;;;36.6;;;;;M4
+F105;P105;FEF;X;CBM energy intensity;MJ/Nm3;0;36;;;;;36;;;;;M4
+F107;P107;FEF;X;Vehicular Methane Blend (VMB);g CO2e/MJ;1;76.85;;;;;64.19442165709599;;;;;M4
+F108;P108;FEF;X;Vehicular Methane Blend (VMB) rate;MJ/Nm3;1;36.6;;;;;36.57;;;;;M4
+F109;P109;FEF;X;Gasoline A GHG WTW emissions intensity;g CO2e/MJ;0;87.4;;;;;87.4;;;;;M4
+F110;P110;FEF;X;Gasoline A energy intensity;MJ/liter;0;32.31;;;;;32.31;;;;;M4
+F112;P112;FEF;X;Diesel  GHG WTW emissions intensity;g CO2e/MJ;0;86.5;;;;;86.5;;;;;M4
+F113;P113;FEF;X;Diesel energy intensity;MJ/liter;0;35.52;;;;;35.52;;;;;M4
+F114;P114;FEF;X;Biodiesel B100 GHG WTW emissions intensity;g CO2e/MJ;0;28.4;;;;;28.4;;;;;M4
+F115;P115;FEF;X;Biodiesel B100 energy intensity;MJ/liter;0;33.16;;;;;33.16;;;;;M4
+F153;P153;AUC;X;Dollar rate;R$;0;5;;;;5;5.5;6;;;;M6
+F154;P154;AUC;X;Tax;% Tab. FIPE;0;0.04;;;;;0.04;;;;;M6
+F155;P155;AUC;X;Insurance;% Tab. FIPE;0;0.04;;;;;0.04;;;;Tex;M6
+F156;P156;AUC;X;Energy Price *;R$/MJ;1;0.17500000000000002;;;;;0.1925;;;;;M6
+F158;P158;AUC;X;Ethanol E100 Price;US$/liter;1;0.7469;;;;;0.7469;;;;preços de 2025 com paridade energética;M6
+F159;P159;AUC;X;Gasoline E27 Price;US$/liter;1;1.026375;;;;;1.026375;;;;preços de 2025 com paridade energética;M6
+F160;P160;AUC;X;Diesel B14 Price;US$/liter;1;1.23081;;;;;1.23081;;;;preços de 2025 com paridade energética;M6
+F161;P161;AUC;X;Electricity Price Home;US$/kWh;1;0.12600000000000003;;;;;0.126;;;;preços de 2025 com paridade energética;M6
+F162;P162;AUC;X;Companies/Homes Electricity Price Factor;;0;1.19047619047619;;;;;1.19047619047619;;;;;M6
+F163;P163;AUC;X;Electricity Price Companies;US$/kWh;1;0.14999999999999997;;;;;0.14999999999999994;;;;;M6
+F164;P164;AUC;X;Electrostation/Homes Electricity Price Factor;;0;1.42857142857142;;;;;1.42857142857142;;;;;M6
+F165;P165;AUC;X;Electricity Price Electrostation;US$/kWh;1;0.17999999999999897;;;;;0.1799999999999989;;;;;M6
+F166;P166;AUC;X;Discount Rate;% per year;0;0.05;;;;;0.05;;;;;M6
+F167;P167;AUC;X;Repair factor over scheduled maintenance;multiplier;0;1.5;;;;;1.5;;;;;M6
+F168;P168;AUC;X;Home Chargers Average Price;R$/Charger;0;4950;;;;;4950;;;;;M6
+F169;P169;AUC;X;Home Chargers Average Price;US$/Charger;1;990;;;;;900;;;;"ICCT, 2021; Mastoi, 2022";M6
+F170;P170;AUC;X;Home Electric Chargers ratio;Chargers/BEV;0;0.6;;;;;0.6;;;;;M6
+F171;P171;AUC;X;Public Chargers Average Price;R$/Charger;0;247500;;;;;247500;;;;;M6
+F172;P172;AUC;X;Public Chargers Average Price;US$/Charger;1;49500;;;;;45000;;;;"ICCT, 2021; Mastoi, 2022";M6
+F173;P173;AUC;X;Public Electric Chargers ratio;Chargers/BEV;0;0.08333333333333333;;;;0.041666666666666664;0.08333333333333333;0.16666666666666666;;;;M6
+F174;P174;AUC;X;Loan downpayment;% MSRP;0;0.2;;;;;0.2;;;;;M6
+F175;P175;AUC;X;Loan interest rate;% per year;0;0.06;;;;;0.06;;;;;M6
+F176;P176;AUC;X;Loan average payment time;years;0;5;;;;;5;;;;;M6
+F177;P177;AUC;X;Discard (TLC - Total Life Cost) or Sell (TCO - Total Cost of Ownership);;0;;Discard;;;;;;;;;M6
+F185;P185;AUC;X;BEV Electricity from Home;% consumed electricity;0;0.5;;;;;0.5;;;;;M6
+F186;P186;AUC;X;BEV Electricity from Companies;% consumed electricity;0;0;;;;;0;;;;;M6
+F187;P187;AUC;X;BEV Electricity from Electrostation;% consumed electricity;1;0.5;;;;;0.5;;;;;M6
+F188;P188;AUC;X;BEV Home chargers;yes or no;0;;yes;;;;;;;;;M6
+F189;P189;AUC;X;BEV Public chargers;yes or no;0;;yes;;;;;;;;;M6
+F190;P190;AUC;X;BEV, PHEV, SPHEV Battery replacement;nr of extra batteries;0;;no;;;;0;;;;;M6
+F191;P191;AUC;X;BEV Government Subsidy;% MSRP;0;0;;;;;0;;;;;M6
+F192;P192;AUC;X;Discard Cost;% MSRP;0;0.05;;;;;0.05;;;;;M6
+F193;P193;AUC;X;ICEV Depreciation 1st year;% MSRP;0;0.197;;;;;0.197;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F194;P194;AUC;X;ICEV Annual Depreciation Rate;%;0;0.113;;;;;0.113;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F195;P195;AUC;X;HEV Depreciation 1st year;% MSRP;0;0.2;;;;;0.2;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F196;P196;AUC;X;HEV Annual Depreciation Rate;%;0;0.121;;;;;0.121;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F197;P197;AUC;X;PHEV Depreciation 1st year;% MSRP;0;0.014;;;;;0.014;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F198;P198;AUC;X;PHEV Annual Depreciation Rate;%;0;0.166;;;;;0.166;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F199;P199;AUC;X;BEV Depreciation 1st year;% MSRP;0;0.078;;;;;0.078;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F200;P200;AUC;X;BEV Annual Depreciation Rate;%;0;0.192;;;;;0.192;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F201;P201;AUC;X;ICEV Maintenance Cost 14th year;% MSRP;0;0.04;;;;;0.04;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F202;P202;AUC;X;HEV/ICEV Maintenance Cost;% MSRP;0;0.89;;;;;0.89;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F203;P203;AUC;X;PHEV/ICEV Maintenance Cost;% MSRP;0;0.86;;;;;0.86;;;;Suttakul 2022 e spot check tabela FIPE;M6
+F204;P204;AUC;X;BEV/ICEV Maintenance Cost;% MSRP;0;0.67;;;;;0.67;;;;Suttakul 2022 e spot check tabela FIPE;M6

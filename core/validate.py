@@ -111,3 +111,71 @@ def check_result(result: dict, log: Log, context: str | None = None) -> bool:
 
 def _close(a: float, b: float) -> bool:
     return abs(a - b) <= CONSERVATION_TOL * max(1.0, abs(a), abs(b))
+
+
+# --------------------------------------------------------------------------
+# Regras I16 a I23 (Documento 7, §6): analise, casos, D12 e R45.
+#   `check_analysis` devolve a lista de problemas de uma analise; vazia quando
+#   esta consistente. `check_run_origin` cobre I23 sobre o R45 de uma rodada.
+# --------------------------------------------------------------------------
+def check_analysis(conn, ida: int) -> list[str]:
+    q = lambda sql, *a: conn.execute(sql, a).fetchall()  # noqa: E731
+    problems: list[str] = []
+    head = q("SELECT Mode, IDVC, IDMVRef, IDEFV, IDMPV, IDAPV, Boundary FROM D06_Analysis "
+             "WHERE IDA = ?", ida)
+    if not head:
+        return [f"analysis {ida} does not exist"]
+    mode, idvc, ref, idefv, idmpv, idapv, boundary = head[0]
+    cases = q("SELECT IDCase, CaseRole, IDVPT, IDV, IDEA FROM D07_AnalysisVehicle "
+              "WHERE IDA = ? ORDER BY IDCase", ida)
+
+    if mode == "EC":                                                      # I16
+        pts = [c[2] for c in cases]
+        if len(cases) != 6 or len(set(pts)) != 6 or cases[0][1] != "REF":
+            problems.append("I16: an EC analysis needs six cases, one per powertrain, "
+                            "the first being REF")
+    elif mode == "FC":                                                    # I17
+        if not 1 <= len(cases) <= 7 or any(c[1] != "FC" for c in cases):
+            problems.append("I17: an FC analysis has 1 to 7 cases, all with CaseRole FC")
+
+    n = q("SELECT COUNT(*) FROM (SELECT IDEFV FROM P10_EFVersion WHERE IDEFV = ? "          # I18
+          "UNION ALL SELECT IDEFV FROM D04_UserEFVersion WHERE IDEFV = ?)", idefv, idefv)[0][0]
+    if n != 1:
+        problems.append(f"I18: IDEFV {idefv!r} resolves to {n} versions, expected 1")
+
+    for idcase, _, _, idv, idea in cases:                                 # I19
+        alt = q("SELECT IDEFV, IDMPV, IDAPV, Boundary FROM D02_EvaluationAlternative "
+                "WHERE IDV = ? AND IDEA = ?", idv, idea)
+        if not alt or tuple(alt[0]) != (idefv, idmpv, idapv, boundary):
+            problems.append(f"I19: case {idcase} has versions different from the analysis")
+
+    bad = q("SELECT d.IDCP FROM D08_ControlParamValue d JOIN P30_ControlParam p USING (IDCP) "
+            "WHERE d.IDA = ? AND p.IsCalculated = 1", ida)                # I20
+    if bad:
+        problems.append("I20: D08 has values for calculated parameters: "
+                        + ", ".join(r[0] for r in bad))
+
+    if mode == "EC" and ref is not None:                                  # I21
+        cat = q("SELECT MarketGroup, IDMVSelecao FROM P29_VehicleCategory WHERE IDVC = ?", idvc)
+        mv = q("SELECT IDVPT, MarketGroup FROM P26_MarketVehicle WHERE IDMV = ?", ref)
+        ok = bool(cat) and (ref == cat[0][1] or (bool(mv) and mv[0][0] == "ICEV"
+                                                 and mv[0][1] == cat[0][0]))
+        if not ok:
+            problems.append("I21: the reference vehicle is not an ICEV of the category "
+                            "market group nor its SELEÇÃO")
+
+    pt_of = {c[0]: c[2] for c in cases}                                   # I22
+    for idcase, in q("SELECT IDCase FROM D12_CombinedPowerOverride WHERE IDA = ?", ida):
+        if pt_of.get(idcase) not in ("HEV", "PHEV"):
+            problems.append(f"I22: case {idcase} has a D12 row but is not HEV or PHEV")
+    return problems
+
+
+def check_run_origin(conn, run_id: str) -> list[str]:
+    """I23: ValueOrigin = Calculated only where P51.CalcStatus = Calculated."""
+    rows = conn.execute(
+        "SELECT DISTINCT r.IDInd FROM R45_PowertrainSummary r JOIN P51_OutputIndicator p "
+        "USING (IDInd) WHERE r.RunID = ? AND r.ValueOrigin = 'Calculated' "
+        "AND p.CalcStatus <> 'Calculated'", (run_id,)).fetchall()
+    return [f"I23: indicator {r[0]} is marked Calculated but is not calculated by the core"
+            for r in rows]

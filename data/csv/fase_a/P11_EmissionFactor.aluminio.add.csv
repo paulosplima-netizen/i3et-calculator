@@ -1,0 +1,4 @@
+﻿IDM;IDEFV;EF;EFnotes
+4;G22;15.740704098789761;Valor da guia 'Emission Factors GREET and BR' do LCA_LV_i3ET_20261101.xlsx, celula AE9. Corrige a 0.9.0, que trazia aqui o valor do G23.
+4a;G22;;"Valor da guia 'Emission Factors GREET and BR' do LCA_LV_i3ET_20261101.xlsx, celula AE10. ND na planilha: o G22 nao separa chapa e extrudado; ver P57 e o alerta I28."
+4b;G22;;"Valor da guia 'Emission Factors GREET and BR' do LCA_LV_i3ET_20261101.xlsx, celula AE11. ND na planilha: o G22 nao separa chapa e extrudado; ver P57 e o alerta I28."

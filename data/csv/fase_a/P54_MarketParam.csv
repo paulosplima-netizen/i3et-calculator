@@ -1,0 +1,59 @@
+﻿IDMP;DsMP;utMP;SheetColumn;IDVP;ValueKind
+1;ID Vehicle;;N;;Text
+2;ICE - Internal Combustion Engine Power;kW;O;2;Num
+3;EE - Electric Engine Power;kW;P;3;Num
+4;Utilities Battery;kWh;Q;4;Num
+5;Energy Battery;kWh;R;5;Num
+6;Wheel Size;inchs;S;6;Num
+7;Car length;m;T;7;Num
+8;Car width;m;U;8;Num
+9;fA = Car area (length X width);m2;V;9;Num
+10;Number of doors and lids;unit;W;10;Num
+11;Number of airbags and seat belts;unit;X;11;Num
+12;Number of seats positions;unit;Y;12;Num
+13;Windows and windshields area;m2;Z;13;Num
+14;fT = 2WT (1,0) or 4WT (1,2);dimensionless;AA;14;Num
+15;Combined Power;kW;AB;15;Num
+16;fR = Robustness (PowerXfAXfTXfH);KW*m2;AC;16;Num
+17;Air Conditioning;BTU;AD;17;Num
+18;Electric Starter Engine;kW;AE;18;Num
+19;Liquid Fuel Tank;liters;AF;19;Num
+20;Fuel Cell Power;kW;AG;20;Num
+21;Hydrogen Fuel Tank;kg;AH;21;Num
+22;Instrumentation Complexity (de 1 a 5);dimensionless;AI;22;Num
+23;Onboard Battery Charger;kW;AJ;23;Num
+24;Power Battery;kW;AK;24;Num
+25;Vehicle weight (without driver and fuel);kg;AL;25;Num
+26;Fluidos;kg;AM;26;Num
+27;Height;m;AN;27;Num
+28;fB = Body Size (CarAreaXHeight);m3;AO;28;Num
+29;fH = Hybrid Complexity;dimensionless;AP;29;Num
+30;Combined Power with Hybrid Complexity;kW;AQ;30;Num
+31;Generator;kW;AR;31;Num
+32;Battery ID;;AS;32;Text
+33;Battery Power Density;kg/kW;AT;33;Num
+34;Battery Energy Density;kg/kWh;AU;34;Num
+35;Battery Weight;kg;AV;35;Num
+36;Battery Reference Energy Capacity;kWh;AW;36;Num
+37;ICE Power/fH;kW;AX;37;Num
+38;Fuel Economy (Urban);km/LGE;AY;38;Num
+39;Fuel Economy (Road);km/LGE;AZ;39;Num
+40;Energy Consumption;MJ/km;BA;40;Num
+41;Model;Model;BB;;Text
+42;Design;Design;BC;;Text
+43;Lx/Rg;Luxury;BD;;Text
+44;Size;Size;BE;;Text
+45;Fuel;Fuel;BF;;Text
+46;ICE - Internal Combustion Engine Power;HP;BG;;Num
+47;Size PBEV INMETRO;;BH;;Text
+48;CD;;BI;;Num
+49;fr;;BJ;;Num
+50;Frontal Area;m2;BK;;Num
+51;ICE Design;;BL;;Text
+52;Engine Displacement;liters;BM;;Num
+53;Specific Power;kW/liter;BN;;Num
+54;Note;;BO;;Text
+55;mass factor to consider  angular moment;;BP;;Num
+56;ηce  -  Energy efficiency: Combustion Engine;ηce;BQ;;Num
+57;ηee  -  Energy efficiency: Electric Engine;ηee;BR;;Num
+58;Parameter 58;Fuel;BS;;Text

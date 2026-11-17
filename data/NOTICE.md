@@ -2,7 +2,8 @@
 
 **The data in this directory is not covered by the MIT licence of the code.**
 
-It has two distinct origins, with different conditions.
+It has several distinct origins, with different conditions. Sections 1 and 2 cover the
+data of version 0.9.0; section 5 covers what version 0.10 (Fase A) added.
 
 ---
 
@@ -74,3 +75,24 @@ the database these appear as `NULL`, never as zero, and the calculation reports 
 mass affected. **A missing factor is absence of data, not zero emissions**, and results
 that compare versions may be comparing data coverage as much as environmental
 performance. See section 16.5 of `docs/01-especificacao-funcional.md`.
+
+---
+
+## 5. Data added in version 0.10 (Fase A)
+
+All of it was read from the i3ET spreadsheet `LCA_LV_i3ET_20261101.xlsx` (NIPE/UNICAMP)
+by the scripts in `tools/`, and each table records the sheet and cell it came from.
+**The conditions below must be settled before version 0.10.0 is published.**
+
+| Data | Tables | Original source | Conditions of redistribution |
+|---|---|---|---|
+| Emission factor lists `GLO23`, `BR23` and its five variants | `P10`, `P11` | i3ET, sheet *Emission Factors GREET and BR* | Published with the report *Pegada de Carbono do Berço ao Portão* and made available to AEA and to the federal government with no restriction on use declared, with a caveat on how the factors were calculated. The i3ET author took part in preparing both and uses them as the report recommends (confirmed 17 Nov 2026); `P10.LicenseEFV` says so. GWP set `AR6-100`, the same as the other lists |
+| PBEV records, edition 2026 | `P28`, `P36`, `P50`, `P55` | Programa Brasileiro de Etiquetagem Veicular, INMETRO | Public labelling data published by INMETRO. Credit INMETRO/PBEV and the edition. The copy here is the one kept in the i3ET spreadsheet, not a fresh download |
+| Market vehicles and their parameters | `P26`, `P27`, `P54` | i3ET, sheet *Market Vehicles*: manufacturer data, PBEV data and the authors' own estimates | Compiled by the i3ET authors. `P27.ValueClass` separates typed values from defaults and calculated ones |
+| Units licensed per vehicle (the 50 most licensed passenger cars and the 50 most licensed light commercials; cumulative January to December), reference year in `P26.SalesRefYear` | `P26.SalesUnits`, `P26.SalesClass`, `P26.SalesRefYear` | **FENABRAVE** (Federação Nacional da Distribuição de Veículos Automotores), public licensing reports, read through the i3ET sheets *Most Licensed 2025* | Published openly by FENABRAVE; the author found no restriction on use (17 Nov 2026). **Cite FENABRAVE as the source** in the documentation and in the app (report, reference year, access date, address). The figures are used only as weights among these vehicles; they are not the whole market (see ANFAVEA below). The author may also notify FENABRAVE of the academic, non-profit use. Option kept open: store only the normalized shares instead of the units |
+| Total licensing by year (passenger cars, light commercials, trucks, buses) — **planned, Phase B**, with the FENABRAVE import (T40) | planned table `P59` (`P58` is the generic battery model) | **ANFAVEA** (Associação Nacional dos Fabricantes de Veículos Automotores), monthly bulletin (*Carta da Anfavea*) and yearly *Anuário*, source Renavam/Denatran | To be imported. Same criterion as FENABRAVE and the INMETRO PBEV (decided by the author on 17 Nov 2026): cite ANFAVEA as the source (report, year, access date, address), keep the published units, and record that no restriction on use was found when the publications are read before loading. Purpose: coverage of the FENABRAVE top 50 against the ANFAVEA total, and later the fleet analysis
+| Control-panel parameters, categories, outputs, reference values | `P29`, `P30`, `P51`, `P52` | i3ET, sheet *i3ET Control Panel* | Part of the i3ET model. The bibliographic source of each parameter is in `P30.Reference` |
+| Default rules and combined-power factors | `P35`, `P49`, `P53`, `P56` | i3ET, sheets *Market Vehicles* and *Control Panel*; project decisions of 16–17 Nov 2026 | Part of this project |
+| Vehicle material recipes (56 from the i3ET sheet *M2 GHG Mfg Module*, columns T:CA: GREET 2022, 2023 and 2024 vehicle compositions, including fuel cell, plus the 12 recipes from version 0.9.0) | `P15`, `P16` | i3ET, sheet *M2 GHG Mfg Module*; the GREET compositions come from Argonne National Laboratory's GREET model, normalised by the i3ET authors | The GREET conditions of section 1 apply (credit Argonne and the GREET version). The normalisation is part of the i3ET model |
+| Material equivalence (single aluminium to sheet and extrusion) | `P57` | Weights from the 30 GREET 2024 recipes of this project that the base calculates; project decision of 17 Nov 2026 | Part of this project |
+

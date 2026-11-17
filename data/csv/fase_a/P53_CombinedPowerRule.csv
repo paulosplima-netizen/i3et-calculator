@@ -1,0 +1,7 @@
+﻿IDVPT;FactorICE;FactorEE;IsProvisional;NotesCPR
+ICEV;1;0;0;Only the combustion engine drives the wheels.
+HEV;1;1;1;Provisional default (sum) until validation against the Excel model ends.
+SHEV;0;1;0;Series hybrid: only the electric motor drives the wheels.
+PHEV;1;1;1;Provisional default (sum) until validation against the Excel model ends.
+SPHEV;0;1;0;Series hybrid: only the electric motor drives the wheels.
+BEV;0;1;0;Only the electric motor drives the wheels.

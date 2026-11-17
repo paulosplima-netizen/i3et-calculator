@@ -1,0 +1,9 @@
+﻿IDVPT;DsVPT;IsCalculable
+ICEV;Internal combustion engine vehicle: the engine alone drives the wheels.;1
+HEV;"Hybrid electric vehicle (parallel): engine and electric motor drive the wheels; the battery is charged on board only.";1
+SHEV;"Series hybrid electric vehicle: the electric motor drives the wheels; the engine runs a generator.";1
+PHEV;Plug-in hybrid electric vehicle (parallel): as the HEV, with a larger battery charged from the grid.;1
+SPHEV;Series plug-in hybrid electric vehicle: as the SHEV, with a larger battery charged from the grid.;1
+BEV;Battery electric vehicle: the electric motor alone drives the wheels.;1
+MHEV;"Mild hybrid electric vehicle. Listed in the market catalogue; not calculated.";0
+FCEV;"Fuel cell electric vehicle. Listed in the market catalogue; enters the calculation in the final stage.";0

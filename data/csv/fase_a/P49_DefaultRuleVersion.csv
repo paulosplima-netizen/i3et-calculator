@@ -1,0 +1,3 @@
+﻿IDDRV;DsDRV;IsDefault;NotesDRV
+TAB;Regras como tabuladas em Market Vehicles M257:AW299;1;Uma regra por celula preenchida da matriz. Precedencia: luxo, motorizacao, carroceria, faixa de potencia, porte, carroceria x porte.
+FML;Valores que as formulas da planilha gravaram;0;Sem linhas em P35: as formulas nao seguem a matriz em todos os veiculos. O resultado delas esta em P27, na classe Def, e e contra ele que a versao TAB e comparada.

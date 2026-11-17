@@ -1,0 +1,4 @@
+﻿IDBMd;IDVPT;SizingBasis;IDCPMass;IDCPCarbon;SourceGBM;NotesGBM
+PB-HEV-indefinido;HEV;Power;X72;X88;i3ET, guia 'GREET Batteries Material List' (colunas ID:IF) e Control Panel X66:Z72, X83:Z89;Bateria de potência (HEV, SHEV, FCEV).
+PB-PHEV-indefinido;PHEV;Energy;X70;X86;i3ET, guia 'GREET Batteries Material List' (colunas ID:IF) e Control Panel X66:Z72, X83:Z89;Bateria de energia com fatores próprios do PHEV.
+PB-BEV-indefinido;BEV;Energy;X67;X83;i3ET, guia 'GREET Batteries Material List' (colunas ID:IF) e Control Panel X66:Z72, X83:Z89;Bateria de energia (BEV, SPHEV, PHEV). A rodada gravada usa este modelo no PHEV e no SPHEV.
