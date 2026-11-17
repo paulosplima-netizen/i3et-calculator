@@ -7,6 +7,20 @@ import streamlit as st
 
 from ui import components, state
 
+
+
+def _calculaveis(tabela: pd.DataFrame, coluna: str) -> list[str]:
+    """Opcoes que o nucleo sabe calcular.
+
+    A base 0.10 traz no catalogo motorizacoes e carrocerias que so existem na
+    lista de veiculos de mercado (MHEV, FCEV, Van, Chassis), marcadas com
+    IsCalculable = 0. Um projeto da 0.9.0 nao tem a coluna: vale tudo.
+    """
+    if "IsCalculable" in tabela.columns:
+        tabela = tabela[tabela["IsCalculable"] == 1]
+    return sorted(tabela[coluna].unique())
+
+
 atual = components.page("Vehicles", "§7")
 base, resultados, log = atual
 
@@ -35,8 +49,8 @@ with st.form("novo_veiculo"):
     nome = col2.text_input("Name", value="MEU01")
     porte = col3.selectbox("Size", options=sorted(base["P14"]["IDVS"].unique()))
     col4, col5, col6 = st.columns(3)
-    trem = col4.selectbox("Powertrain", options=sorted(base["P12"]["IDVPT"].unique()))
-    carroceria = col5.selectbox("Body", options=sorted(base["P13"]["IDVDT"].unique()))
+    trem = col4.selectbox("Powertrain", options=_calculaveis(base["P12"], "IDVPT"))
+    carroceria = col5.selectbox("Body", options=_calculaveis(base["P13"], "IDVDT"))
     receitas = base["P15"]
     receita = col6.selectbox(
         "Material recipe", options=receitas["IDVMR"].tolist(),
