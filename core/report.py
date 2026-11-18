@@ -50,6 +50,10 @@ TITLES = {
     "R09": "GEE da montagem por processo",
     "R10": "Total do berco ao portao",
     "R11": "Log de validacao",
+    "R12": "Reposicoes ao longo da vida (B1)",
+    "R13": "Fim de vida (B1)",
+    "R14": "Validacao de massa (B1)",
+    "R15": "Vida do veiculo por estagio (B1)",
 }
 TITLES.update({r: f"Parametros: {p}" for r, p in PARAM_SNAPSHOTS.items()})
 
@@ -81,7 +85,8 @@ def _identify(df: pd.DataFrame, idv, idea, cen) -> pd.DataFrame:
 
 
 def build(base, results: dict, *, log: Log | None = None,
-          generated_at: dt.datetime | None = None) -> dict[str, pd.DataFrame]:
+          generated_at: dt.datetime | None = None,
+          b1: dict | None = None) -> dict[str, pd.DataFrame]:
     """Every R table, for the scenarios in `results`.
 
     `results` is what `calc.calculate` returns: {(IDV, IDEA): result}.
@@ -167,6 +172,19 @@ def build(base, results: dict, *, log: Log | None = None,
         "R11": pd.DataFrame(log.to_records(),
                             columns=["Severity", "RuleID", "Message", "Context"]),
     }
+    if b1:
+        for chave, rid, cols in (
+                ("C15", "R12", ["IDMI", "EventIndex", "EventKm", "GHGkg"]),
+                ("C16", "R13", ["EoLMethod", "GliderMassKg", "BatteryKWh", "FactorGlider",
+                                "FactorBattery", "FactorVehicle", "GHGEoL"]),
+                ("C34", "R14", ["MassBasis", "DeclaredMassKg", "CalculatedMassKg", "DiffKg",
+                                "DiffPct", "AdjustmentKg", "ResidualKg", "DeclaredSource",
+                                "BodyShare", "BodyChassisMassBefore",
+                                "BodyChassisMassAfter"]),
+                ("C35", "R15", ["Stage", "SubStage", "GHGkg", "SourceCell", "Method", "Note"])):
+            partes = [_identify(f[chave][cols], idv, idea, d02.loc[(idv, idea)])
+                      for (idv, idea), f in sorted(b1.items())]
+            R[rid] = _stack(partes, ["IDV", "IDEA", *SCENARIO_KEYS, *cols])
     R.update(_snapshots(base, results, p09))
     R["R00"] = _metadata(base, results, log, generated_at)
     return {k: R[k] for k in sorted(R)}

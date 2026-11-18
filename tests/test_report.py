@@ -32,7 +32,8 @@ def R(base):
 
 
 def test_every_documented_table_exists(R):
-    esperadas = set(report.TITLES)
+    # R12-R15 (B1) so existem quando o chamador passa os resultados do B1
+    esperadas = set(report.TITLES) - {"R12", "R13", "R14", "R15"}
     assert esperadas <= set(R), f"faltam: {sorted(esperadas - set(R))}"
 
 
