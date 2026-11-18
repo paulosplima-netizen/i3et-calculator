@@ -112,7 +112,7 @@ Camada de sobrescrita: a base é imutável; a edição de uma lista `Typed` grav
 
 ### Parâmetros do usuário (`D03`/`D08`)
 
-Novos parâmetros de veículo/painel: `MassAdjBodyChassisKg` (kg com sinal, padrão 0; T38). Escolhas de análise em `D06`: `MaintenanceMode` (espelha `D10`), `EoLMethod` (`GLIDER_BATTERY`, `AGGREGATE_VEHICLE`, `EXCLUDED`; padrão `GLIDER_BATTERY`), `IDVMRU` e `IDBMdU` quando houver receita e bateria do usuário.
+Novos parâmetros de veículo/painel: `MassAdjBodyChassisKg` (kg com sinal, padrão 0; T38; **definido em `P54`**, como dado do veículo, decisão de 18/11; valor do usuário, não vem do GREET; a razão chassi/carroceria `k` vem da receita). Escolhas de análise em `D06`: `MaintenanceMode` (espelha `D10`), `EoLMethod` (`GLIDER_BATTERY`, `AGGREGATE_VEHICLE`, `EXCLUDED`; padrão `GLIDER_BATTERY`), `IDVMRU` e `IDBMdU` quando houver receita e bateria do usuário.
 
 ## 5. Tabelas de resultado (C)
 
