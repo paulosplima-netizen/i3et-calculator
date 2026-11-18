@@ -26,7 +26,7 @@ PAGINAS = [
     "pages/3_Vehicle_parameters.py",
     "_superados/pages/4_Scenario.py",
     "pages/5_Results.py",
-    "pages/6_Emission_factors.py",
+    "_superados/pages/6_Emission_factors.py",
     "_superados/pages/7_Export.py",
 ]
 
@@ -121,7 +121,7 @@ def test_the_reference_vehicles_cannot_be_edited(projeto):
 def test_a_user_factor_version_requires_provenance(projeto):
     from core import loader
 
-    at = _abrir("pages/6_Emission_factors.py", projeto)
+    at = _abrir("_superados/pages/6_Emission_factors.py", projeto)
     at.text_input[0].set_value("MEUS")
     at.text_input[1].set_value("Fatores de teste")
     at.button[0].click().run()          # sem procedencia

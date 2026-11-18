@@ -72,3 +72,17 @@ def test_t38_abre_e_grava_a_massa_declarada(projeto):  # noqa: F811
     conn.execute("UPDATE D07_AnalysisVehicle SET DeclaredMassKg = NULL")
     conn.commit()
     conn.close()
+
+
+def test_t15_abre_cria_versao_e_edita(projeto):  # noqa: F811
+    import sqlite3
+    at = _abrir("T15_Emission_factors", projeto)
+    assert not at.exception, at.exception
+    assert len(at.tabs) == 4
+    conn = sqlite3.connect(projeto[0])
+    from core import ef_edit
+    ef_edit.create_version(conn, "MEU-T15", "x", "BR23", "teste")
+    conn.commit()
+    conn.close()
+    at = _abrir("T15_Emission_factors", projeto)
+    assert not at.exception, at.exception
