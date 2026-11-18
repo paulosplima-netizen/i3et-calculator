@@ -379,6 +379,10 @@ O banco exige `IDVC` e `IDMVRef` preenchidos em `EC` e nulos em `FC`.
 | `FuelBlend` | TEXT | — | N | Combustível ou mistura do caso. Nulo herda `D06.FuelScenario` |
 | `IDPBE` | TEXT | FK→P36 | N | Edição do PBEV usada |
 | `SizingOrigin` | TEXT | — | S | `Manufacturer`, `ExcelReference`, `Calculated` ou `Pending` |
+| `DeclaredMassKg` | REAL | — | N | Massa declarada do caso, kg (B1, T38). Nulo: sem declarada. Coluna da 0.11 |
+| `MassAdjustmentKg` | REAL | — | S | Diferença de massa alocada a carroceria e chassi, kg com sinal; padrão 0. Coluna da 0.11 |
+| `MassBodyShare` | REAL | — | N | Parcela `s` da diferença para a carroceria, 0 a 1. Nulo: `P63` da receita. Coluna da 0.11 |
+| `DeclaredSource` | TEXT | — | N | Origem da massa declarada. Coluna da 0.11 |
 
 (`IDV`, `IDEA`) é chave estrangeira composta para `D02`.
 

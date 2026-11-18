@@ -1321,6 +1321,12 @@ COLUMNS_011 = (
        ("C02_MassByGroup", "EstimatedMassKg", "REAL"),
        ("C02_MassByGroup", "CalibrationKg", "REAL NOT NULL DEFAULT 0"),
        ("C02_MassByGroup", "FinalMassKg", "REAL"),
+       ("D07_AnalysisVehicle", "DeclaredMassKg", "REAL CHECK (DeclaredMassKg IS NULL OR "
+        "DeclaredMassKg > 0)"),
+       ("D07_AnalysisVehicle", "MassAdjustmentKg", "REAL NOT NULL DEFAULT 0"),
+       ("D07_AnalysisVehicle", "MassBodyShare", "REAL CHECK (MassBodyShare IS NULL OR "
+        "MassBodyShare BETWEEN 0 AND 1)"),
+       ("D07_AnalysisVehicle", "DeclaredSource", "TEXT"),
        ("D06_Analysis", "EoLMethod", "TEXT NOT NULL DEFAULT 'GLIDER_BATTERY' "
         "CHECK (EoLMethod IN ('GLIDER_BATTERY','AGGREGATE_VEHICLE','EXCLUDED'))")]
 )

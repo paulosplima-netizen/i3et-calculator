@@ -20,7 +20,7 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
                       supplied: set[int] | None = None,
                       power_factors: tuple[float, float] | None = None,
                       generic_battery: dict | None = None,
-                      mass_adjustment_kg: float = 0.0, body_share: float = 0.5,
+                      mass_adjustment_kg: float = 0.0, body_share: float | None = None,
                       log: Log | None = None) -> dict:
     """Run one vehicle through the whole chain.
 
@@ -50,6 +50,11 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
                            idmpv=idmpv, powertrain=powertrain, log=log)
     c02 = mass.by_group(c01, gc, base["P04"])
     # T38: a diferenca (declarada - calculada) vai para carroceria e chassi; com 0 nada muda.
+    # Sem s informado, vale a participacao da carroceria nas massas estimadas (T38).
+    if body_share is None:
+        ab = c02[c02["IDGG"].isin(mass_calibration.BODY_CHASSIS)]["MassIDGG"].astype(float)
+        body_share = (float(c02.loc[c02["IDGG"] == mass_calibration.BODY, "MassIDGG"].sum())
+                      / float(ab.sum())) if float(ab.sum()) > 0 else 0.5
     c02 = mass_calibration.apply_to_c02(c02, float(mass_adjustment_kg), float(body_share))
     c03 = materials.by_material_group(c02, base["P16"], base["P09"], ef_table, gc,
                                       idvmr=idvmr, idefv=idefv, log=log)
@@ -63,7 +68,9 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
     c11 = totals.by_material(c03, c07)
     c14 = totals.by_vehicle(c10, c13, boundary=boundary, c03=c03, c07=c07)
 
-    return {"gc": gc, "C01": c01, "C02": c02, "C03": c03, "C07": c07,
+    return {"mass_calibration": {"BodyShare": float(body_share),
+                                 "AdjustmentKg": float(mass_adjustment_kg)},
+            "gc": gc, "C01": c01, "C02": c02, "C03": c03, "C07": c07,
             "C10": c10, "C11": c11, "C13": c13, "totals": c14, "log": log,
             "ef_alerts": ef_alerts}
 

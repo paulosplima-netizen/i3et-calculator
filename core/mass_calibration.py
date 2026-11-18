@@ -27,6 +27,7 @@ from __future__ import annotations
 import pandas as pd
 
 BODY, CHASSIS = "A", "B"
+BODY_CHASSIS = (BODY, CHASSIS)
 TOL = 1e-9
 
 

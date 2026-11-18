@@ -179,3 +179,26 @@ def test_escolha_invalida_e_recusada():
     with pytest.raises(ValueError):
         b1_choices.save_maintenance(conn, 1, mode="Sim", scenario="USER", vehicle_life_km=None,
                                     items=[{"IDMI": "TIRE", "IntervalKm": 0}])
+
+
+def test_massa_declarada_calibra_carroceria_e_chassi(tmp_path):
+    """T38 ponta a ponta: o ajuste vai para A e B, a massa final fecha com a declarada."""
+    (tmp_path / "m").mkdir()
+    (tmp_path / "z").mkdir()
+    conn0, rid0 = _rodar(tmp_path / "z", lambda c, i: None)
+    est = conn0.execute("SELECT CalculatedMassKg FROM C34_MassValidation WHERE RunID = ?",
+                        (rid0,)).fetchone()[0]
+
+    def declarar(c, i):
+        c.execute("UPDATE D07_AnalysisVehicle SET DeclaredMassKg = ?, MassAdjustmentKg = ?, "
+                  "DeclaredSource = 'manual' WHERE IDA = ? AND IDCase = 1",
+                  (est + 50.0, 50.0, i))
+    conn, rid = _rodar(tmp_path / "m", declarar)
+    row = conn.execute("SELECT DeclaredMassKg, CalculatedMassKg, AdjustmentKg, ResidualKg, "
+                       "BodyShare, BodyChassisMassAfter, BodyChassisMassBefore "
+                       "FROM C34_MassValidation WHERE RunID = ? AND IDCase = 1",
+                       (rid,)).fetchone()
+    assert row[0] == pytest.approx(est + 50.0) and row[2] == pytest.approx(50.0)
+    assert row[3] == pytest.approx(0.0, abs=1e-6)
+    assert 0 <= row[4] <= 1
+    assert row[5] - row[6] == pytest.approx(50.0)

@@ -131,7 +131,7 @@ Camada de sobrescrita: a base é imutável; a edição de uma lista `Typed` grav
 
 ### Parâmetros do usuário (`D03`/`D08`)
 
-Novos parâmetros de veículo/painel: `MassAdjBodyChassisKg` (kg com sinal, padrão 0; T38; **definido em `P54`**, como dado do veículo, decisão de 18/11; valor do usuário, não vem do GREET; a razão chassi/carroceria `k` é parâmetro por classe de veículo, de `M2` linhas 54 e 55 (linha 627 = B/A)). Escolhas de análise em `D06`: `MaintenanceMode` (espelha `D10`), `EoLMethod` (`GLIDER_BATTERY`, `AGGREGATE_VEHICLE`, `EXCLUDED`; padrão `GLIDER_BATTERY`), `IDVMRU` e `IDBMdU` quando houver receita e bateria do usuário.
+Novos parâmetros de veículo/painel: `MassAdjBodyChassisKg` (kg com sinal, padrão 0; T38; **definido em `P54`**, como dado do veículo, decisão de 18/11; valor do usuário, não vem do GREET; a razão chassi/carroceria `k` é parâmetro por classe de veículo, de `M2` linhas 54 e 55 (linha 627 = B/A)). Valores do usuário por caso, em colunas novas de `D07` (T38; decisão de 18/11, tarde): `DeclaredMassKg` (massa declarada, nulo se não houver), `MassAdjustmentKg` (kg com sinal, padrão 0; o botão "Calibrate to declared mass" grava declarada − calculada), `MassBodyShare` (`s` do usuário, 0 a 1; nulo = `P63` da receita, e na falta dela a participação nas massas estimadas) e `DeclaredSource`. Escolhas de análise em `D06`: `MaintenanceMode` (espelha `D10`), `EoLMethod` (`GLIDER_BATTERY`, `AGGREGATE_VEHICLE`, `EXCLUDED`; padrão `GLIDER_BATTERY`), `IDVMRU` e `IDBMdU` quando houver receita e bateria do usuário.
 
 ## 5. Tabelas de resultado (C)
 

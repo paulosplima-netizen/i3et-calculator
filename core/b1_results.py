@@ -104,16 +104,14 @@ def compute(res: dict, base, ef: dict[str, float], options: Options,
         factor_glider=options.factor_glider, factor_battery=options.factor_battery,
         factor_vehicle=None if fator_veic is None or pd.isna(fator_veic) else float(fator_veic))
 
-    est = float(c02["EstimatedMassKg"].sum())
     adj = float(c02["CalibrationKg"].sum())
     declarada = options.declared_mass_kg
+    mc = res.get("mass_calibration", {})
     c34 = mass_calibration.validation_row(
-        c02, declared_kg=declarada, adjustment_kg=adj, s=None,
-        mass_basis="Estimated" if declarada is None else "Declared",
+        c02, declared_kg=declarada, adjustment_kg=adj,
+        s=mc.get("BodyShare") if abs(adj) > 0 else None,
+        mass_basis="Declared" if declarada is not None else "Estimated",
         declared_source=options.declared_source)
-    if declarada is None:
-        c34["DiffKg"] = c34["DiffPct"] = c34["ResidualKg"] = None
-    c34["CalculatedMassKg"] = est
 
     etapas = life_stages.build(
         c10=c10, assembly_kg=float(res["totals"]["GHGAssembly"]), replacements=rep, eol=fim,

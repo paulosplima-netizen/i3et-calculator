@@ -16,6 +16,7 @@ Este modulo nao importa streamlit.
 
 from __future__ import annotations
 
+import copy
 import datetime as dt
 import hashlib
 import json
@@ -148,6 +149,9 @@ def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
                 idmpv=alt["IDMPV"], idvmr=alt["IDVMR"], idefv=alt["IDEFV"], idapv=alt["IDAPV"],
                 boundary=alt["Boundary"], ef_table=ef_table, supplied=supplied,
                 power_factors=(pf["ice"], pf["ee"]),
+                mass_adjustment_kg=float(c["case"].get("MassAdjustmentKg") or 0.0),
+                body_share=b1_choices.body_share(base, alt["IDVMR"],
+                                                 c["case"].get("MassBodyShare")),
                 generic_battery=battery_mod.generic_model(base.get("P58"), battery, cp_values),
                 log=log))
     except Exception:
@@ -170,9 +174,12 @@ def write_b1(conn, run_id, base, ef_table, results, cp_values, choices=None) -> 
             "SELECT name FROM sqlite_master WHERE name = 'C35_VehicleLifeStage'"
     ).fetchone() is None:
         return
-    options = b1_choices.options(choices, cp_values)
+    base_options = b1_choices.options(choices, cp_values)
     for c, res in results.values():
         case = c["case"]
+        options = copy.copy(base_options)
+        options.declared_mass_kg = case.get("DeclaredMassKg")
+        options.declared_source = case.get("DeclaredSource") or ""
         ef = b1_results.ef_for(ef_table, c["alternative"]["IDEFV"])
         frames = b1_results.compute(res, base, ef, options,
                                     boundary=c["alternative"]["Boundary"])

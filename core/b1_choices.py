@@ -102,3 +102,18 @@ def options(choices: dict | None, cp_values: dict[str, float]) -> Options:
                          if i["IntervalKm"] is not None}
         opt.active = {i["IDMI"]: i["Active"] for i in choices["items"]}
     return opt
+
+
+# --------------------------------------------------------------------------
+# BLOCO CH4 -- parcela da diferenca de massa para a carroceria (s)
+#   Prioridade: valor do usuario; s da receita (P63); None (o calculo usa a
+#   participacao nas massas estimadas do proprio veiculo).
+# --------------------------------------------------------------------------
+def body_share(base, idvmr: str, user_value: float | None) -> float | None:
+    if user_value is not None:
+        return float(user_value)
+    p63 = base.get("P63")
+    if p63 is None or not len(p63):
+        return None
+    hit = p63.loc[p63["IDVMR"] == idvmr, "BodyShareOfMassAdj"]
+    return float(hit.iloc[0]) if len(hit) else None
