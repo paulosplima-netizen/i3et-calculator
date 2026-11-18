@@ -177,3 +177,10 @@ Uma linha por receita de `P15` (68: 56 GREET, 6 BISD, 6 PBP_BISD), vinda das col
 - Migração 0.10 → 0.11: acrescenta as colunas opcionais, as tabelas novas e carrega `P31`, `P31b`, `P61`, `P62` por CSV em `data/csv/fase_b1/` (gerados por script a partir da planilha, com hash). Repetível, só acrescenta.
 - Fixtures de paridade: (1) `T495` das 12 configurações nos três valores do seletor; (2) BR23 recomposta × lista digitada (aço e alumínio por tipo de veículo); (3) fim de vida "Aggregate vehicle factor" = `T509`; (4) validação de massa SV1 a SV4; (5) receitas: fechamento das 68 receitas; (6) `T511` da vida do veículo.
 - Critérios de pronto por tela: nos documentos `b1-t*.md`.
+
+
+## 8. Divergências do B1 e fixtures de paridade
+
+- **B1-DIV-01** (T38): o método `P69` da planilha transfere massa entre carroceria e chassi mesmo sem diferença; o aplicativo reparte só a diferença com `s` entre 0 e 1 (`P63`).
+- **B1-DIV-02** (T16): a fórmula de `T495` do `M2` difere entre blocos de colunas. 94 colunas (GREET 2022 e 2024, SV1 a SV4) usam a chave `P495`; 28 colunas (GREET 2023 e BISD) usam `$R$495 × (… + T500 + T509)`, ignoram a chave e contam o fim de vida duas vezes em `T511`. O aplicativo reproduz a fórmula da chave.
+- Fixtures: `data/csv/fase_b/P63_RecipeBodyChassisMass.csv` e `tests/fixtures/b1_reference.json`, geradas por `tools/import_body_chassis.py` e `tools/extract_b1_reference.py`; testes `test_body_chassis_p63.py` e `test_b1_reference.py`.
