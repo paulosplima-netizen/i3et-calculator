@@ -122,12 +122,12 @@ Por rodada, caso e item: `IDA`, `IDCase`, `IDMI`, `EventIndex`, `EventKm`, `GHGk
 ### C16 — `C16_EndOfLife` (fim de vida, T17)
 `IDA`, `IDCase`, `EoLMethod`, `GliderMassKg`, `BatteryKWh`, `FactorGlider`, `FactorBattery`, `FactorVehicle`, `GHGEoL`.
 
-**Parâmetro `ChassisBodyRatio` (`k`, ID 620 da planilha; T38).** Por classe de veículo (coluna do `M2`), `k = massa do chassi (linha 55) / massa da carroceria (linha 54)`; 0,43 a 1,74 (SV1 a SV4: 0,480 a 0,493). Tabela por classe a definir na implementação (candidata: classe de referência do veículo, junto de `P02`/`P54`). Regra I41: `B_final / A_final = k`.
+**Parâmetro `BodyShareOfMassAdj` (`s`; T38, decisão de 18/11 12h52).** Parcela da diferença de massa (declarada − calculada, positiva ou negativa) que vai para a carroceria; `1 − s` vai para o chassi; `0 ≤ s ≤ 1` (I45). Por classe de veículo, padrão = `M2` linha 54 / (linha 54 + linha 55) (ICEV-G21 = 0,676). Alternativa: participação nas massas estimadas do veículo. Tabela por classe a definir na implementação. O dado `k` da planilha (linha 627 = B/A) fica só para paridade do método `P69` (divergência B1-DIV-01: o método da planilha transfere massa entre A e B mesmo sem diferença).
 
 ### C34 — `C34_MassValidation` (validação de massa, T38)
-`IDA`, `IDCase`, `IDV`, `IDEA`, `MassBasis`, `DeclaredMassKg`, `CalculatedMassKg`, `DiffKg`, `DiffPct`, `AdjustmentKg`, `ResidualKg`, `DeclaredSource`, `ChassisBodyRatio` (k usado), `BodyChassisMassBefore`, `BodyChassisMassAfter`.
+`IDA`, `IDCase`, `IDV`, `IDEA`, `MassBasis`, `DeclaredMassKg`, `CalculatedMassKg`, `DiffKg`, `DiffPct`, `AdjustmentKg`, `ResidualKg`, `DeclaredSource`, `BodyShare` (s usado), `BodyChassisMassBefore`, `BodyChassisMassAfter`.
 
-**Ampliação de `C02` (massa por grupo; T38, decisão de 18/11).** Colunas `EstimatedMassKg`, `CalibrationKg`, `FinalMassKg`; `MassKg` = `FinalMassKg` (igual ao atual quando o ajuste é 0). `CalibrationKg` é diferente de zero só em carroceria e chassi (`A_final = (A_est+B_est+Adj)/(1+k)`, `B_final = k·A_final`, calibração = final − estimada). Botão da T38: "Calibrate to declared mass".
+**Ampliação de `C02` (massa por grupo; T38, decisão de 18/11).** Colunas `EstimatedMassKg`, `CalibrationKg`, `FinalMassKg`; `MassKg` = `FinalMassKg` (igual ao atual quando o ajuste é 0). `CalibrationKg` é diferente de zero só em carroceria e chassi (`A_final = A_est + s·Adj`, `B_final = B_est + (1−s)·Adj`, calibração = `s·Adj` e `(1−s)·Adj`). Botão da T38: "Calibrate to declared mass".
 
 ### C35 — `C35_VehicleLifeStage` (vida do veículo por estágio, T18)
 `IDA`, `IDCase`, `IDV`, `Stage` (`INITIAL_PRODUCTION`, `LIFETIME_REPLACEMENTS`, `END_OF_LIFE`), `SubStage`, `GHGkg`, `SourceCell`, `Method`, `Note`. Cria a coluna de rastreio para `T511 = T495 + T509 + T510 + T516 + T560 + T571 + T617`.
@@ -136,6 +136,7 @@ Por rodada, caso e item: `IDA`, `IDCase`, `IDMI`, `EventIndex`, `EventKm`, `GHGk
 
 | Código | Regra | Onde |
 |---|---|---|
+| I45 | `0 ≤ s ≤ 1` (parcela da diferença de massa para a carroceria) | código |
 | I44 | Em `C02`, Σ `CalibrationKg` = `AdjustmentKg` de `C34` e Σ `FinalMassKg` = Σ `EstimatedMassKg` + `AdjustmentKg` | código |
 | I29 | Receita do usuário: cada grupo não vazio fecha em 1 (10⁻⁶) ou é todo zero; participação de material ≥ 0; processo e detalhamento fora da soma; rascunho inválido não pode ser escolhido | código |
 | I30 | Receita do usuário usada por rodada congelada não muda; edição gera nova versão | código |
@@ -149,7 +150,7 @@ Por rodada, caso e item: `IDA`, `IDCase`, `IDMI`, `EventIndex`, `EventKm`, `GHGk
 | I38 | Com os parâmetros do i3ET, a BR23 recomposta é igual à digitada (1e-9) | teste |
 | I39 | Intervalo > 0; eventos em `k × intervalo < L`; vida ≤ 0 não gera eventos | código |
 | I40 | Ajuste de massa mantém carroceria + chassi ≥ 0 | código |
-| I41 | O ajuste redistribui A + B pela razão `k` por classe (M2 linha 627) | código |
+| I41 | O ajuste reparte só a diferença entre A e B pela parcela `s` (0 a 1); sem transferência de massa | código |
 | I42 | O ajuste de massa altera massa e GEE do grupo recomposto | código |
 | I43 | Massa declarada ausente → sem Δ, nunca Δ = 0 | código |
 | I44 | Modelo de bateria do usuário fecha cada grupo em 1 | código |
