@@ -22,6 +22,7 @@ SCREENS = {
     "T05": ("pages/T05_Dashboard.py", "Dashboard", "📊"),
     "T06": ("pages/T06_Multiple_projects.py", "Multiple Projects", "🗂"),
     "T18": ("pages/5_Results.py", "Manufacturing results", "🏗"),
+    "T18L": ("pages/T18_Vehicle_life.py", "Vehicle life", "♻"),
     "T09": ("pages/T09_Market_vehicles.py", "Market Vehicles", "🚗"),
     "T15": ("pages/6_Emission_factors.py", "Emission factors", "🏭"),
     "T07": ("pages/T07_Equations_and_glossary.py", "Equations & glossary", "📖"),
@@ -31,7 +32,7 @@ SCREENS = {
 MENUS = {
     "Home": ["T01", "T02", "T03"],
     "Analysis Parameters Setup": ["T04", "T10", "T11", "T41"],
-    "Results": ["T05", "T06", "T18"],
+    "Results": ["T05", "T06", "T18", "T18L"],
     "Auxiliary Data": ["T09", "T15"],
     "Help and export": ["T07", "T08"],
 }
