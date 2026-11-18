@@ -39,7 +39,7 @@ def test_so_a_bateria_de_tracao_e_a_auxiliar_tem_intervalo_digitado(conn):
 def test_jogo_de_pneus_tem_massa_e_composicao(conn):
     massa = conn.execute("SELECT MassPerUnitKg FROM P31_MaintenanceItem "
                          "WHERE IDMI='TIRE'").fetchone()[0]
-    assert abs(massa - 9.0718) < 1e-9
+    assert abs(massa - 9.0718474) < 1e-9
     soma = conn.execute("SELECT SUM(Share) FROM P31b_MaintenancePartShare "
                         "WHERE IDMI='TIRE'").fetchone()[0]
     assert abs(soma - 1) < 1e-12

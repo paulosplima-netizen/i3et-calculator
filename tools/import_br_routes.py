@@ -36,7 +36,7 @@ SRC_OK = "Decisao do autor, 18/11/2026"
 P31_COLS = ["IDMI", "DsMI", "ItemKind", "IDGG", "IDM", "IntervalKm", "IntervalSource",
             "RefCount", "MassPerUnitKg", "NotesMI"]
 P31 = [
-    ("TIRE", "Tire set (4 tires)", "PART", "K", None, 40000, "i3ET-compatible", 4, 9.0718,
+    ("TIRE", "Tire set (4 tires)", "PART", "K", None, 40000, "i3ET-compatible", 4, 9.0718474,
      "M2 T496: 4 jogos de 20 lb; 1/3 aco (IDM 1), 2/3 borracha (IDM 11)"),
     ("BATT_AUX", "Auxiliary lead-acid battery", "BATTERY", "Iaux", None, 70000, "Entered", 2,
      None, "M2 T499: 2 reposicoes; intervalo escolhido pelo autor"),
