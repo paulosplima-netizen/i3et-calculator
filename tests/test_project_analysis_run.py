@@ -127,3 +127,16 @@ def test_freeze_execute_is_reproducible(proj):
     assert ra and ra == rb
     assert validate.check_run_origin(conn, a) == []
     assert {r[4] for r in ra} <= {"Calculated", "ExcelReference", "Preview"}
+
+
+def test_rename_e_summary(proj):
+    conn, _ = proj
+    ident = project.identity(conn)
+    assert project.summary(conn)["Mode"] is None
+    project.rename(conn, "  Novo nome  ")
+    after = project.identity(conn)
+    assert after["ProjectName"] == "Novo nome" and after["ProjectID"] == ident["ProjectID"]
+    with pytest.raises(ValueError):
+        project.rename(conn, "   ")
+    analysis.create_ec(conn, "EC", "A0", _cfg(conn))
+    assert project.summary(conn)["Mode"] == "EC"

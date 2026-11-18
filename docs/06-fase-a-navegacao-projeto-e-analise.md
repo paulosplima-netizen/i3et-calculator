@@ -493,3 +493,9 @@ Regra mantida: `core/` não importa `streamlit`.
 Em 17/11 (passo 5) os protótipos foram ajustados à mão: fatores de uso combinado em `review.js`, T21 e T23; escolha da receita de materiais por motorização na T03; modelo genérico de bateria (`P58`) na T46. O pacote é a base de interface, e os ajustes foram testados só quanto à sintaxe do JavaScript; o teste visual no navegador fica para o passo 7.
 
 Os números de parâmetros, veículos, categorias e saídas vêm de `model-data.js`, que é cópia extraída da planilha fora do processo de fixtures. Serão conferidos contra a planilha no passo 3.
+
+## Regra permanente de comparação com as telas revisadas (18/11/2026)
+
+Toda tela criada ou alterada é comparada com a tela revisada correspondente (`Interfaces Revisadas para o i3ET_T01-T46_20261116`). O Claude pode acrescentar o que julgar necessário. Descartar definitivamente algo do protótipo exige aprovação do autor. Adiar para etapa futura é decisão do Claude, registrada nas pendências.
+
+T01 (18/11): tipos de análise do protótipo, lista de projetos com seleção, projeto de exemplo somente leitura, modo e "Copy from" na criação, Rename. Adiados: login/senha, importação de JSON, diálogo por bloco do diagrama.

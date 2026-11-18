@@ -23,6 +23,7 @@ st.subheader("New analysis")
 with st.form("new_analysis"):
     name = st.text_input("Analysis name", value="Analysis 1")
     mode = st.radio("Mode", ["EC", "FC"], horizontal=True,
+                    index=0 if st.session_state.get("pref_mode", "EC") == "EC" else 1,
                     captions=["Equalized comparison: six powertrains of one category",
                               "Free comparison: 1 to 7 market vehicles"])
     cat = st.selectbox("Category (EC)", [c[0] for c in cats],

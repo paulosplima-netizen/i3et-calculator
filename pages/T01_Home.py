@@ -8,15 +8,44 @@ import shutil
 import streamlit as st
 
 from core import __version__, project
-from ui import flow, navigation, state
+from ui import blocks, flow, navigation, state, theme
 
-flow.begin("Home", needs_project=False)
+flow.begin("Home", needs_project=False, show_title=False)
+theme.inject()
+blocks.hero(kicker="Integrated Economic, Energy and Environment Transport",
+            title="Compare light vehicles across their life cycle",
+            text="Configure a project, choose an analysis and trace each result to the "
+                 "assumptions behind it.",
+            types=[("Light Vehicles", True), ("Heavy Vehicles · future", False),
+                   ("Fleet · future", False)])
 st.caption("Light vehicle carbon footprint, cradle to gate · modules M1 and M2 of the i3ET · "
            "NIPE/UNICAMP · kg CO₂e, GWP-100, IPCC AR6")
 
 if not state.reference_exists():
     st.error("The reference database is missing. Build it with `python tools/make_db.py`.")
     st.stop()
+
+ANALYSES = {   # tipo de analise -> (tela de destino, situacao)
+    "GHG LCA and LCC": ("T03", ""),
+    "Sensitivity Analysis": ("T36", "planned: screen T36, a later phase"),
+    "Monte Carlo": ("T37", "planned: screen T37, a later phase"),
+    "Lightweighting": ("T32", "planned: screen T32, module M5"),
+}
+EXAMPLE = os.path.join(state.REPO, "data", "exemplo.sqlite")
+
+
+def _label(entry: dict) -> str:
+    with flow.connect(entry["path"]) as conn:
+        info = project.summary(conn)
+    kind = {"EC": "EC", "FC": "FC"}.get(info["Mode"] or "", "no analysis")
+    owner = "Master" if info["IsExample"] else "My project"
+    return " · ".join([info["ProjectID"], info["ProjectName"], kind, owner])
+
+
+def _open(path: str, name: str) -> None:
+    state._remember(path, name)
+    flow.register(path, name)
+
 
 left, right = st.columns([1.5, 1])
 with left:
@@ -28,52 +57,108 @@ with left:
                 project.create(conn, state.project_name())
             ident = project.identity(conn)
         flow.register(opened, ident["ProjectName"])
+
+    # --- Select Project(s): a lista dos projetos abertos nesta sessao -------
+    listed = st.session_state.get(flow.OPEN_KEY, [])
+    if listed:
+        st.markdown("**Select Project(s)**")
+        picked = []
+        for entry in listed:
+            on = st.checkbox(_label(entry), key=f"sel_{entry['path']}",
+                             value=entry["path"] in st.session_state.get(flow.SELECTED_KEY, []))
+            if on:
+                picked.append(entry["path"])
+        st.session_state[flow.SELECTED_KEY] = picked
+        if len(picked) == 1 and picked[0] != opened:
+            if st.button("Open selection"):
+                _open(picked[0], next(e["name"] for e in listed if e["path"] == picked[0]))
+                st.rerun()
+        if len(picked) > 1:
+            st.info("Multiple projects selected. Parameters are read-only.")
+            navigation.link("T06", "Compare selected projects")
+
+    if opened:
         st.success(f"**{ident['ProjectName']}** is open · `{ident['ProjectID']}`")
         with open(opened, "rb") as fh:
             st.download_button("Download project", fh.read(),
                                file_name=os.path.basename(opened),
                                mime="application/vnd.sqlite3")
-        c2, c3 = st.columns([3, 1])
-        new_name = c2.text_input("Name of the copy", value=f"{ident['ProjectName']}-copy")
-        c3.write("")
-        c3.write("")
-        if c3.button("Save as"):
-            dest = os.path.join(os.path.dirname(opened), state._slug(new_name) + ".sqlite")
-            with flow.connect(opened) as conn:
-                project.save_as(conn, dest, new_name)
-            state._remember(dest, new_name)
-            st.rerun()
+        if flow.selected_count() == 1 and not ident["IsExample"]:
+            r1, r2 = st.columns([3, 1])
+            new_title = r1.text_input("Rename selected project", value=ident["ProjectName"])
+            r2.write("")
+            r2.write("")
+            if r2.button("Save name"):
+                error = None
+                try:
+                    with flow.connect(opened) as conn:
+                        project.rename(conn, new_title)
+                except ValueError as e:
+                    error = str(e)
+                if error:
+                    st.error(error)
+                else:
+                    st.session_state[state.NAME_KEY] = new_title.strip()
+                    for p in st.session_state.get(flow.OPEN_KEY, []):
+                        if p["path"] == opened:
+                            p["name"] = new_title.strip()
+                    st.rerun()
         if st.button("Close project"):
             state.close_project()
             st.rerun()
         st.caption("Sessions in the cloud are temporary. Download the project to keep your work.")
-    else:
-        name = st.text_input("Name for a new project", value="my-project")
-        if st.button("Create project", type="primary"):
-            state.new_project(name)
-            st.rerun()
-        up = st.file_uploader("…or open an existing project (.sqlite)", type=["sqlite", "db"])
-        if up is not None:
-            try:
-                state.open_uploaded(up)
-                st.rerun()
-            except ValueError as e:
-                st.error(str(e))
-        example = os.path.join(state.REPO, "data", "exemplo.sqlite")
-        if os.path.exists(example) and st.button("Open example project (read-only)"):
-            dest = state.new_project("example")
-            shutil.copyfile(example, dest)
+
+    # --- Project Configuration: criar, copiar, abrir -----------------------
+    st.markdown("**Create project / Save as**")
+    with st.form("new_project"):
+        name = st.text_input("Name", value="my-project")
+        mode = st.radio("Comparison mode", ["Equalized", "Free choice"], horizontal=True,
+                        help="Equalized (EC): six powertrains of one category. "
+                             "Free choice (FC): 1 to 7 market vehicles.")
+        sources = {"Empty project": None}
+        sources.update({e["path"]: _label(e) for e in listed})
+        source = st.selectbox("Copy from", list(sources),
+                              format_func=lambda k: k if k == "Empty project" else sources[k])
+        go = st.form_submit_button("Create project / Save as", type="primary")
+    if go:
+        if not name.strip():
+            st.error("Enter a project name.")
+        else:
+            st.session_state["pref_mode"] = "EC" if mode == "Equalized" else "FC"
+            if source == "Empty project":
+                _open(state.new_project(name.strip()), name.strip())
+            else:
+                dest = os.path.join(os.path.dirname(source), state._slug(name) + ".sqlite")
+                with flow.connect(source) as conn:
+                    project.save_as(conn, dest, name.strip())
+                _open(dest, name.strip())
             st.rerun()
 
-    st.subheader("Analysis type")
-    st.radio("Analysis type", ["GHG (modules M1–M2)", "Energy (M3, planned)",
-                               "Costs (M4, planned)", "Macroeconomic (M6, planned)"],
-             label_visibility="collapsed",
-             captions=["Mass and manufacturing emissions", "Available with M3",
-                       "Available with M4", "Available with M6"],
-             disabled=False, index=0, key="analysis_type",
-             on_change=lambda: st.session_state.update(
-                 analysis_type="GHG (modules M1–M2)"))
+    up = st.file_uploader("…or open an existing project (.sqlite)", type=["sqlite", "db"])
+    if up is not None:
+        try:
+            _open(state.open_uploaded(up), os.path.splitext(up.name)[0])
+            st.rerun()
+        except ValueError as e:
+            st.error(str(e))
+    if os.path.exists(EXAMPLE) and st.button("Open example project (read-only)"):
+        dest = state.new_project("example")
+        shutil.copyfile(EXAMPLE, dest)
+        _open(dest, "Compact hatch · workbook example")
+        st.rerun()
+
+    # --- Select Analysis Type ----------------------------------------------
+    st.markdown("**Select Analysis Type**")
+    kind = st.selectbox("Analysis", list(ANALYSES), key="analysis_type")
+    target, status = ANALYSES[kind]
+    ready = flow.selected_count() == 1 and opened and not status
+    if status:
+        st.caption(f"Not available yet — {status}.")
+    elif not opened:
+        st.caption("Open or create a project first.")
+    if st.button("Open analysis", disabled=not ready):
+        st.switch_page(navigation.SCREENS[target][0])
+    st.caption("Advanced analyses use the cases in the selected project.")
 
 with right:
     st.subheader("Reference base")
@@ -83,27 +168,39 @@ with right:
         st.metric("Vehicles in the project", len(base["D01"]))
     st.metric("Program version", __version__)
 
-BLOCKS = [
-    ("Vehicle choice", "M1", "T02", "Pick market vehicles or a category."),
-    ("Project configuration", "M1", "T03", "Mode, fuel, test norm, versions and combined power."),
-    ("Selected parameters", "M1", "T04", "Control Panel parameters in three depths."),
-    ("Vehicle parameters", "M1", "T10", "The values each vehicle is described by."),
-    ("Default parameters", "M1", "T11", "Rules that fill in missing vehicle values."),
-    ("Mass estimation (M1)", "M1", "T10", "Group masses and the material recipe."),
-    ("Manufacturing GHG (M2)", "M2", "T18", "Materials and assembly emissions."),
-    ("Emission factors", "M2", "T15", "Published versions, and your own."),
-    ("Validate and freeze", "M1–M2", "T41", "Checks, then a frozen, hashed run."),
-    ("Results", "M1–M2", "T05", "Dashboard, with a seal on every number."),
-    ("Export", "M1–M2", "T08", "Run and project files, with their hash."),
-]
+#: (titulo, descricao, tela de destino ou None, situacao do modulo)
+COLUMNS = {
+    "a": ("Inputs", [
+        ("Vehicle design", "Dimensions, mass and aerodynamics", "T10", ""),
+        ("Regional conditions", "Electricity, fuels and manufacturing", "T03", ""),
+        ("Real-world use", "Driving, charging and service life", None, "M3, planned")]),
+    "b": ("Model calculations", [
+        ("Performance equivalence", "Comparison mode and targets", "T03", ""),
+        ("Component sizing", "Power, range and batteries", "T03", ""),
+        ("Vehicle mass", "Systems, materials and lightweighting", "T18", ""),
+        ("Energy intensity", "Cycles, efficiency and energy flows", None, "M3, planned")]),
+    "c": ("Outputs", [
+        ("GHG emissions", "Manufacturing, use and end of life", "T18", "manufacturing only"),
+        ("Life-cycle cost", "Cost assumptions and results", None, "M4, planned"),
+        ("Energy use", "Fuel and electricity demand", None, "M3, planned"),
+        ("Fleet model inputs", "Vehicle outputs for future fleet integration", None,
+         "M6, planned")]),
+}
 st.subheader("How i3ET works")
-st.caption("Open any block to see what it does and the screen where you can review it.")
-cols = st.columns(3)
-for n, (title, module, key, text) in enumerate(BLOCKS):
-    with cols[n % 3]:
-        with st.expander(f"{title} · {module}"):
-            st.write(text)
-            navigation.link(key)
+st.caption("Open a block to go to the screen where you can review it. "
+           "Blocks of later modules show their status.")
+with st.container(key="i3-diagram"):
+    cols = st.columns(3)
+    for col, (tag, (label, nodes)) in zip(cols, COLUMNS.items()):
+        with col:
+            blocks.column_title(label)
+            for n, (title, desc, target, status) in enumerate(nodes):
+                with st.container(key=f"i3-node-{tag}-{n}"):
+                    if target:
+                        navigation.link(target, label=title)
+                    else:
+                        st.markdown(f"**{title}**")
+                    st.caption(desc + (f" · {status}" if status else ""))
 
 st.divider()
 st.caption("Emission factors derived from GREET © UChicago Argonne, LLC — redistributed for "

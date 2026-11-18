@@ -1,0 +1,32 @@
+/* Camada visual (piloto na T01). Paleta e formas do review.css dos prototipos.
+   Escopo: so classes e chaves `i3-*`; nada aqui muda o calculo. */
+:root { --i3-ink:#18304e; --i3-muted:#52677e; --i3-line:#cfdaea; --i3-accent:#1758a7; }
+
+.stApp { background:#f2f6fc; }
+.stApp h1, .stApp h2, .stApp h3 { color:var(--i3-ink); }
+
+/* Hero */
+.i3-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(150px,30%); align-items:center;
+  gap:24px; background:linear-gradient(130deg,#fff,#edf5ff); border:1px solid #d2e0ef;
+  border-radius:20px; padding:clamp(18px,3vw,44px); margin-bottom:18px; }
+.i3-hero img { width:100%; max-width:260px; justify-self:center; border-radius:16px; }
+.i3-hero small { color:var(--i3-muted); }
+.i3-hero h1 { font-size:clamp(28px,3.6vw,50px); line-height:1.1; margin:.3em 0; padding:0; }
+.i3-hero p { max-width:54ch; color:#415b73; font-size:17px; margin:.4em 0 .9em; }
+.i3-types { display:flex; gap:10px; flex-wrap:wrap; }
+.i3-types span { padding:5px 9px; border:1px solid #cad8e9; border-radius:20px; color:#45617a; font-size:14px; }
+.i3-types .active { background:#e1f2ea; color:#155438; border-color:#acd5bf; font-weight:650; }
+@media (max-width:640px) { .i3-hero { grid-template-columns:1fr; } .i3-hero img { max-width:150px; grid-row:1; } }
+
+/* Caixas de secao (st.container(border=True, key="i3-box-...")) */
+[class*="st-key-i3-box"] { background:#fff; border:1px solid var(--i3-line); border-radius:9px; padding:14px; }
+
+/* Diagrama "How i3ET works" */
+.i3-col-title { font-size:14px; letter-spacing:.045em; text-transform:uppercase; font-weight:700;
+  color:var(--i3-ink); margin:0 0 6px; }
+[class*="st-key-i3-node"] { border:1px solid #bccde0; border-left:4px solid #277993; border-radius:7px;
+  background:#f1f8fc; padding:8px 12px; margin-bottom:8px; }
+[class*="st-key-i3-node-b"] { border-left-color:#2355a0; background:#edf3ff; }
+[class*="st-key-i3-node-c"] { border-left-color:#327a4d; background:#eff8f0; }
+[class*="st-key-i3-node"] a { font-weight:600; color:var(--i3-accent); }
+[class*="st-key-i3-node"] [data-testid="stCaptionContainer"] { color:var(--i3-muted); }

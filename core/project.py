@@ -93,3 +93,25 @@ def save_as(conn: sqlite3.Connection, dest_path: str, name: str | None = None) -
     finally:
         dest.close()
     return new_id
+
+
+# --------------------------------------------------------------------------
+# BLOCO PJ4 -- renomear e resumir
+#   rename  : muda M03_Project.ProjectName (nome vazio e recusado); o ProjectID
+#             nao muda.
+#   summary : identidade mais o modo (EC, FC) da ultima analise, ou None.
+# --------------------------------------------------------------------------
+def rename(conn: sqlite3.Connection, name: str) -> None:
+    if not name or not name.strip():
+        raise ValueError("project name must not be empty")
+    if identity(conn) is None:
+        raise ValueError("this file is not a project (M03_Project is empty)")
+    conn.execute("UPDATE M03_Project SET ProjectName = ?", (name.strip(),))
+
+
+def summary(conn: sqlite3.Connection) -> dict | None:
+    ident = identity(conn)
+    if ident is None:
+        return None
+    row = conn.execute("SELECT Mode FROM D06_Analysis ORDER BY IDA DESC LIMIT 1").fetchone()
+    return {**ident, "Mode": row[0] if row else None}

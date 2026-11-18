@@ -15,6 +15,7 @@ import sqlite3
 from dataclasses import dataclass
 
 import streamlit as st
+from streamlit.runtime.scriptrunner import RerunException, StopException
 
 from core import project, provenance
 
@@ -33,6 +34,11 @@ def connect(path: str | None = None):
     try:
         yield conn
         conn.commit()
+    except (RerunException, StopException):
+        # st.rerun() e st.stop() sao fluxo normal, nao erro: o que a tela gravou antes
+        # deles tem de ficar. Sem isto, "Save" seguido de st.rerun() desfaz a gravacao.
+        conn.commit()
+        raise
     except Exception:
         conn.rollback()
         raise
@@ -64,10 +70,12 @@ def selected_count() -> int:
     return max(1, len(st.session_state.get(SELECTED_KEY, [])))
 
 
-def begin(title: str, *, needs_project: bool = True, edit: bool = False) -> Context | None:
+def begin(title: str, *, needs_project: bool = True, edit: bool = False,
+          show_title: bool = True) -> Context | None:
     """Page header. Returns the context, or stops the page when there is no project."""
     st.set_page_config(page_title=f"{title} · i3ET Calculator", layout="wide")
-    st.title(title)
+    if show_title:
+        st.title(title)
     path = state.project_path()
     if not needs_project:
         return None
