@@ -58,8 +58,9 @@ def test_producao_inicial_e_o_berco_ao_portao_de_hoje():
 
 def test_estagio_de_reposicao_e_fim_de_vida_vem_dos_modulos():
     c = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
-    items = [dict(zip([d[0] for d in c.execute("SELECT * FROM P31_MaintenanceItem").description], r))
-             for r in c.execute("SELECT * FROM P31_MaintenanceItem")]
+    cur = c.execute("SELECT * FROM P31_MaintenanceItem")
+    nomes = [d[0] for d in cur.description]
+    items = [dict(zip(nomes, r)) for r in cur]
     shares: dict = {}
     for i, m, s in c.execute("SELECT IDMI, IDM, Share FROM P31b_MaintenancePartShare"):
         shares.setdefault(i, {})[m] = s
