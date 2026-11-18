@@ -47,18 +47,37 @@ Intervalos: pneus 40.000 km; óleo do motor 5.000; fluido do para-brisa 10.000; 
 
 ### P61 — `P61_BRRouteFactor` (fatores por rota da BR23)
 
+Linhas 11 (aço, IDM 1), 14 (ferro fundido, 3), 18 (alumínio de chapa, 4a) e 20 (alumínio extrudado, 4b) da guia `Emission Factors BR`; 4 rotas por material (16 linhas). O IDM 4 (alumínio forjado) não tem linha na guia.
+
 | Coluna | Tipo | Chave | Obr. | Descrição |
 |---|---|---|---|---|
-| `IDM` | TEXT | PK, FK→P09 | S | Material (1, 3, 4, 4a, 4b) |
-| `Route` | TEXT | PK | S | `RECYCLED`, `VIRGIN_MAIN`, `VIRGIN_ALT`, `GREEN` |
-| `EFRoute` | REAL | — | N | kg CO₂e/kg da rota (`Emission Factors BR`, blocos `AS:BD`) |
-| `EFGlobal` | REAL | — | N | FE 100% global (coluna L), perdas adotadas no FE global (`H`) e nacional (`J`) em colunas `LossGlobalAdopted`, `LossNationalAdopted` |
+| `IDM` | TEXT | PK, FK→P09 | S | Material (1, 3, 4a, 4b) |
+| `Route` | TEXT | PK | S | `RECYCLED` (M), `VIRGIN_MAIN` (N), `VIRGIN_ALT` (O), `GREEN` (P) |
+| `EFRoute` | REAL | — | N | kg CO₂e/kg da rota (blocos `AS:BD`) |
+| `EFGlobal` | REAL | — | N | FE 100% global (coluna L); repetido nas quatro rotas |
+| `LossGlobalAdjusted` | REAL | — | N | Perdas ajustadas no FE global (G) |
+| `LossGlobalAdopted` | REAL | — | N | Perdas adotadas no FE global (H) |
+| `LossNationalAdjusted` | REAL | — | N | Perdas ajustadas no FE nacional (I), quando constante |
+| `LossNationalAdjIDCP` | TEXT | FK→P30 | N | Parâmetro do painel que dá `I` (aço `X91`; alumínio `X97`) |
+| `LossNationalAdopted` | REAL | — | N | Perdas adotadas no FE nacional (J) |
 | `Origin` | TEXT | — | S | `Typed` (decisão 3) |
 | `SourceRF` | TEXT | — | N | Célula/guia de origem |
 
-### P62 — `P62_BRRouteShare` (participações das rotas e fração importada)
+### P62 — `P62_BRRouteShare` (participações das rotas e da fração importada)
 
-`IDM`, `Route`, `ShareRule` (`CONSTANT` ou `PARAM`), `IDCP` (FK→P30: `X91`…`X101`, quando `PARAM`), `ShareValue` (quando `CONSTANT`), `ImportedShareRule`. Reproduz as regras `BG:BK` da `Emission Factors BR` (aço reciclado `(P124 − 0,1)/0,9`; aço principal `1 − outros`; ferro fundido = `0,9 × aço`; alumínio reciclado, prebaked/Søderberg, importado). Núcleo: `core/br23_routes.py` (sem Streamlit).
+Nove linhas por material: as quatro rotas e a fração importada por tipo de veículo (`IMP_ICEV`, `IMP_ICEV_SUV`, `IMP_HEV`, `IMP_PHEV`, `IMP_BEV`; colunas `BK:BO`). 36 linhas.
+
+| Coluna | Tipo | Chave | Obr. | Descrição |
+|---|---|---|---|---|
+| `IDM` | TEXT | PK, FK→P09 | S | Material |
+| `Route` | TEXT | PK | S | Rota ou fração importada |
+| `ShareRule` | TEXT | — | S | `CONSTANT`, `PARAM` ou `FORMULA` |
+| `IDCP` | TEXT | FK→P30 | N | Parâmetro `X91`…`X101`, quando `PARAM` |
+| `ShareValue` | REAL | — | N | Valor, quando `CONSTANT` |
+| `RuleExpr` | TEXT | — | N | Quando `FORMULA`: aritmética com números, `X92`…`X101` e `[IDM:ROTA]` (ex.: `(X92-0.1)/0.9`) |
+| `SourceRS` | TEXT | — | N | Células de origem |
+
+Reproduz as regras `BG:BK` (aço reciclado `(X92 − 0,1)/0,9`; aço principal `1 − outros`; ferro fundido = 0,9 × aço, importado = `X95/2`; alumínio reciclado `X98`, verde `X100`, principal `(1−X98−X100)·X99`, alternativo `(1−X98−X100)·(1−X99)`, importado `X101`). Gerada por `tools/import_br_routes.py`. Núcleo: `core/br23_routes.py` (sem Streamlit).
 
 ### Ampliação de `P10_EFVersion` e `D04_UserEFVersion`
 

@@ -1,0 +1,11 @@
+﻿IDMI;DsMI;ItemKind;IDGG;IDM;IntervalKm;IntervalSource;RefCount;MassPerUnitKg;NotesMI
+TIRE;Tire set (4 tires);PART;K;;40000;i3ET-compatible;4;9.0718;"M2 T496: 4 jogos de 20 lb; 1/3 aco (IDM 1), 2/3 borracha (IDM 11)"
+BATT_AUX;Auxiliary lead-acid battery;BATTERY;Iaux;;70000;Entered;2;;"M2 T499: 2 reposicoes; intervalo escolhido pelo autor"
+BATT_TRAC;Traction battery;BATTERY;Iprinc;;150000;Entered;1;;"M2 T500: so com 'Sim Bat'; intervalo escolhido pelo autor"
+FLD_77;Engine oil;FLUID;K;77;5000;i3ET-compatible;39;;M2 T501
+FLD_78;Power steering fluid;FLUID;K;78;;i3ET-compatible;0;;"Sem reposicao na planilha; item inativo, ativavel pelo usuario"
+FLD_79;Brake fluid;FLUID;K;79;50000;i3ET-compatible;3;;M2 T501
+FLD_80;Transmission fluid;FLUID;K;80;100000;i3ET-compatible;1;;M2 T501
+FLD_81;Powertrain coolant;FLUID;K;81;50000;i3ET-compatible;3;;M2 T501
+FLD_82;Windshield fluid;FLUID;K;82;10000;i3ET-compatible;19;;M2 T501
+FLD_83;Adhesives;FLUID;K;83;;i3ET-compatible;0;;"Sem reposicao na planilha; item inativo, ativavel pelo usuario"

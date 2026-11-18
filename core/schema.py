@@ -1047,7 +1047,10 @@ CREATE TABLE IF NOT EXISTS P61_BRRouteFactor (
                       CHECK (Route IN ('RECYCLED','VIRGIN_MAIN','VIRGIN_ALT','GREEN')),
   EFRoute             REAL,
   EFGlobal            REAL,
+  LossGlobalAdjusted  REAL,
   LossGlobalAdopted   REAL,
+  LossNationalAdjusted REAL,
+  LossNationalAdjIDCP TEXT REFERENCES P30_ControlParam(IDCP),
   LossNationalAdopted REAL,
   Origin              TEXT NOT NULL DEFAULT 'Typed',
   SourceRF            TEXT,
@@ -1055,16 +1058,19 @@ CREATE TABLE IF NOT EXISTS P61_BRRouteFactor (
 );
 
 CREATE TABLE IF NOT EXISTS P62_BRRouteShare (
-  IDM               TEXT NOT NULL REFERENCES P09_Material(IDM),
-  Route             TEXT NOT NULL
-                    CHECK (Route IN ('RECYCLED','VIRGIN_MAIN','VIRGIN_ALT','GREEN')),
-  ShareRule         TEXT NOT NULL CHECK (ShareRule IN ('CONSTANT','PARAM')),
-  IDCP              TEXT REFERENCES P30_ControlParam(IDCP),
-  ShareValue        REAL,
-  ImportedShareRule TEXT,
+  IDM        TEXT NOT NULL REFERENCES P09_Material(IDM),
+  Route      TEXT NOT NULL
+             CHECK (Route IN ('RECYCLED','VIRGIN_MAIN','VIRGIN_ALT','GREEN',
+                              'IMP_ICEV','IMP_ICEV_SUV','IMP_HEV','IMP_PHEV','IMP_BEV')),
+  ShareRule  TEXT NOT NULL CHECK (ShareRule IN ('CONSTANT','PARAM','FORMULA')),
+  IDCP       TEXT REFERENCES P30_ControlParam(IDCP),
+  ShareValue REAL,
+  RuleExpr   TEXT,
+  SourceRS   TEXT,
   PRIMARY KEY (IDM, Route),
   CHECK ((ShareRule = 'PARAM' AND IDCP IS NOT NULL)
-      OR (ShareRule = 'CONSTANT' AND ShareValue IS NOT NULL))
+      OR (ShareRule = 'CONSTANT' AND ShareValue IS NOT NULL)
+      OR (ShareRule = 'FORMULA' AND RuleExpr IS NOT NULL))
 );
 
 CREATE TABLE IF NOT EXISTS P63_RecipeBodyChassisMass (
