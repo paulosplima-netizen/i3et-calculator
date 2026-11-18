@@ -109,3 +109,11 @@ def restore(conn: sqlite3.Connection, ida: int, idcp: str, profile: str) -> bool
     cur = conn.execute("DELETE FROM D08_ControlParamValue "
                        "WHERE IDA = ? AND IDCP = ? AND Profile = ?", (ida, idcp, profile))
     return cur.rowcount > 0
+
+
+def restore_profile(conn: sqlite3.Connection, ida: int, profile: str) -> int:
+    """Apaga todas as alteracoes de um perfil da analise. Devolve quantas linhas saíram."""
+    _check_profile(profile)
+    cur = conn.execute("DELETE FROM D08_ControlParamValue WHERE IDA = ? AND Profile = ?",
+                       (ida, profile))
+    return cur.rowcount

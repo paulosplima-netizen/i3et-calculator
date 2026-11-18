@@ -61,12 +61,52 @@ def recipes_for(conn: sqlite3.Connection, idvpt: str, idvdt: str | None = None,
 # BLOCO AN3 -- gerar casos
 #   Cria D01, D03 e D02 de um veiculo. Devolve (IDV, IDEA).
 # --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# BLOCO AN4 -- receita de materiais por caso (B0, item 5)
+#   Le      : D07, D01, D02, P15.
+#   Faz     : `case_recipe_options` lista as receitas oferecidas ao caso (as da
+#             motorizacao; SHEV usa as do HEV e SPHEV as do PHEV, na ordem de
+#             `recipes_for`); `set_recipe` grava a escolha em D02.IDVMR. Rodadas ja
+#             congeladas nao mudam: a proxima rodada congela a nova escolha.
+# --------------------------------------------------------------------------
+def _case_vehicle(conn, ida: int, idcase: int):
+    row = conn.execute(
+        "SELECT a.IDV, a.IDVPT, v.IDVDT, v.IDVS FROM D07_AnalysisVehicle a "
+        "JOIN D01_Vehicle v USING (IDV) WHERE a.IDA = ? AND a.IDCase = ?",
+        (ida, idcase)).fetchone()
+    if row is None:
+        raise ValueError(f"Case {idcase} does not exist in analysis {ida}")
+    return row
+
+
+def case_recipe(conn: sqlite3.Connection, ida: int, idcase: int) -> str | None:
+    idv = _case_vehicle(conn, ida, idcase)[0]
+    row = conn.execute("SELECT IDVMR FROM D02_EvaluationAlternative WHERE IDV = ?",
+                       (idv,)).fetchone()
+    return row[0] if row else None
+
+
+def case_recipe_options(conn: sqlite3.Connection, ida: int, idcase: int) -> list[str]:
+    _, pt, dt, vs = _case_vehicle(conn, ida, idcase)
+    options = recipes_for(conn, pt, dt, vs)
+    current = case_recipe(conn, ida, idcase)
+    return options if current in options or current is None else [current, *options]
+
+
+def set_recipe(conn: sqlite3.Connection, ida: int, idcase: int, idvmr: str) -> None:
+    idv = _case_vehicle(conn, ida, idcase)[0]
+    if idvmr not in case_recipe_options(conn, ida, idcase):
+        raise ValueError(f"Recipe {idvmr} is not offered for case {idcase}")
+    conn.execute("UPDATE D02_EvaluationAlternative SET IDVMR = ? WHERE IDV = ?", (idvmr, idv))
+
+
 def _computed_idvps(conn: sqlite3.Connection) -> set[int]:
     return {r[0] for r in conn.execute(
         "SELECT IDVP FROM P07_VehicleParam WHERE ParamClass IN (?, ?)", _COMPUTED_CLASSES)}
 
 
-def _new_vehicle(conn, *, name, idvpt, idvdt, idvs, idlr, params, idvmr, d06) -> tuple[int, int]:
+def _new_vehicle(conn, *, name, idvpt, idvdt, idvs, idlr, params, idvmr, d06,
+                 informed: frozenset[int] = frozenset()) -> tuple[int, int]:
     idv = (conn.execute("SELECT COALESCE(MAX(IDV), 0) FROM D01_Vehicle").fetchone()[0]) + 1
     conn.execute("INSERT INTO D01_Vehicle (IDV, DsV, IDVPT, IDVDT, IDVS, IDLR, IsUserDefined) "
                  "VALUES (?,?,?,?,?,?,0)", (idv, name, idvpt, idvdt, idvs, idlr))
@@ -77,7 +117,8 @@ def _new_vehicle(conn, *, name, idvpt, idvdt, idvs, idlr, params, idvmr, d06) ->
             val = 1.0 if idvpt in HYBRID_COMBINATION else 0.0   # existencia do modulo
         conn.execute("INSERT INTO D03_VehicleParamValue (IDV, IDVP, GC, GCText, IsCalculated) "
                      "VALUES (?,?,?,?,?)",
-                     (idv, idvp, float(val or 0.0), txt, int(idvp in computed)))
+                     (idv, idvp, float(val or 0.0), txt,
+                      int(idvp in computed and idvp not in informed)))
     conn.execute("INSERT INTO D02_EvaluationAlternative "
                  "(IDV, IDEA, IDMPV, IDVMR, IDEFV, IDAPV, Boundary) VALUES (1*?,1,?,?,?,?,?)",
                  (idv, d06["IDMPV"], idvmr, d06["IDEFV"], d06["IDAPV"], d06["Boundary"]))
@@ -102,6 +143,11 @@ def _market_params(conn, idmv: int) -> dict[int, tuple]:
 _OUTPUT_INPUTS = {"O10": 2, "O11": 3, "O13": 7, "O14": 8, "O15": 27, "O16": 14,
                   "O17": 31, "O19": 5}
 _BATTERY_INDICATOR = "O18"
+
+
+#: IDVP que a rodada gravada passa como informados: o motor de partida do M2
+#: (0,03 x P_ICE) difere da equacao do M1 (0,04), e a planilha prevalece.
+_RECORDED_INFORMED = frozenset({18})
 
 
 def _recorded_params(conn, case_key: str) -> tuple[dict[int, tuple], str | None]:
@@ -196,7 +242,8 @@ def create_ec(conn: sqlite3.Connection, name: str, idvc: str, cfg: dict, *,
             origin = "Manufacturer" if n == 1 else "Pending"
         idvmr = _pick_recipe(conn, recipes.get(key, sheet_recipe), pt, dt, vs)
         idv, idea = _new_vehicle(conn, name=f"{key} {pt}", idvpt=pt, idvdt=dt, idvs=vs, idlr=lr,
-                                 params=params, idvmr=idvmr, d06=d06)
+                                 params=params, idvmr=idvmr, d06=d06,
+                                 informed=_RECORDED_INFORMED if recorded else frozenset())
         conn.execute(
             "INSERT INTO D07_AnalysisVehicle (IDA, IDCase, CaseKey, CaseRole, IDVPT, IDMV, IDV, "
             "IDEA, SizingOrigin) VALUES (?,?,?,?,?,?,?,?,?)",

@@ -46,10 +46,11 @@ def test_robustness_multiplies_power_area_traction_and_complexity():
     assert g[16] == pytest.approx(120.0 * 9.5 * 1.0 * 1.0)
 
 
-def test_starter_is_four_percent_of_combustion_power():
+def test_starter_is_the_p59_factor_times_combustion_power():
     g = params.resolve({2: 120.0}, powertrain="ICEV", battery_id=None,
                        p19=EMPTY_P19)
-    assert g[18] == pytest.approx(4.8)
+    assert g[18] == pytest.approx(params.equation_constants()["STARTER_PER_KW"] * 120.0)
+    assert g[18] == pytest.approx(4.8)   # 0,04, equacao do M1 (o M2 usa 0,03: D15)
 
 
 def test_a_supplied_value_outranks_the_equation():

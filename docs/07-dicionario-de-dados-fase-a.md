@@ -37,7 +37,7 @@ A especificação (`docs/06`) descrevia as tabelas em nível de conteúdo. Ao fe
 4. **`R45` é indexada por `CaseKey`**, não por `IDCase`, e traz a motorização. Assim o resultado de uma rodada congelada não depende de `D07`, que o usuário pode alterar depois.
 5. **`D06.CombinedPowerRule` tem domínio fixo** (`Default`, `ExcelParity`) em vez de chave estrangeira. Em 17/11 a regra de potência combinada passou de fórmulas (`ICE`, `EE`, `SUM`, `MAX`) para fatores de uso combinado dos motores: `P53` guarda o par padrão por motorização, `P56` os pares arbitrados para igualar a planilha e `D12` o ajuste do usuário por caso.
 
-Próximos números livres: T47, P58, D13, C35, R54, M04.
+Próximos números livres: T47, P60, D13, C35, R54, M04.
 
 ---
 
@@ -312,6 +312,21 @@ Duas linhas, do alumínio: chapa 0,6206 e extrudado 0,3794, média das 30 receit
 | `NotesGBM` | TEXT | — | N | Observação |
 
 Três linhas. O modelo não tem composição: a massa é o parâmetro vezes a potência ou a energia, e a pegada é a massa vezes a intensidade de carbono. Os valores ficam em `P30`/`D08`, editáveis. A rodada gravada usa `PB-HEV-indefinido` no HEV e no SHEV e `PB-BEV-indefinido` no PHEV, no SPHEV e no BEV. É gerada por `tools/build_generic_battery.py`.
+
+### P59 — `P59_EquationConstant` (constantes de equação como parâmetros)
+
+Bloco B0 da Fase B (18/11/2026). Todo fator é parâmetro: o que estava embutido no código passa a ser linha desta tabela.
+
+| Coluna | Tipo | Chave | Obr. | Descrição |
+|---|---|---|---|---|
+| `IDEC` | TEXT | PK | S | Nome da constante (`STARTER_PER_KW`, `HP_PER_KW`) |
+| `ValueEC` | REAL | — | S | Valor |
+| `UnitEC` | TEXT | — | N | Unidade |
+| `SourceEC` | TEXT | — | S | Origem na planilha |
+| `NotesEC` | TEXT | — | N | Observação |
+| `IsProvisional` | INTEGER | — | S | 1 se o valor ainda depende de validação |
+
+Duas linhas, de `tools/build_equation_constants.py`. `STARTER_PER_KW` (0,03) é o fator do motor de partida: `IDVP 18` = fator × `IDVP 2`; o doc 01 trazia 0,04, a planilha grava 0,03 (divergência D15 em `05a`). `HP_PER_KW` (1,34102) converte kW em hp nas faixas de potência das regras de P35. `core/params.equation_constants` lê a tabela da base; sem base (testes de unidade), lê o mesmo CSV.
 
 ### P12 e P13 — `P12_Powertrain` e `P13_DesignType` (coluna nova)
 

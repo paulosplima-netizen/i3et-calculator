@@ -34,7 +34,8 @@ WORKBOOK = "LCA_LV_i3ET_20261101.xlsx"
 
 #: Tabelas da 0.9.0 que recebem linhas, em ordem de dependencia.
 ADDITIONS = ["P10_EFVersion", "P11_EmissionFactor", "P12_Powertrain", "P13_DesignType",
-             "P15_VehicleMaterialRecipe", "P16_MaterialShare"]
+             "P15_VehicleMaterialRecipe", "P16_MaterialShare",
+             "P18_BatteryTechnology", "P19_BatteryModel", "P20_BatteryMaterialShare"]
 
 
 def _read(arquivo: str) -> tuple[list[str], list[list]]:

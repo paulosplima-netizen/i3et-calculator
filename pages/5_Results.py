@@ -13,7 +13,10 @@ base, resultados, log = atual
 
 d01 = base["D01"]
 nomes = dict(zip(d01["DsV"], d01["IDV"]))
-escolhido = st.selectbox("Vehicle", options=list(nomes))
+# A T05 passa o caso clicado no grafico por `results_vehicle`.
+_vindo = st.session_state.get("results_vehicle")
+escolhido = st.selectbox("Vehicle", options=list(nomes),
+                         index=list(nomes).index(_vindo) if _vindo in nomes else 0)
 idv = int(nomes[escolhido])
 resultado = resultados.get((idv, 1))
 if resultado is None:
@@ -33,6 +36,27 @@ col4.metric("Cradle to gate (kg CO₂e)",
             help=("Assembly is included when the boundary is MAT_ASM. "
                   f"Boundary in use: {t['Boundary']}."))
 components.coverage_note(t)
+if float(t.get("MassNoFactor") or 0) > 0:
+    with st.expander("Which materials have mass but no emission factor?"):
+        _vehicle = resultado["C03"].assign(Part="Vehicle").rename(
+            columns={"MassIDMpGG": "Mass (kg)"})
+        _parts = [_vehicle[["Part", "IDGG", "IDM", "DsM", "Mass (kg)", "HasFactor",
+                            "CountsAsMass"]]]
+        if len(resultado["C07"]):
+            _batt = resultado["C07"].assign(Part="Battery").rename(
+                columns={"MassIDMpGGB": "Mass (kg)"})
+            _parts.append(_batt[["Part", "IDGG", "IDM", "DsM", "Mass (kg)", "HasFactor",
+                                 "CountsAsMass"]])
+        _all = pd.concat(_parts, ignore_index=True)
+        _miss = _all[(_all["CountsAsMass"] == 1) & (_all["HasFactor"] == 0)
+                     & (_all["Mass (kg)"] > 0)]
+        _by = (_miss.groupby(["IDM", "DsM"], dropna=False)["Mass (kg)"].sum()
+               .reset_index().sort_values("Mass (kg)", ascending=False))
+        components.table(_by.rename(columns={"IDM": "Material ID", "DsM": "Material"}))
+        st.caption("Totals per material; the rows by group and part (vehicle or battery) "
+                   "are below. Choose another factor list in the project setup if one "
+                   "of them publishes these materials.")
+        components.table(_miss.drop(columns=["HasFactor", "CountsAsMass"]))
 
 st.divider()
 st.subheader("Where the total comes from")

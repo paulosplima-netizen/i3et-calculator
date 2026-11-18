@@ -7,9 +7,9 @@ restringe. A versao `TAB` e a regra como tabulada; a que as formulas da
 planilha gravaram esta em P27, classe `Def`, e a T11 mostra as duas.
 
 O criterio de faixa de potencia da matriz esta em hp, e a potencia do motor a
-combustao (parametro 2) esta em kW. O fator de conversao e argumento, nao
-constante do calculo: 1,34102 hp/kW foi o que reproduziu a matriz sem
-divergencia (1,35962 deixa 2 veiculos fora no parametro 4).
+combustao (parametro 2) esta em kW. O fator de conversao e argumento, e o
+valor vem de P59 (`HP_PER_KW`): 1,34102 hp/kW reproduziu a matriz sem divergencia
+(1,35962 deixa 2 veiculos fora no parametro 4).
 
 Blocos:
     VD1  avaliar as regras de P35 para um veiculo
@@ -22,9 +22,6 @@ from __future__ import annotations
 
 import sqlite3
 from dataclasses import dataclass
-
-#: Valor que reproduz a matriz; passado como argumento a quem chama.
-HP_PER_KW = 1.34102
 
 #: Parametros da Market Vehicles de que as regras dependem.
 IDMP_POWER_ICE = 2     # kW

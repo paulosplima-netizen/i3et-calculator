@@ -30,10 +30,27 @@ def _battery(p19: pd.DataFrame, idbmd):
 HYBRID_COMBINATION = ("HEV", "PHEV")
 
 
+def equation_constants(p59: pd.DataFrame | None = None) -> dict[str, float]:
+    """Constantes de equacao (P59): da base, ou do CSV de origem quando ela nao as traz.
+
+    O CSV `data/csv/fase_a/P59_EquationConstant.csv` e a mesma fonte que carrega
+    a tabela; nenhum valor fica no codigo.
+    """
+    if p59 is None or p59.empty:      # arquivo da 0.9.0 migrado: P59 existe, vazia
+        import csv
+        import os
+        caminho = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                               "data", "csv", "fase_a", "P59_EquationConstant.csv")
+        with open(caminho, encoding="utf-8-sig", newline="") as fh:
+            return {r["IDEC"]: float(r["ValueEC"]) for r in csv.DictReader(fh, delimiter=";")}
+    return {str(r["IDEC"]): float(r["ValueEC"]) for _, r in p59.iterrows()}
+
+
 def resolve(gc: dict[int, float], *, powertrain: str, battery_id, p19: pd.DataFrame,
             supplied: set[int] | None = None, log=None,
             power_factors: tuple[float, float] | None = None,
-            generic_battery: dict | None = None) -> dict[int, float]:
+            generic_battery: dict | None = None,
+            constants: dict[str, float] | None = None) -> dict[int, float]:
     """Return a copy of `gc` with the endogenous parameters computed.
 
     `gc` maps IDVP to value. Missing parameters count as zero: a component that
@@ -41,6 +58,7 @@ def resolve(gc: dict[int, float], *, powertrain: str, battery_id, p19: pd.DataFr
     """
     g = dict(gc)
     supplied = supplied or set()
+    constants = equation_constants() if constants is None else constants
 
     def keep(idvp: int) -> bool:
         """A value that came with the source data outranks the equation.
@@ -91,7 +109,7 @@ def resolve(gc: dict[int, float], *, powertrain: str, battery_id, p19: pd.DataFr
 
     # 18 — electric starter
     if not keep(18):
-        g[18] = 0.04 * v(2)
+        g[18] = constants["STARTER_PER_KW"] * v(2)
 
     # 28 — fB, body volume
     if not keep(28):

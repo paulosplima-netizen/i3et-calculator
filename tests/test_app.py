@@ -21,13 +21,13 @@ from streamlit.testing.v1 import AppTest  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGINAS = [
-    "pages/1_Home.py",
+    "_superados/pages/1_Home.py",
     "pages/2_Vehicles.py",
     "pages/3_Vehicle_parameters.py",
-    "pages/4_Scenario.py",
+    "_superados/pages/4_Scenario.py",
     "pages/5_Results.py",
     "pages/6_Emission_factors.py",
-    "pages/7_Export.py",
+    "_superados/pages/7_Export.py",
 ]
 
 
@@ -61,7 +61,7 @@ def test_no_screen_crashes_without_a_project(pagina):
 
 
 def test_the_home_screen_offers_to_create_a_project():
-    at = _abrir("pages/1_Home.py")
+    at = _abrir("_superados/pages/1_Home.py")
     rotulos = [b.label for b in at.button]
     assert any("Create" in r for r in rotulos), rotulos
 
@@ -87,7 +87,7 @@ def test_the_results_screen_shows_the_cradle_to_gate_total(projeto):
 
 
 def test_the_scenario_screen_offers_both_recipe_families(projeto):
-    at = _abrir("pages/4_Scenario.py", projeto)
+    at = _abrir("_superados/pages/4_Scenario.py", projeto)
     opcoes = [o for r in at.radio for o in r.options]
     assert any(str(o).startswith("PBP_") for o in opcoes), opcoes
     assert any(str(o).startswith("BISD") for o in opcoes), opcoes
@@ -131,6 +131,6 @@ def test_a_user_factor_version_requires_provenance(projeto):
 
 
 def test_the_export_screen_lists_what_will_come_out(projeto):
-    at = _abrir("pages/7_Export.py", projeto)
+    at = _abrir("_superados/pages/7_Export.py", projeto)
     assert not at.exception
     assert at.dataframe, "a previa das tabelas sumiu"

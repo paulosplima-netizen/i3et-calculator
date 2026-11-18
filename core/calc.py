@@ -40,7 +40,7 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
     gc = params.resolve(gc_input, powertrain=powertrain, battery_id=battery_id,
                         p19=base["P19"], supplied=supplied,
                         power_factors=power_factors, generic_battery=generic_battery,
-                        log=log)
+                        constants=params.equation_constants(base.get("P59")), log=log)
 
     c01 = mass.by_subgroup(base["P06"], base["P08"], gc,
                            idmpv=idmpv, powertrain=powertrain, log=log)

@@ -180,3 +180,44 @@ def test_t01_copy_from_oferece_o_master():
     box = next(s for s in at.selectbox if s.label == "Copy from")
     assert any("Master" in str(o) or o == "Empty project" or o.endswith("exemplo.sqlite")
                for o in box.options)
+
+
+def test_t03_escolher_receita_por_caso_persiste(projeto, tmp_path):
+    copia = str(tmp_path / "r.sqlite")
+    shutil.copyfile(projeto[0], copia)
+    at = _abrir("T03_Project_configuration", (copia, projeto[1]))
+    assert not at.exception, at.exception
+    caixas = [s for s in at.selectbox if s.key and s.key.startswith("rcp")]
+    assert len(caixas) == 6                      # um por caso do EC
+    caixa = next(c for c in caixas if len(c.options) > 1)
+    nova = next(o for o in caixa.options if o != caixa.value)
+    caixa.select(nova).run()
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(copia)
+    gravadas = {r[0] for r in conn.execute("SELECT IDVMR FROM D02_EvaluationAlternative")}
+    assert nova in gravadas
+
+
+def test_t03_tabela_de_fatores_tem_as_seis_motorizacoes(projeto):
+    at = _abrir("T03_Project_configuration", projeto)
+    tabela = next(d for d in at.dataframe if "kICE" in list(d.value.columns))
+    assert list(tabela.value["Powertrain"]) == ["ICEV", "HEV", "SHEV", "PHEV", "SPHEV", "BEV"]
+
+
+def test_t03_campo_de_veiculos_so_no_modo_fc(projeto):
+    at = _abrir("T03_Project_configuration", projeto)
+    assert not any(m.label == "Vehicles (FC)" for m in at.multiselect)
+    next(r for r in at.radio if r.label == "Mode").set_value("FC").run()
+    assert any(m.label == "Vehicles (FC)" for m in at.multiselect)
+    assert not any(s.label == "Category (EC)" for s in at.selectbox)
+
+
+def test_t05_grafico_aceita_selecao_e_t18_recebe_o_caso(projeto):
+    at = _abrir("T05_Dashboard", projeto)
+    assert not at.exception, at.exception
+    # O AppTest nao simula o clique no grafico: confere que a T05 abre e que a T18
+    # escolhe o veiculo que a T05 deixa em `results_vehicle`.
+    at18 = _abrir("../pages/5_Results", projeto, results_vehicle="A01 ICEV")
+    assert not at18.exception, at18.exception
+    escolha = next(s for s in at18.selectbox if s.label == "Vehicle")
+    assert escolha.value == "A01 ICEV"

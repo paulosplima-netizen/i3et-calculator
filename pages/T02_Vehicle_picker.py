@@ -20,7 +20,7 @@ f1, f2, f3, f4 = st.columns(4)
 pt = f1.multiselect("Powertrain", sorted(df["Powertrain"].dropna().unique()))
 body = f2.multiselect("Body", sorted(df["Body"].dropna().unique()))
 size = f3.multiselect("Size", sorted(df["Size"].dropna().unique()))
-text = f4.text_input("Brand or model contains")
+text = f4.text_input("Search make or model", placeholder="e.g. Fiat, Dolphin")
 sel = df
 for col, vals in (("Powertrain", pt), ("Body", body), ("Size", size)):
     if vals:
@@ -30,7 +30,8 @@ if text:
         sel["Model"].fillna("").str.contains(text, case=False)
     sel = sel[mask]
 
-st.caption(f"{len(sel)} of {len(df)} vehicles")
+st.caption(f"{len(sel)} of {len(df)} vehicles · SalesUnits: licensings of the reference year "
+           "(FENABRAVE public reports, cumulative January to December; see data/NOTICE.md)")
 chosen = st.session_state.get(PICK_KEY, [])
 table = sel.assign(Pick=sel["IDMV"].isin(chosen))
 edited = st.data_editor(table, hide_index=True, use_container_width=True, key="picker_editor",

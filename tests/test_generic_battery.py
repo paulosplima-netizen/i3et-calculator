@@ -99,3 +99,10 @@ def test_recorded_ghg_is_close_to_the_sheet(recorded_run, case, tol):
 def test_recorded_mass_is_close_to_the_sheet(recorded_run, case, tol):
     ref, out = recorded_run
     assert out[(case, "O20")] == pytest.approx(ref[(case, "O20")], rel=tol)
+
+
+def test_recorded_icev_mass_closes_with_the_m2_starter_motor(recorded_run):
+    """B0 item 1: o motor de partida do M2 (0,03 x P_ICE) fecha o resíduo de 1,5 kg do ICEV."""
+    ref, out = recorded_run
+    assert out[("A01", "O20")] == pytest.approx(ref[("A01", "O20")], abs=0.01)   # kg
+    assert out[("A01", "O29")] == pytest.approx(ref[("A01", "O29")], rel=0.001)

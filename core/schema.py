@@ -730,6 +730,17 @@ CREATE TABLE IF NOT EXISTS P58_GenericBatteryModel (
   NotesGBM      TEXT
 );
 
+-- Constantes de equacao como parametros (bloco B0): fator do motor de partida
+-- (IDVP 18) e hp por kW. Nada disso fica embutido no codigo.
+CREATE TABLE IF NOT EXISTS P59_EquationConstant (
+  IDEC          TEXT PRIMARY KEY,
+  ValueEC       REAL NOT NULL,
+  UnitEC        TEXT,
+  SourceEC      TEXT NOT NULL,
+  NotesEC       TEXT,
+  IsProvisional INTEGER NOT NULL DEFAULT 0 CHECK (IsProvisional IN (0,1))
+);
+
 CREATE UNIQUE INDEX IF NOT EXISTS ux_P52_ref
   ON P52_ExcelReferenceValue (RefSet, CaseKey, IFNULL(IDInd, ''), IFNULL(IDMP, 0));
 CREATE INDEX IF NOT EXISTS ix_P27_MP    ON P27_MarketVehicleParam (IDMP);
@@ -890,6 +901,7 @@ PARAM_TABLES_010 = [
     "P49_DefaultRuleVersion", "P35_VehicleParamDefaultRule",
     "P51_OutputIndicator", "P52_ExcelReferenceValue", "P53_CombinedPowerRule",
     "P56_CombinedPowerFit", "P57_MaterialEquivalence", "P58_GenericBatteryModel",
+    "P59_EquationConstant",
 ]
 
 #: Tabelas do usuario da Fase A, em ordem de dependencia.

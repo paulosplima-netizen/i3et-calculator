@@ -270,6 +270,18 @@ que a conta possa ser refeita fora do programa.</p>
 """
 
 
+def _casas_coluna(coluna, padrao: int) -> int:
+    """Massa (kg) e pegada (kg CO2e) em valor absoluto saem com uma casa decimal.
+
+    Decisao do autor em 18/11: os numeros sao grandes demais para mais casas
+    importarem. Razoes (`GHGperKg`), fatores e participacoes mantem o padrao.
+    """
+    nome = str(coluna)
+    if nome.startswith(("Mass", "GHG")) and "per" not in nome.lower():
+        return 1
+    return padrao
+
+
 def _html_table(df: pd.DataFrame, *, casas: int = 3, maximo: int | None = None) -> str:
     """A table as HTML, numbers right-aligned and tabular, no masks applied."""
     if not len(df):
@@ -287,7 +299,7 @@ def _html_table(df: pd.DataFrame, *, casas: int = 3, maximo: int | None = None) 
         for c in corte.columns:
             v = r[c]
             if c in numericas and pd.notna(v):
-                celulas.append(f'<td class="num">{_num(v, casas)}</td>')
+                celulas.append(f'<td class="num">{_num(v, _casas_coluna(c, casas))}</td>')
             else:
                 celulas.append(f"<td>{'' if pd.isna(v) else _esc(v)}</td>")
         linhas.append("<tr>" + "".join(celulas) + "</tr>")
@@ -369,7 +381,7 @@ def to_html(R: dict[str, pd.DataFrame], path: str, *, titulo: str | None = None)
     parcela = float(r10["ShareNoFactor"].max()) if len(r10) else 0.0
     texto_validacao = (
         f"{erros} erro(s) e {avisos} aviso(s) na execução. "
-        f"No veículo em pior situação, {_num(sem_fator, 3)} kg de massa "
+        f"No veículo em pior situação, {_num(sem_fator, 1)} kg de massa "
         f"({_num(parcela * 100, 2)}% do total) não têm fator de emissão "
         f"publicado na versão escolhida.")
 

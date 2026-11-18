@@ -141,15 +141,25 @@ def chart(svg: str) -> None:
                 unsafe_allow_html=True)
 
 
-def number(valor, casas: int = 3) -> str:
+def number(valor, casas: int = 1) -> str:
     if valor is None or (isinstance(valor, float) and pd.isna(valor)):
         return "—"
     return f"{valor:,.{casas}f}".replace(",", "\x00").replace(".", ",").replace("\x00", ".")
 
 
+def _mass_or_ghg(coluna) -> bool:
+    """Coluna de massa (kg) ou de pegada (kg CO2e) em valor absoluto, nao em razao."""
+    nome = str(coluna)
+    return "kg" in nome.lower() and "/" not in nome and "per" not in nome.lower()
+
+
 def table(df: pd.DataFrame, *, altura: int | None = None) -> None:
+    """Massa em kg e pegada em kg CO2e aparecem com uma casa decimal (decisao de 18/11)."""
+    cfg = {c: st.column_config.NumberColumn(format="%.1f")
+           for c in df.columns
+           if pd.api.types.is_float_dtype(df[c]) and _mass_or_ghg(c)}
     st.dataframe(df, hide_index=True, use_container_width=True,
-                 height=altura if altura else None)
+                 height=altura if altura else None, column_config=cfg or None)
 
 
 def coverage_note(totais: dict) -> None:

@@ -189,11 +189,13 @@ with right:
     st.metric("Program version", __version__)
 
 #: (titulo, descricao, tela de destino ou None, situacao do modulo)
+#: Numeracao dos modulos como no i3ET em Excel (P30.UsedByModule): M3 energia, M4 uso
+#: (perfil de uso e vida util), M5 leveza, M6 custo. Em conflito, vale o Excel.
 COLUMNS = {
     "a": ("Inputs", [
         ("Vehicle design", "Dimensions, mass and aerodynamics", "T10", ""),
         ("Regional conditions", "Electricity, fuels and manufacturing", "T03", ""),
-        ("Real-world use", "Driving, charging and service life", None, "M3, planned")]),
+        ("Real-world use", "Driving, charging and service life", None, "M4, planned")]),
     "b": ("Model calculations", [
         ("Performance equivalence", "Comparison mode and targets", "T03", ""),
         ("Component sizing", "Power, range and batteries", "T03", ""),
@@ -201,10 +203,10 @@ COLUMNS = {
         ("Energy intensity", "Cycles, efficiency and energy flows", None, "M3, planned")]),
     "c": ("Outputs", [
         ("GHG emissions", "Manufacturing, use and end of life", "T18", "manufacturing only"),
-        ("Life-cycle cost", "Cost assumptions and results", None, "M4, planned"),
+        ("Life-cycle cost", "Cost assumptions and results", None, "M6, planned"),
         ("Energy use", "Fuel and electricity demand", None, "M3, planned"),
         ("Fleet model inputs", "Vehicle outputs for future fleet integration", None,
-         "M6, planned")]),
+         "future")]),
 }
 st.subheader("How i3ET works")
 st.caption("Open a block to go to the screen where you can review it. "

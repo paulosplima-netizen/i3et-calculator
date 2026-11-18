@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -23,6 +24,9 @@ with flow.connect(ctx.path) as conn:
                        index=ids.index(default) if default in ids else len(ids) - 1)
     seq = next(r["RunSeq"] for r in rs if r["RunID"] == rid)
     st.info(flow.summary_phrase(conn, ida))
+    case_names = dict(conn.execute(
+        "SELECT a.CaseKey, v.DsV FROM D07_AnalysisVehicle a JOIN D01_Vehicle v USING (IDV) "
+        "WHERE a.IDA = ?", (ida,)).fetchall())
     df = pd.read_sql_query(
         "SELECT r.CaseKey, r.IDVPT, r.IDInd, i.DsInd, i.utInd, r.Value, r.ValueText, "
         "r.ValueOrigin FROM R45_PowertrainSummary r JOIN P51_OutputIndicator i "
@@ -49,8 +53,22 @@ for n, (ind, title) in enumerate(CHARTS):
         unit = sub["utInd"].iloc[0] if len(sub) else ""
         st.markdown(f"**{title}** ({unit})")
         if len(sub):
-            st.bar_chart(sub.set_index("CaseKey")["Value"])
-            st.caption(provenance.label(flow.seal_of(sub["ValueOrigin"].iloc[0]), seq))
+            # Clicar numa barra abre a T18 com o caso (B0, item 7).
+            pick = alt.selection_point(name="pick", fields=["CaseKey"], on="click")
+            chart = (alt.Chart(sub[["CaseKey", "Value"]]).mark_bar()
+                     .encode(x=alt.X("CaseKey:N", sort=None, title=None),
+                             y=alt.Y("Value:Q", title=None),
+                             opacity=alt.condition(pick, alt.value(1.0), alt.value(0.75)),
+                             tooltip=["CaseKey", "Value"])
+                     .add_params(pick))
+            event = st.altair_chart(chart, use_container_width=True, on_select="rerun",
+                                    key=f"chart_{ind}")
+            chosen = event.selection.get("pick") if event and event.selection else None
+            if chosen and chosen[0].get("CaseKey") in case_names:
+                st.session_state["results_vehicle"] = case_names[chosen[0]["CaseKey"]]
+                st.switch_page(navigation.SCREENS["T18"][0])
+            st.caption(provenance.label(flow.seal_of(sub["ValueOrigin"].iloc[0]), seq)
+                       + " · click a bar to open its details (T18)")
         else:
             st.caption(provenance.NOT_AVAILABLE)
 navigation.link("T18", "Details by group and material (T18)")

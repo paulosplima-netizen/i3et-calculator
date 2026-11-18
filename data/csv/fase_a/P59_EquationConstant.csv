@@ -1,0 +1,3 @@
+﻿IDEC;ValueEC;UnitEC;SourceEC;NotesEC;IsProvisional
+STARTER_PER_KW;0.04;kW/kW;i3ET, M1, equacao do IDVP 18 (doc 01, §7.2);"IDVP 18 = fator x IDVP 2. O M2 e a regra 18 de P35 usam 0,03; ver 05a (D15).";0
+HP_PER_KW;1.34102;hp/kW;i3ET, Market Vehicles M257:AW299 (faixas de potencia em hp);"Reproduz a matriz sem divergencia; 1,35962 deixa 2 veiculos fora no parametro 4.";0
