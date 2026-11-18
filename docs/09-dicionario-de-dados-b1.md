@@ -125,6 +125,8 @@ Por rodada, caso e item: `IDA`, `IDCase`, `IDMI`, `EventIndex`, `EventKm`, `GHGk
 ### C34 — `C34_MassValidation` (validação de massa, T38)
 `IDA`, `IDCase`, `IDV`, `IDEA`, `MassBasis`, `DeclaredMassKg`, `CalculatedMassKg`, `DiffKg`, `DiffPct`, `AdjustmentKg`, `ResidualKg`, `DeclaredSource`, `BodyChassisMassBefore`, `BodyChassisMassAfter`.
 
+**Ampliação de `C02` (massa por grupo; T38, decisão de 18/11).** Colunas `EstimatedMassKg`, `CalibrationKg`, `FinalMassKg`; `MassKg` = `FinalMassKg` (igual ao atual quando o ajuste é 0). `CalibrationKg` é diferente de zero só em carroceria e chassi (`ΔA = Adj/(1+k)`, `ΔB = k·ΔA`). Botão da T38: "Calibrate to declared mass".
+
 ### C35 — `C35_VehicleLifeStage` (vida do veículo por estágio, T18)
 `IDA`, `IDCase`, `IDV`, `Stage` (`INITIAL_PRODUCTION`, `LIFETIME_REPLACEMENTS`, `END_OF_LIFE`), `SubStage`, `GHGkg`, `SourceCell`, `Method`, `Note`. Cria a coluna de rastreio para `T511 = T495 + T509 + T510 + T516 + T560 + T571 + T617`.
 
@@ -132,6 +134,7 @@ Por rodada, caso e item: `IDA`, `IDCase`, `IDMI`, `EventIndex`, `EventKm`, `GHGk
 
 | Código | Regra | Onde |
 |---|---|---|
+| I44 | Em `C02`, Σ `CalibrationKg` = `AdjustmentKg` de `C34` e Σ `FinalMassKg` = Σ `EstimatedMassKg` + `AdjustmentKg` | código |
 | I29 | Receita do usuário: cada grupo não vazio fecha em 1 (10⁻⁶) ou é todo zero; participação de material ≥ 0; processo e detalhamento fora da soma; rascunho inválido não pode ser escolhido | código |
 | I30 | Receita do usuário usada por rodada congelada não muda; edição gera nova versão | código |
 | I31 | A receita da análise aceita `P15.IDVMR` ou `D13.IDVMRU` | código |
