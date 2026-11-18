@@ -112,7 +112,7 @@ Camada de sobrescrita: a base é imutável; a edição de uma lista `Typed` grav
 
 ### Parâmetros do usuário (`D03`/`D08`)
 
-Novos parâmetros de veículo/painel: `MassAdjBodyChassisKg` (kg com sinal, padrão 0; T38; **definido em `P54`**, como dado do veículo, decisão de 18/11; valor do usuário, não vem do GREET; a razão chassi/carroceria `k` vem da receita). Escolhas de análise em `D06`: `MaintenanceMode` (espelha `D10`), `EoLMethod` (`GLIDER_BATTERY`, `AGGREGATE_VEHICLE`, `EXCLUDED`; padrão `GLIDER_BATTERY`), `IDVMRU` e `IDBMdU` quando houver receita e bateria do usuário.
+Novos parâmetros de veículo/painel: `MassAdjBodyChassisKg` (kg com sinal, padrão 0; T38; **definido em `P54`**, como dado do veículo, decisão de 18/11; valor do usuário, não vem do GREET; a razão chassi/carroceria `k` é parâmetro por classe de veículo, de `M2` linhas 54 e 55 (linha 627 = B/A)). Escolhas de análise em `D06`: `MaintenanceMode` (espelha `D10`), `EoLMethod` (`GLIDER_BATTERY`, `AGGREGATE_VEHICLE`, `EXCLUDED`; padrão `GLIDER_BATTERY`), `IDVMRU` e `IDBMdU` quando houver receita e bateria do usuário.
 
 ## 5. Tabelas de resultado (C)
 
@@ -122,10 +122,12 @@ Por rodada, caso e item: `IDA`, `IDCase`, `IDMI`, `EventIndex`, `EventKm`, `GHGk
 ### C16 — `C16_EndOfLife` (fim de vida, T17)
 `IDA`, `IDCase`, `EoLMethod`, `GliderMassKg`, `BatteryKWh`, `FactorGlider`, `FactorBattery`, `FactorVehicle`, `GHGEoL`.
 
-### C34 — `C34_MassValidation` (validação de massa, T38)
-`IDA`, `IDCase`, `IDV`, `IDEA`, `MassBasis`, `DeclaredMassKg`, `CalculatedMassKg`, `DiffKg`, `DiffPct`, `AdjustmentKg`, `ResidualKg`, `DeclaredSource`, `BodyChassisMassBefore`, `BodyChassisMassAfter`.
+**Parâmetro `ChassisBodyRatio` (`k`, ID 620 da planilha; T38).** Por classe de veículo (coluna do `M2`), `k = massa do chassi (linha 55) / massa da carroceria (linha 54)`; 0,43 a 1,74 (SV1 a SV4: 0,480 a 0,493). Tabela por classe a definir na implementação (candidata: classe de referência do veículo, junto de `P02`/`P54`). Regra I41: `B_final / A_final = k`.
 
-**Ampliação de `C02` (massa por grupo; T38, decisão de 18/11).** Colunas `EstimatedMassKg`, `CalibrationKg`, `FinalMassKg`; `MassKg` = `FinalMassKg` (igual ao atual quando o ajuste é 0). `CalibrationKg` é diferente de zero só em carroceria e chassi (`ΔA = Adj/(1+k)`, `ΔB = k·ΔA`). Botão da T38: "Calibrate to declared mass".
+### C34 — `C34_MassValidation` (validação de massa, T38)
+`IDA`, `IDCase`, `IDV`, `IDEA`, `MassBasis`, `DeclaredMassKg`, `CalculatedMassKg`, `DiffKg`, `DiffPct`, `AdjustmentKg`, `ResidualKg`, `DeclaredSource`, `ChassisBodyRatio` (k usado), `BodyChassisMassBefore`, `BodyChassisMassAfter`.
+
+**Ampliação de `C02` (massa por grupo; T38, decisão de 18/11).** Colunas `EstimatedMassKg`, `CalibrationKg`, `FinalMassKg`; `MassKg` = `FinalMassKg` (igual ao atual quando o ajuste é 0). `CalibrationKg` é diferente de zero só em carroceria e chassi (`A_final = (A_est+B_est+Adj)/(1+k)`, `B_final = k·A_final`, calibração = final − estimada). Botão da T38: "Calibrate to declared mass".
 
 ### C35 — `C35_VehicleLifeStage` (vida do veículo por estágio, T18)
 `IDA`, `IDCase`, `IDV`, `Stage` (`INITIAL_PRODUCTION`, `LIFETIME_REPLACEMENTS`, `END_OF_LIFE`), `SubStage`, `GHGkg`, `SourceCell`, `Method`, `Note`. Cria a coluna de rastreio para `T511 = T495 + T509 + T510 + T516 + T560 + T571 + T617`.
@@ -147,7 +149,7 @@ Por rodada, caso e item: `IDA`, `IDCase`, `IDMI`, `EventIndex`, `EventKm`, `GHGk
 | I38 | Com os parâmetros do i3ET, a BR23 recomposta é igual à digitada (1e-9) | teste |
 | I39 | Intervalo > 0; eventos em `k × intervalo < L`; vida ≤ 0 não gera eventos | código |
 | I40 | Ajuste de massa mantém carroceria + chassi ≥ 0 | código |
-| I41 | O ajuste distribui-se pela razão chassi/carroceria da receita | código |
+| I41 | O ajuste redistribui A + B pela razão `k` por classe (M2 linha 627) | código |
 | I42 | O ajuste de massa altera massa e GEE do grupo recomposto | código |
 | I43 | Massa declarada ausente → sem Δ, nunca Δ = 0 | código |
 | I44 | Modelo de bateria do usuário fecha cada grupo em 1 | código |
