@@ -56,3 +56,19 @@ def test_t16_grava_o_cenario(projeto):  # noqa: F811
     conn.execute("DELETE FROM D10_MaintenanceScenario")
     conn.commit()
     conn.close()
+
+
+def test_t38_abre_e_grava_a_massa_declarada(projeto):  # noqa: F811
+    import sqlite3
+    at = _abrir("T38_Mass_validation", projeto)
+    assert not at.exception, at.exception
+    declarada = [n for n in at.number_input if n.label == "Declared mass (kg)"][0]
+    declarada.set_value(1500.0).run()
+    [b for b in at.button if b.label == "Save"][0].click().run()
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    assert conn.execute("SELECT DeclaredMassKg FROM D07_AnalysisVehicle "
+                        "WHERE IDCase = 1").fetchone()[0] == 1500.0
+    conn.execute("UPDATE D07_AnalysisVehicle SET DeclaredMassKg = NULL")
+    conn.commit()
+    conn.close()
