@@ -484,6 +484,7 @@ def create_schema(conn: sqlite3.Connection, *, with_calc: bool = True) -> None:
     if with_calc:
         # Os blocos S5 a S7 dependem de M01, que so existe com as tabelas C e M.
         apply_010(conn)
+        apply_011(conn)
     conn.commit()
 
 
@@ -504,7 +505,7 @@ def create_schema(conn: sqlite3.Connection, *, with_calc: bool = True) -> None:
 # mesmos blocos a um banco vazio e a um projeto da 0.9.0 ja preenchido.
 
 #: Versao do esquema do arquivo de projeto, gravada em M03_Project.
-SCHEMA_VERSION = "0.10"
+SCHEMA_VERSION = "0.11"
 
 # --------------------------------------------------------------------------
 # BLOCO S5 -- Parametros da Fase A (P26 a P30, P35, P36, P49 a P55)
@@ -981,6 +982,7 @@ def migrate(conn: sqlite3.Connection, *, project_name: str | None = None,
         feito.append(f"criada {nome}")
     for tabela in sem_marca:
         feito.append(f"{tabela}: coluna IsCalculable")
+    feito.extend(apply_011(conn))
 
     if project_name is not None:
         if conn.execute("SELECT COUNT(*) FROM M03_Project").fetchone()[0] == 0:
@@ -995,6 +997,347 @@ def migrate(conn: sqlite3.Connection, *, project_name: str | None = None,
         else:
             conn.execute("UPDATE M03_Project SET SchemaVersion = ?", (SCHEMA_VERSION,))
     conn.commit()
+    return feito
+
+
+# ==========================================================================
+# SCHEMA 0.11 -- Bloco B1: completar M1 e M2
+# ==========================================================================
+# Documento de referencia: docs/09-dicionario-de-dados-b1.md.
+# Blocos:
+#   S11 parametros do B1 (P31, P31b, P32, P61, P62, P63)
+#   S12 tabelas do usuario do B1 (D10, D13 a D21)
+#   S13 resultados do B1 (C15, C16, C34, C35)
+#   S14 colunas acrescentadas a tabelas existentes e migracao 0.10 -> 0.11
+# Tudo e CREATE IF NOT EXISTS ou ADD COLUMN condicional: pode ser repetido.
+# --------------------------------------------------------------------------
+DDL_PARAMS_011 = """
+CREATE TABLE IF NOT EXISTS P31_MaintenanceItem (
+  IDMI           TEXT PRIMARY KEY,
+  DsMI           TEXT NOT NULL,
+  ItemKind       TEXT NOT NULL CHECK (ItemKind IN ('PART','BATTERY','FLUID')),
+  IDGG           TEXT REFERENCES P04_GreetGroup(IDGG),
+  IDM            TEXT REFERENCES P09_Material(IDM),
+  IntervalKm     REAL CHECK (IntervalKm IS NULL OR IntervalKm > 0),
+  IntervalSource TEXT NOT NULL CHECK (IntervalSource IN ('i3ET-compatible','Entered')),
+  RefCount       REAL,
+  MassPerUnitKg  REAL CHECK (MassPerUnitKg IS NULL OR MassPerUnitKg >= 0),
+  NotesMI        TEXT
+);
+
+CREATE TABLE IF NOT EXISTS P31b_MaintenancePartShare (
+  IDMI   TEXT NOT NULL REFERENCES P31_MaintenanceItem(IDMI),
+  IDM    TEXT NOT NULL REFERENCES P09_Material(IDM),
+  Share  REAL NOT NULL CHECK (Share >= 0 AND Share <= 1),
+  NotesMPS TEXT,
+  PRIMARY KEY (IDMI, IDM)
+);
+
+CREATE TABLE IF NOT EXISTS P32_CorrectiveMaintenance (
+  IDCM          INTEGER PRIMARY KEY,
+  CorrectivePct REAL NOT NULL DEFAULT 0 CHECK (CorrectivePct >= 0),
+  Basis         TEXT NOT NULL DEFAULT 'PART_MASS_SHARE'
+                CHECK (Basis IN ('PART_MASS_SHARE','PRODUCTION_GHG_SHARE')),
+  SourceCM      TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS P61_BRRouteFactor (
+  IDM                 TEXT NOT NULL REFERENCES P09_Material(IDM),
+  Route               TEXT NOT NULL
+                      CHECK (Route IN ('RECYCLED','VIRGIN_MAIN','VIRGIN_ALT','GREEN')),
+  EFRoute             REAL,
+  EFGlobal            REAL,
+  LossGlobalAdopted   REAL,
+  LossNationalAdopted REAL,
+  Origin              TEXT NOT NULL DEFAULT 'Typed',
+  SourceRF            TEXT,
+  PRIMARY KEY (IDM, Route)
+);
+
+CREATE TABLE IF NOT EXISTS P62_BRRouteShare (
+  IDM               TEXT NOT NULL REFERENCES P09_Material(IDM),
+  Route             TEXT NOT NULL
+                    CHECK (Route IN ('RECYCLED','VIRGIN_MAIN','VIRGIN_ALT','GREEN')),
+  ShareRule         TEXT NOT NULL CHECK (ShareRule IN ('CONSTANT','PARAM')),
+  IDCP              TEXT REFERENCES P30_ControlParam(IDCP),
+  ShareValue        REAL,
+  ImportedShareRule TEXT,
+  PRIMARY KEY (IDM, Route),
+  CHECK ((ShareRule = 'PARAM' AND IDCP IS NOT NULL)
+      OR (ShareRule = 'CONSTANT' AND ShareValue IS NOT NULL))
+);
+
+CREATE TABLE IF NOT EXISTS P63_RecipeBodyChassisMass (
+  IDVMR              TEXT PRIMARY KEY REFERENCES P15_VehicleMaterialRecipe(IDVMR),
+  ColumnM2           TEXT NOT NULL,
+  BodyMassRefKg      REAL NOT NULL CHECK (BodyMassRefKg > 0),
+  ChassisMassRefKg   REAL NOT NULL CHECK (ChassisMassRefKg > 0),
+  ChassisBodyRatio   REAL NOT NULL CHECK (ChassisBodyRatio > 0),
+  BodyShareOfMassAdj REAL NOT NULL CHECK (BodyShareOfMassAdj BETWEEN 0 AND 1),
+  SourceNote         TEXT
+);
+"""
+
+DDL_USER_011 = """
+CREATE TABLE IF NOT EXISTS D10_MaintenanceScenario (
+  IDMS            INTEGER PRIMARY KEY,
+  IDA             INTEGER NOT NULL UNIQUE REFERENCES D06_Analysis(IDA),
+  MaintenanceMode TEXT NOT NULL DEFAULT 'Sim'
+                  CHECK (MaintenanceMode IN ('Sim','Sim Bat','Não')),
+  Scenario        TEXT NOT NULL DEFAULT 'REFERENCE' CHECK (Scenario IN ('REFERENCE','USER')),
+  VehicleLifeKm   REAL CHECK (VehicleLifeKm IS NULL OR VehicleLifeKm > 0),
+  BatteryLifeKm   REAL CHECK (BatteryLifeKm IS NULL OR BatteryLifeKm > 0),
+  Author          TEXT,
+  ChangedAt       TEXT
+);
+
+CREATE TABLE IF NOT EXISTS D10_Item (
+  IDMS       INTEGER NOT NULL REFERENCES D10_MaintenanceScenario(IDMS),
+  IDMI       TEXT NOT NULL REFERENCES P31_MaintenanceItem(IDMI),
+  IntervalKm REAL CHECK (IntervalKm IS NULL OR IntervalKm > 0),
+  Active     INTEGER NOT NULL DEFAULT 1 CHECK (Active IN (0,1)),
+  PRIMARY KEY (IDMS, IDMI)
+);
+
+CREATE TABLE IF NOT EXISTS D13_UserRecipe (
+  IDVMRU     TEXT PRIMARY KEY,
+  DsVMRU     TEXT NOT NULL,
+  IDVMRBase  TEXT NOT NULL REFERENCES P15_VehicleMaterialRecipe(IDVMR),
+  IDVPT      TEXT NOT NULL REFERENCES P12_Powertrain(IDVPT),
+  IDVDT      TEXT NOT NULL,
+  IDVS       TEXT NOT NULL,
+  Author     TEXT,
+  CreatedAt  TEXT,
+  UpdatedAt  TEXT NOT NULL,
+  NotesU     TEXT
+);
+
+CREATE TABLE IF NOT EXISTS D14_UserMaterialShare (
+  IDVMRU    TEXT NOT NULL REFERENCES D13_UserRecipe(IDVMRU),
+  IDGG      TEXT NOT NULL REFERENCES P04_GreetGroup(IDGG),
+  IDM       TEXT NOT NULL REFERENCES P09_Material(IDM),
+  MshareGG  REAL NOT NULL CHECK (MshareGG >= 0),
+  SourceU   TEXT,
+  ChangedBy TEXT,
+  ChangedAt TEXT,
+  PRIMARY KEY (IDVMRU, IDGG, IDM)
+);
+
+CREATE TABLE IF NOT EXISTS D15_UserBatteryModel (
+  IDBMdU    TEXT PRIMARY KEY,
+  DsBMdU    TEXT NOT NULL,
+  IDBMdBase TEXT NOT NULL REFERENCES P19_BatteryModel(IDBMd),
+  IDVPT     TEXT REFERENCES P12_Powertrain(IDVPT),
+  IDBTe     TEXT REFERENCES P18_BatteryTechnology(IDBTe),
+  RefEnergy REAL,
+  RefPower  REAL,
+  RefWeight REAL,
+  Origin    TEXT NOT NULL DEFAULT 'Own',
+  Author    TEXT,
+  CreatedAt TEXT,
+  UpdatedAt TEXT
+);
+
+CREATE TABLE IF NOT EXISTS D16_UserBatteryShare (
+  IDBMdU     TEXT NOT NULL REFERENCES D15_UserBatteryModel(IDBMdU),
+  IDGG       TEXT NOT NULL REFERENCES P04_GreetGroup(IDGG),
+  IDM        TEXT NOT NULL REFERENCES P09_Material(IDM),
+  BMshareGG  REAL NOT NULL CHECK (BMshareGG >= 0),
+  PRIMARY KEY (IDBMdU, IDGG, IDM)
+);
+
+CREATE TABLE IF NOT EXISTS D17_UserAssemblyVersion (
+  IDAPVU             TEXT PRIMARY KEY,
+  DsAPVU             TEXT NOT NULL,
+  Method             TEXT NOT NULL CHECK (Method IN ('fixed','from_EF','process')),
+  FixedGHGPerVehicle REAL CHECK (FixedGHGPerVehicle IS NULL OR FixedGHGPerVehicle >= 0),
+  Origin             TEXT NOT NULL DEFAULT 'Own',
+  Author             TEXT,
+  CreatedAt          TEXT,
+  UpdatedAt          TEXT,
+  CHECK (Method <> 'fixed' OR FixedGHGPerVehicle IS NOT NULL)
+);
+
+CREATE TABLE IF NOT EXISTS D18_UserAssemblyEnergy (
+  IDAPVU           TEXT    NOT NULL REFERENCES D17_UserAssemblyVersion(IDAPVU),
+  IDAP             INTEGER NOT NULL REFERENCES P21_AssemblyProcess(IDAP),
+  IDFuel           TEXT    NOT NULL REFERENCES P24_EnergyCarrier(IDFuel),
+  EnergyPerVehicle REAL    NOT NULL CHECK (EnergyPerVehicle >= 0),
+  FuelShare        REAL    NOT NULL CHECK (FuelShare BETWEEN 0 AND 1),
+  PRIMARY KEY (IDAPVU, IDAP, IDFuel)
+);
+
+CREATE TABLE IF NOT EXISTS D19_EFChangeLog (
+  IDLog     INTEGER PRIMARY KEY AUTOINCREMENT,
+  IDEFV     TEXT NOT NULL,
+  IDM       TEXT NOT NULL,
+  Action    TEXT NOT NULL CHECK (Action IN ('edit','override','restore','remove','import')),
+  OldEF     REAL,
+  NewEF     REAL,
+  Author    TEXT,
+  ChangedAt TEXT NOT NULL,
+  Reason    TEXT
+);
+
+CREATE TABLE IF NOT EXISTS D20_UserMassParamVersion (
+  IDMPVU    TEXT PRIMARY KEY,
+  DsMPVU    TEXT NOT NULL,
+  IDMPVBase INTEGER NOT NULL REFERENCES P05_MassParamVersion(IDMPV),
+  Origin    TEXT NOT NULL DEFAULT 'Own',
+  Author    TEXT,
+  CreatedAt TEXT,
+  NotesMPV  TEXT
+);
+
+CREATE TABLE IF NOT EXISTS D21_UserMassParam (
+  IDMPVU    TEXT    NOT NULL REFERENCES D20_UserMassParamVersion(IDMPVU),
+  IDSG      INTEGER NOT NULL REFERENCES P02_VehicleSubgroup(IDSG),
+  Beta      REAL,
+  GCR       REAL CHECK (GCR IS NULL OR GCR > 0),
+  utGCR     TEXT,
+  MR        REAL CHECK (MR IS NULL OR MR >= 0),
+  fLM       REAL CHECK (fLM IS NULL OR fLM >= 0),
+  Reference TEXT,
+  ChangedBy TEXT,
+  ChangedAt TEXT,
+  PRIMARY KEY (IDMPVU, IDSG)
+);
+"""
+
+DDL_CALC_011 = """
+CREATE TABLE IF NOT EXISTS C15_Replacement (
+  RunID      TEXT    NOT NULL REFERENCES D09_Run(RunID),
+  IDA        INTEGER NOT NULL,
+  IDCase     INTEGER NOT NULL,
+  IDMI       TEXT    NOT NULL REFERENCES P31_MaintenanceItem(IDMI),
+  EventIndex INTEGER NOT NULL CHECK (EventIndex >= 1),
+  EventKm    REAL    NOT NULL,
+  GHGkg      REAL    NOT NULL,
+  PRIMARY KEY (RunID, IDCase, IDMI, EventIndex),
+  FOREIGN KEY (IDA, IDCase) REFERENCES D07_AnalysisVehicle(IDA, IDCase)
+);
+
+CREATE TABLE IF NOT EXISTS C16_EndOfLife (
+  RunID         TEXT    NOT NULL REFERENCES D09_Run(RunID),
+  IDA           INTEGER NOT NULL,
+  IDCase        INTEGER NOT NULL,
+  EoLMethod     TEXT    NOT NULL
+                CHECK (EoLMethod IN ('GLIDER_BATTERY','AGGREGATE_VEHICLE','EXCLUDED')),
+  GliderMassKg  REAL,
+  BatteryKWh    REAL,
+  FactorGlider  REAL,
+  FactorBattery REAL,
+  FactorVehicle REAL,
+  GHGEoL        REAL    NOT NULL,
+  PRIMARY KEY (RunID, IDCase),
+  FOREIGN KEY (IDA, IDCase) REFERENCES D07_AnalysisVehicle(IDA, IDCase)
+);
+
+CREATE TABLE IF NOT EXISTS C34_MassValidation (
+  RunID                 TEXT    NOT NULL REFERENCES D09_Run(RunID),
+  IDA                   INTEGER NOT NULL,
+  IDCase                INTEGER NOT NULL,
+  IDV                   INTEGER NOT NULL,
+  IDEA                  INTEGER NOT NULL,
+  MassBasis             TEXT,
+  DeclaredMassKg        REAL,
+  CalculatedMassKg      REAL    NOT NULL,
+  DiffKg                REAL,
+  DiffPct               REAL,
+  AdjustmentKg          REAL    NOT NULL DEFAULT 0,
+  ResidualKg            REAL,
+  DeclaredSource        TEXT,
+  BodyShare             REAL CHECK (BodyShare IS NULL OR BodyShare BETWEEN 0 AND 1),
+  BodyChassisMassBefore REAL,
+  BodyChassisMassAfter  REAL,
+  PRIMARY KEY (RunID, IDCase),
+  FOREIGN KEY (IDA, IDCase) REFERENCES D07_AnalysisVehicle(IDA, IDCase)
+);
+
+CREATE TABLE IF NOT EXISTS C35_VehicleLifeStage (
+  RunID      TEXT    NOT NULL REFERENCES D09_Run(RunID),
+  IDA        INTEGER NOT NULL,
+  IDCase     INTEGER NOT NULL,
+  IDV        INTEGER NOT NULL,
+  Stage      TEXT    NOT NULL
+             CHECK (Stage IN ('INITIAL_PRODUCTION','LIFETIME_REPLACEMENTS','END_OF_LIFE')),
+  SubStage   TEXT    NOT NULL DEFAULT '',
+  GHGkg      REAL    NOT NULL,
+  SourceCell TEXT,
+  Method     TEXT,
+  Note       TEXT,
+  PRIMARY KEY (RunID, IDCase, Stage, SubStage),
+  FOREIGN KEY (IDA, IDCase) REFERENCES D07_AnalysisVehicle(IDA, IDCase)
+);
+"""
+
+#: Tabelas de parametros do B1, pais primeiro.
+PARAM_TABLES_011 = ["P31_MaintenanceItem", "P31b_MaintenancePartShare",
+                    "P32_CorrectiveMaintenance", "P61_BRRouteFactor",
+                    "P62_BRRouteShare", "P63_RecipeBodyChassisMass"]
+
+#: Tabelas do usuario do B1, pais primeiro.
+USER_TABLES_011 = ["D10_MaintenanceScenario", "D10_Item", "D13_UserRecipe",
+                   "D14_UserMaterialShare", "D15_UserBatteryModel",
+                   "D16_UserBatteryShare", "D17_UserAssemblyVersion",
+                   "D18_UserAssemblyEnergy", "D19_EFChangeLog",
+                   "D20_UserMassParamVersion", "D21_UserMassParam"]
+
+#: Tabelas de resultado do B1.
+CALC_TABLES_011 = ["C15_Replacement", "C16_EndOfLife", "C34_MassValidation",
+                   "C35_VehicleLifeStage"]
+
+#: Tudo o que a 0.11 cria.
+TABLES_011 = PARAM_TABLES_011 + USER_TABLES_011 + CALC_TABLES_011
+
+_ORIGIN = "CHECK (Origin IN ('Typed','Published','Own'))"
+_EFV_SOURCE = [("SourceDocTitle", "TEXT"), ("SourceInstitution", "TEXT"),
+               ("SourceEdition", "TEXT"), ("SourceURL", "TEXT"),
+               ("SourceAccessDate", "TEXT"), ("ImportFile", "TEXT"),
+               ("ImportHash", "TEXT"), ("ImportedBy", "TEXT"), ("ImportedAt", "TEXT")]
+
+#: Colunas que a 0.11 acrescenta a tabelas ja existentes: (tabela, coluna, declaracao).
+COLUMNS_011 = (
+    [("P02_VehicleSubgroup", "IDVPGC", "INTEGER REFERENCES P54_MarketParam(IDMP)"),
+     ("P02_VehicleSubgroup", "SourceRow", "INTEGER"),
+     ("P02_VehicleSubgroup", "NotesSG", "TEXT"),
+     ("P10_EFVersion", "Origin", f"TEXT NOT NULL DEFAULT 'Typed' {_ORIGIN}")]
+    + [("P10_EFVersion", c, d) for c, d in _EFV_SOURCE]
+    + [("D04_UserEFVersion", "Origin", f"TEXT NOT NULL DEFAULT 'Own' {_ORIGIN}")]
+    + [("D04_UserEFVersion", c, d) for c, d in _EFV_SOURCE]
+    + [("P11_EmissionFactor", "Route", "TEXT"), ("P11_EmissionFactor", "Region", "TEXT"),
+       ("P11_EmissionFactor", "RefYear", "INTEGER"), ("P11_EmissionFactor", "EFLow", "REAL"),
+       ("P11_EmissionFactor", "EFHigh", "REAL"),
+       ("P16_MaterialShare", "MshareRaw", "REAL"),
+       ("D05_UserEmissionFactor", "Author", "TEXT"),
+       ("D05_UserEmissionFactor", "ChangedAt", "TEXT"),
+       ("D05_UserEmissionFactor", "Reason", "TEXT"),
+       ("C02_MassByGroup", "EstimatedMassKg", "REAL"),
+       ("C02_MassByGroup", "CalibrationKg", "REAL NOT NULL DEFAULT 0"),
+       ("C02_MassByGroup", "FinalMassKg", "REAL")]
+)
+
+
+def apply_011(conn: sqlite3.Connection) -> list[str]:
+    """S14 -- aplica os blocos S11 a S13 e as colunas novas. Nao altera dados.
+
+    Devolve o que foi feito, para o log da migracao.
+    """
+    feito: list[str] = []
+    antes = table_names(conn)
+    conn.executescript(DDL_PARAMS_011)
+    conn.executescript(DDL_USER_011)
+    conn.executescript(DDL_CALC_011)
+    for nome in TABLES_011:
+        if nome not in antes:
+            feito.append(f"criada {nome}")
+    for tabela, coluna, decl in COLUMNS_011:
+        if tabela not in antes:
+            continue
+        existentes = {r[1] for r in conn.execute(f"PRAGMA table_info({tabela})")}
+        if coluna not in existentes:
+            conn.execute(f"ALTER TABLE {tabela} ADD COLUMN {coluna} {decl}")
+            feito.append(f"{tabela}: coluna {coluna}")
     return feito
 
 
@@ -1013,7 +1356,7 @@ def param_base_hash(conn: sqlite3.Connection) -> str:
 
     presentes = table_names(conn)
     h = hashlib.sha256()
-    for tabela in PARAM_TABLES + PARAM_TABLES_010:
+    for tabela in PARAM_TABLES + PARAM_TABLES_010 + PARAM_TABLES_011:
         if tabela not in presentes:
             continue
         h.update(tabela.encode("utf-8"))
@@ -1051,9 +1394,10 @@ def sync_fase_a(conn: sqlite3.Connection, reference_db: str) -> dict[str, int]:
             cur = conn.execute(
                 f"INSERT OR IGNORE INTO {tabela} ({cols}) SELECT {cols} FROM ref.{tabela}")
             feito[tabela] = cur.rowcount
-        for tabela in reversed(PARAM_TABLES_010):
+        todas = PARAM_TABLES_010 + PARAM_TABLES_011
+        for tabela in reversed(todas):
             conn.execute(f"DELETE FROM {tabela}")
-        for tabela in PARAM_TABLES_010:
+        for tabela in todas:
             cols = ", ".join(r[1] for r in conn.execute(f"PRAGMA table_info({tabela})"))
             cur = conn.execute(
                 f"INSERT INTO {tabela} ({cols}) SELECT {cols} FROM ref.{tabela}")

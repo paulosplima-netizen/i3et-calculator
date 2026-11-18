@@ -29,6 +29,7 @@ from core import schema  # noqa: E402
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB = os.path.join(REPO, "data", "base_referencia.sqlite")
 CSV_DIR = os.path.join(REPO, "data", "csv", "fase_a")
+CSV_DIR_B = os.path.join(REPO, "data", "csv", "fase_b")
 DICIONARIO = os.path.join(REPO, "docs", "07-dicionario-de-dados-fase-a.md")
 WORKBOOK = "LCA_LV_i3ET_20261101.xlsx"
 
@@ -38,17 +39,17 @@ ADDITIONS = ["P10_EFVersion", "P11_EmissionFactor", "P12_Powertrain", "P13_Desig
              "P18_BatteryTechnology", "P19_BatteryModel", "P20_BatteryMaterialShare"]
 
 
-def _read(arquivo: str) -> tuple[list[str], list[list]]:
+def _read(arquivo: str, pasta: str = CSV_DIR) -> tuple[list[str], list[list]]:
     """Cabecalho e linhas de um CSV; celula vazia e NULL."""
-    with open(os.path.join(CSV_DIR, arquivo), encoding="utf-8-sig", newline="") as fh:
+    with open(os.path.join(pasta, arquivo), encoding="utf-8-sig", newline="") as fh:
         linhas = list(csv.reader(fh, delimiter=";"))
     return linhas[0], [[None if c == "" else c for c in linha] for linha in linhas[1:]]
 
 
-def _files(tabela: str, sufixo: str = "") -> list[str]:
+def _files(tabela: str, sufixo: str = "", pasta: str = CSV_DIR) -> list[str]:
     """Arquivos de uma tabela: 'Tabela.csv' e 'Tabela.<parte>.csv'."""
     padrao = re.compile(rf"^{tabela}(\.[a-z_]+)?{re.escape(sufixo)}\.csv$")
-    return sorted(f for f in os.listdir(CSV_DIR)
+    return sorted(f for f in os.listdir(pasta)
                   if padrao.match(f) and (sufixo or not f.endswith(".add.csv")))
 
 
@@ -85,13 +86,17 @@ def load_additions(conn) -> dict[str, int]:
 #   Faz     : esvazia as tabelas (filhas primeiro) e recarrega (pais primeiro)
 # --------------------------------------------------------------------------
 def load_new_tables(conn) -> dict[str, int]:
-    for tabela in reversed(schema.PARAM_TABLES_010):
+    """Tabelas da 0.10 (CSV em fase_a) e do B1 (0.11; CSV em fase_b)."""
+    for tabela in reversed(schema.PARAM_TABLES_010 + schema.PARAM_TABLES_011):
         conn.execute(f"DELETE FROM {tabela}")
     feito = {}
-    for tabela in schema.PARAM_TABLES_010:
+    for tabela, pasta in ([(t, CSV_DIR) for t in schema.PARAM_TABLES_010]
+                          + [(t, CSV_DIR_B) for t in schema.PARAM_TABLES_011]):
         feito[tabela] = 0
-        for arquivo in _files(tabela):
-            header, linhas = _read(arquivo)
+        if not os.path.isdir(pasta):
+            continue
+        for arquivo in _files(tabela, pasta=pasta):
+            header, linhas = _read(arquivo, pasta)
             conn.executemany(
                 f"INSERT INTO {tabela} ({', '.join(header)}) "
                 f"VALUES ({', '.join('?' * len(header))})", linhas)
@@ -151,6 +156,9 @@ def reset_010(conn) -> list[str]:
             raise SystemExit(f"{tabela} tem linhas: esta nao e uma base de referencia")
     conn.execute("PRAGMA foreign_keys = OFF")
     conn.execute("DROP VIEW IF EXISTS R46_RunComparison")
+    b1 = [t for t in reversed(schema.TABLES_011) if t in presentes]
+    for tabela in b1:
+        conn.execute(f"DROP TABLE {tabela}")
     soltas = [t for t in reversed(schema.ANALYSIS_TABLES + schema.PARAM_TABLES_010)
               if t in presentes]
     for tabela in soltas:

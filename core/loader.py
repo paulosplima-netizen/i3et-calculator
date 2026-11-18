@@ -43,7 +43,7 @@ def load_sqlite(path: str) -> Base:
     # Tabelas da 0.10 (blocos S5 a S7 de schema.py): lidas quando existem. Um
     # arquivo da 0.9.0 ainda nao migrado continua abrindo, sem elas.
     presentes = schema.table_names(conn)
-    for full in schema.TABLES_010:
+    for full in schema.TABLES_010 + schema.TABLES_011:
         if full in presentes:
             tables[full.split("_")[0]] = pd.read_sql_query(f"SELECT * FROM {full}", conn)
     param_hash = None
