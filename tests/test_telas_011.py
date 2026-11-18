@@ -102,3 +102,20 @@ def test_t14_abre_com_receita_do_usuario(projeto):  # noqa: F811
     at = _abrir("T14_Materials_recipes", projeto)
     assert not at.exception, at.exception
     assert len(at.tabs) == 3
+
+
+def test_t46_abre_e_lista_copias(projeto):  # noqa: F811
+    import sqlite3
+
+    from core import user_assets
+    at = _abrir("T46_Battery_assembly", projeto)
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    src = conn.execute("SELECT IDBMd FROM P19_BatteryModel WHERE GHGMethod = 'composition' "
+                       "LIMIT 1").fetchone()[0]
+    user_assets.copy_battery(conn, "UB-T46", src, "teste")
+    conn.commit()
+    conn.close()
+    at = _abrir("T46_Battery_assembly", projeto)
+    assert not at.exception, at.exception
+    assert len(at.tabs) == 4

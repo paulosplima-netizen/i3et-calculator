@@ -28,6 +28,7 @@ SCREENS = {
     "T18L": ("pages/T18_Vehicle_life.py", "Vehicle life", "♻"),
     "T09": ("pages/T09_Market_vehicles.py", "Market Vehicles", "🚗"),
     "T14": ("pages/T14_Materials_recipes.py", "Materials and recipes", "🧱"),
+    "T46": ("pages/T46_Battery_assembly.py", "Battery and assembly", "🔋"),
     "T15": ("pages/T15_Emission_factors.py", "Emission factors", "🏭"),
     "T07": ("pages/T07_Equations_and_glossary.py", "Equations & glossary", "📖"),
     "T08": ("pages/T08_Export.py", "Export", "📤"),
@@ -37,7 +38,7 @@ MENUS = {
     "Home": ["T01", "T02", "T03"],
     "Analysis Parameters Setup": ["T04", "T10", "T11", "T16", "T17", "T38", "T41"],
     "Results": ["T05", "T06", "T18", "T18L"],
-    "Auxiliary Data": ["T09", "T14", "T15"],
+    "Auxiliary Data": ["T09", "T14", "T15", "T46"],
     "Help and export": ["T07", "T08"],
 }
 

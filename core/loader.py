@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 
 import pandas as pd
 
-from . import schema, user_recipes
+from . import schema, user_assets, user_recipes
 
 
 @dataclass
@@ -55,6 +55,7 @@ def load_sqlite(path: str) -> Base:
         pass
     conn.close()
     user_recipes.merge_into_base(tables)
+    user_assets.merge_into_base(tables)
     return Base(tables=tables, param_hash=param_hash)
 
 
