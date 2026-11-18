@@ -92,3 +92,32 @@ def test_relatorio_inclui_r12_a_r15(caso):
         assert rid in R and len(R[rid]) > 0
         assert rid in report.TITLES
     assert "R12" not in report.build(base, {chave: res})
+
+
+def test_rodada_grava_b1_e_estagios_fecham(tmp_path):
+    """run.execute grava C15/C16/C34/C35; a soma dos estagios e o total do C35."""
+    import shutil
+
+    from core import analysis, project, run
+    path = str(tmp_path / "p.sqlite")
+    shutil.copy(DB, path)
+    conn = sqlite3.connect(path)
+    project.create(conn, "B1")
+    idefv = conn.execute("SELECT IDEFV FROM P10_EFVersion ORDER BY IDEFV LIMIT 1").fetchone()[0]
+    apv = conn.execute("SELECT IDAPV FROM P23_AssemblyParamVersion LIMIT 1").fetchone()[0]
+    cfg = dict(fuel="E27", norm="NBR", curve="Default", idefv=idefv, idmpv=1, idapv=apv)
+    ida = analysis.create_ec(conn, "EC", "A0", cfg)
+    rid = run.freeze(conn, ida, calculator_version="test", reference_workbook="x")
+    run.execute(conn, path, rid)
+    casos = conn.execute("SELECT COUNT(DISTINCT IDCase) FROM C35_VehicleLifeStage "
+                         "WHERE RunID = ?", (rid,)).fetchone()[0]
+    assert casos > 0
+    assert conn.execute("SELECT COUNT(*) FROM C16_EndOfLife WHERE RunID = ?",
+                        (rid,)).fetchone()[0] == casos
+    assert conn.execute("SELECT COUNT(*) FROM C34_MassValidation WHERE RunID = ?",
+                        (rid,)).fetchone()[0] == casos
+    ini = conn.execute("SELECT MIN(GHGkg) FROM C35_VehicleLifeStage WHERE RunID = ? "
+                       "AND Stage = 'INITIAL_PRODUCTION' AND SubStage = 'MATERIALS'",
+                       (rid,)).fetchone()[0]
+    assert ini > 0
+    conn.close()

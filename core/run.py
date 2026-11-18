@@ -143,7 +143,30 @@ def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
         conn.commit()
         raise
     write_results(conn, run_id, results, snap)
+    write_b1(conn, run_id, base, ef_table, results, cp_values)
     return results
+
+
+# --------------------------------------------------------------------------
+# BLOCO RN3b -- B1 (C15, C16, C34, C35)
+#   Com as escolhas padrao (core/b1_results.Options); as escolhas do usuario
+#   (D10, D06) entram quando as telas T12-T18 existirem.
+# --------------------------------------------------------------------------
+def write_b1(conn, run_id, base, ef_table, results, cp_values) -> None:
+    from . import b1_results
+    if "P31" not in base or conn.execute(
+            "SELECT name FROM sqlite_master WHERE name = 'C35_VehicleLifeStage'"
+    ).fetchone() is None:
+        return
+    options = b1_results.options_from_control_params(cp_values)
+    for c, res in results.values():
+        case = c["case"]
+        ef = b1_results.ef_for(ef_table, c["alternative"]["IDEFV"])
+        frames = b1_results.compute(res, base, ef, options,
+                                    boundary=c["alternative"]["Boundary"])
+        b1_results.write_db(conn, run_id, ida=case["IDA"], idcase=case["IDCase"],
+                            idv=case["IDV"], idea=case["IDEA"], frames=frames)
+    conn.commit()
 
 
 # --------------------------------------------------------------------------
