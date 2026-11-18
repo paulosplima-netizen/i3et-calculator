@@ -119,3 +119,19 @@ def test_t46_abre_e_lista_copias(projeto):  # noqa: F811
     at = _abrir("T46_Battery_assembly", projeto)
     assert not at.exception, at.exception
     assert len(at.tabs) == 4
+
+
+def test_t12_t13_abrem_e_t13_lista_copias(projeto):  # noqa: F811
+    import sqlite3
+
+    from core import user_mass_params
+    for tela in ("T12_Subsystems", "T13_Mass_parameters"):
+        at = _abrir(tela, projeto)
+        assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    base = conn.execute("SELECT MIN(IDMPV) FROM P05_MassParamVersion").fetchone()[0]
+    user_mass_params.copy_version(conn, "UM-T13", base, "teste")
+    conn.commit()
+    conn.close()
+    at = _abrir("T13_Mass_parameters", projeto)
+    assert not at.exception, at.exception

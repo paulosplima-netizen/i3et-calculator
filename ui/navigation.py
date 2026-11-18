@@ -27,6 +27,8 @@ SCREENS = {
     "T38": ("pages/T38_Mass_validation.py", "Mass validation", "⚖"),
     "T18L": ("pages/T18_Vehicle_life.py", "Vehicle life", "♻"),
     "T09": ("pages/T09_Market_vehicles.py", "Market Vehicles", "🚗"),
+    "T12": ("pages/T12_Subsystems.py", "Subsystems", "🧩"),
+    "T13": ("pages/T13_Mass_parameters.py", "Mass parameters", "📏"),
     "T14": ("pages/T14_Materials_recipes.py", "Materials and recipes", "🧱"),
     "T46": ("pages/T46_Battery_assembly.py", "Battery and assembly", "🔋"),
     "T15": ("pages/T15_Emission_factors.py", "Emission factors", "🏭"),
@@ -38,7 +40,7 @@ MENUS = {
     "Home": ["T01", "T02", "T03"],
     "Analysis Parameters Setup": ["T04", "T10", "T11", "T16", "T17", "T38", "T41"],
     "Results": ["T05", "T06", "T18", "T18L"],
-    "Auxiliary Data": ["T09", "T14", "T15", "T46"],
+    "Auxiliary Data": ["T09", "T12", "T13", "T14", "T15", "T46"],
     "Help and export": ["T07", "T08"],
 }
 
