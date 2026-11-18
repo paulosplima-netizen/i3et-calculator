@@ -53,6 +53,12 @@ def recipes_for(conn: sqlite3.Connection, idvpt: str, idvdt: str | None = None,
     rows = conn.execute(
         "SELECT IDVMR, IDVDT, IDVS FROM P15_VehicleMaterialRecipe WHERE IDVPT = ? "
         "ORDER BY IDVMR", (pt,)).fetchall()
+    if conn.execute("SELECT name FROM sqlite_master WHERE name = 'D13_UserRecipe'").fetchone():
+        from . import user_recipes
+        validas = set(user_recipes.valid_ids(conn))
+        rows += [r for r in conn.execute(
+            "SELECT IDVMRU, IDVDT, IDVS FROM D13_UserRecipe WHERE IDVPT = ? ORDER BY IDVMRU",
+            (pt,)) if r[0] in validas]
     rows.sort(key=lambda r: (r[1] != idvdt, r[2] != idvs, r[0]))
     return [r[0] for r in rows]
 

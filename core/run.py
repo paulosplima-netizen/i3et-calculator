@@ -30,6 +30,7 @@ from . import (
     loader,
     power_rule,
     provenance,
+    user_recipes,
 )
 from . import battery as battery_mod
 from .log import Log
@@ -86,6 +87,10 @@ def _snapshot(conn, ida: int, *, calculator_version: str, base_hash: str,
             "control_params": {k: [e.value, e.text, e.source] for k, e in sorted(eff.items())},
             "versions": {"calculator": calculator_version, "param_base_hash": base_hash,
                          "reference_workbook": reference_workbook}}
+    usadas = sorted({c["alternative"]["IDVMR"] for c in cases
+                     if str(c["alternative"]["IDVMR"]).startswith(user_recipes.PREFIX)})
+    if usadas:                      # I30: a rodada guarda o hash das participacoes usadas
+        snap["user_recipes"] = {i: user_recipes.shares_hash(conn, i) for i in usadas}
     escolhas = b1_choices.load(conn, ida)
     if escolhas is not None:        # sem escolha, o instantaneo e o mesmo de antes do B1
         snap["b1"] = escolhas

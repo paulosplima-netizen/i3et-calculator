@@ -86,3 +86,19 @@ def test_t15_abre_cria_versao_e_edita(projeto):  # noqa: F811
     conn.close()
     at = _abrir("T15_Emission_factors", projeto)
     assert not at.exception, at.exception
+
+
+def test_t14_abre_com_receita_do_usuario(projeto):  # noqa: F811
+    import sqlite3
+
+    from core import user_recipes
+    at = _abrir("T14_Materials_recipes", projeto)
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    base_id = conn.execute("SELECT IDVMR FROM P15_VehicleMaterialRecipe LIMIT 1").fetchone()[0]
+    user_recipes.copy_recipe(conn, "U-T14", base_id, "teste")
+    conn.commit()
+    conn.close()
+    at = _abrir("T14_Materials_recipes", projeto)
+    assert not at.exception, at.exception
+    assert len(at.tabs) == 3
