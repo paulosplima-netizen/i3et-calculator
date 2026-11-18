@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import tempfile
 
 import streamlit as st
 
@@ -103,6 +104,23 @@ with left:
                         if p["path"] == opened:
                             p["name"] = new_title.strip()
                     st.rerun()
+        c1, c2 = st.columns([3, 1])
+        copy_name = c1.text_input("Name for the copy", key="copy_name",
+                                  value=f"{ident['ProjectName']} (copy)",
+                                  help="Works for your projects and for the read-only master "
+                                       "example: the copy is yours and can be edited.")
+        c2.write("")
+        c2.write("")
+        if c2.button("Save a copy"):
+            if not copy_name.strip():
+                st.error("Enter a name for the copy.")
+            else:
+                dest = os.path.join(tempfile.mkdtemp(prefix="i3et_"),
+                                    state._slug(copy_name) + ".sqlite")
+                with flow.connect(opened) as conn:
+                    project.save_as(conn, dest, copy_name.strip())
+                _open(dest, copy_name.strip())
+                st.rerun()
         if st.button("Close project"):
             state.close_project()
             st.rerun()
@@ -116,6 +134,8 @@ with left:
                         help="Equalized (EC): six powertrains of one category. "
                              "Free choice (FC): 1 to 7 market vehicles.")
         sources = {"Empty project": None}
+        if os.path.exists(EXAMPLE):
+            sources[EXAMPLE] = "Master · Compact hatch · workbook example"
         sources.update({e["path"]: _label(e) for e in listed})
         source = st.selectbox("Copy from", list(sources),
                               format_func=lambda k: k if k == "Empty project" else sources[k])
@@ -128,7 +148,7 @@ with left:
             if source == "Empty project":
                 _open(state.new_project(name.strip()), name.strip())
             else:
-                dest = os.path.join(os.path.dirname(source), state._slug(name) + ".sqlite")
+                dest = os.path.join(tempfile.mkdtemp(prefix="i3et_"), state._slug(name) + ".sqlite")
                 with flow.connect(source) as conn:
                     project.save_as(conn, dest, name.strip())
                 _open(dest, name.strip())

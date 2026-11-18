@@ -154,3 +154,29 @@ def test_t04_salvar_parametro_persiste(projeto, tmp_path):
     assert not at.exception, at.exception
     conn = sqlite3.connect(copia)
     assert conn.execute("SELECT COUNT(*) FROM D08_ControlParamValue").fetchone()[0] == 1
+
+
+def test_t01_copia_o_projeto_master_com_novo_nome():
+    exemplo = os.path.join(REPO, "data", "exemplo.sqlite")
+    at = AppTest.from_file(os.path.join(REPO, "pages", "T01_Home.py"), default_timeout=120).run()
+    next(b for b in at.button if "example" in b.label).click().run()
+    campo = next(t for t in at.text_input if t.key == "copy_name")
+    campo.input("Minha copia").run()
+    next(b for b in at.button if b.label == "Save a copy").click().run()
+    assert not at.exception, at.exception
+    novo = at.session_state["project_path"]
+    assert novo != exemplo
+    conn = sqlite3.connect(novo)
+    ident = project.identity(conn)
+    assert ident["ProjectName"] == "Minha copia" and ident["IsExample"] == 0
+    assert conn.execute("SELECT COUNT(*) FROM D09_Run").fetchone()[0] == 1
+    assert project.mode(conn) == project.EDIT
+    exemplo_conn = sqlite3.connect(exemplo)
+    assert project.identity(exemplo_conn)["IsExample"] == 1
+
+
+def test_t01_copy_from_oferece_o_master():
+    at = _abrir("T01_Home")
+    box = next(s for s in at.selectbox if s.label == "Copy from")
+    assert any("Master" in str(o) or o == "Empty project" or o.endswith("exemplo.sqlite")
+               for o in box.options)
