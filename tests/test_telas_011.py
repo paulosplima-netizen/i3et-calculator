@@ -22,3 +22,37 @@ def test_t18_sem_projeto_pede_para_abrir():
     at = _abrir("T18_Vehicle_life")
     assert not at.exception
     assert any("Home" in i.value or "Open or create" in i.value for i in at.info)
+
+
+@pytest.mark.parametrize("tela", ["T16_Maintenance", "T17_End_of_life"])
+def test_t16_t17_abrem_com_projeto(tela, projeto):  # noqa: F811
+    at = _abrir(tela, projeto)
+    assert not at.exception, at.exception
+
+
+def test_t17_grava_o_metodo(projeto):  # noqa: F811
+    import sqlite3
+    at = _abrir("T17_End_of_life", projeto)
+    at.radio[0].set_value("EXCLUDED").run()
+    at.button[0].click().run()
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    assert conn.execute("SELECT EoLMethod FROM D06_Analysis").fetchone()[0] == "EXCLUDED"
+    conn.execute("UPDATE D06_Analysis SET EoLMethod = 'GLIDER_BATTERY'")
+    conn.commit()
+    conn.close()
+
+
+def test_t16_grava_o_cenario(projeto):  # noqa: F811
+    import sqlite3
+    at = _abrir("T16_Maintenance", projeto)
+    at.radio[0].set_value("Sim Bat").run()
+    at.button[0].click().run()
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    assert conn.execute("SELECT MaintenanceMode FROM D10_MaintenanceScenario").fetchone()[0] \
+        == "Sim Bat"
+    conn.execute("DELETE FROM D10_Item")
+    conn.execute("DELETE FROM D10_MaintenanceScenario")
+    conn.commit()
+    conn.close()

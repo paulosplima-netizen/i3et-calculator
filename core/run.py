@@ -22,7 +22,15 @@ import json
 import secrets
 import sqlite3
 
-from . import battery as battery_mod, calc, control_params, loader, power_rule, provenance
+from . import (
+    b1_choices,
+    calc,
+    control_params,
+    loader,
+    power_rule,
+    provenance,
+)
+from . import battery as battery_mod
 from .log import Log
 from .validate import check_analysis
 
@@ -73,10 +81,14 @@ def _snapshot(conn, ida: int, *, calculator_version: str, base_hash: str,
                               "provisional": f.provisional},
         })
     eff = control_params.effective_values(conn, ida, d06["ParamProfile"])
-    return {"analysis": d06, "cases": cases,
+    snap = {"analysis": d06, "cases": cases,
             "control_params": {k: [e.value, e.text, e.source] for k, e in sorted(eff.items())},
             "versions": {"calculator": calculator_version, "param_base_hash": base_hash,
                          "reference_workbook": reference_workbook}}
+    escolhas = b1_choices.load(conn, ida)
+    if escolhas is not None:        # sem escolha, o instantaneo e o mesmo de antes do B1
+        snap["b1"] = escolhas
+    return snap
 
 
 def canonical(obj) -> str:
@@ -143,7 +155,7 @@ def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
         conn.commit()
         raise
     write_results(conn, run_id, results, snap)
-    write_b1(conn, run_id, base, ef_table, results, cp_values)
+    write_b1(conn, run_id, base, ef_table, results, cp_values, snap.get("b1"))
     return results
 
 
@@ -152,13 +164,13 @@ def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
 #   Com as escolhas padrao (core/b1_results.Options); as escolhas do usuario
 #   (D10, D06) entram quando as telas T12-T18 existirem.
 # --------------------------------------------------------------------------
-def write_b1(conn, run_id, base, ef_table, results, cp_values) -> None:
+def write_b1(conn, run_id, base, ef_table, results, cp_values, choices=None) -> None:
     from . import b1_results
     if "P31" not in base or conn.execute(
             "SELECT name FROM sqlite_master WHERE name = 'C35_VehicleLifeStage'"
     ).fetchone() is None:
         return
-    options = b1_results.options_from_control_params(cp_values)
+    options = b1_choices.options(choices, cp_values)
     for c, res in results.values():
         case = c["case"]
         ef = b1_results.ef_for(ef_table, c["alternative"]["IDEFV"])

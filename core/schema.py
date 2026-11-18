@@ -1320,7 +1320,9 @@ COLUMNS_011 = (
        ("D05_UserEmissionFactor", "Reason", "TEXT"),
        ("C02_MassByGroup", "EstimatedMassKg", "REAL"),
        ("C02_MassByGroup", "CalibrationKg", "REAL NOT NULL DEFAULT 0"),
-       ("C02_MassByGroup", "FinalMassKg", "REAL")]
+       ("C02_MassByGroup", "FinalMassKg", "REAL"),
+       ("D06_Analysis", "EoLMethod", "TEXT NOT NULL DEFAULT 'GLIDER_BATTERY' "
+        "CHECK (EoLMethod IN ('GLIDER_BATTERY','AGGREGATE_VEHICLE','EXCLUDED'))")]
 )
 
 
