@@ -8,7 +8,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from . import assembly, battery, ef_equivalence, mass, materials, params, totals
+from . import (assembly, battery, ef_equivalence, mass, mass_calibration, materials,
+               params, totals)
 from .log import Log
 
 
@@ -19,11 +20,14 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
                       supplied: set[int] | None = None,
                       power_factors: tuple[float, float] | None = None,
                       generic_battery: dict | None = None,
+                      mass_adjustment_kg: float = 0.0, body_share: float = 0.5,
                       log: Log | None = None) -> dict:
     """Run one vehicle through the whole chain.
 
     `gc_input` holds the exogenous parameters; the endogenous ones are computed
     here and overwrite whatever was supplied.
+
+    `mass_adjustment_kg` e `body_share` (T38): ver core/mass_calibration.py.
     """
     from .loader import effective_emission_factors
 
@@ -45,6 +49,8 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
     c01 = mass.by_subgroup(base["P06"], base["P08"], gc,
                            idmpv=idmpv, powertrain=powertrain, log=log)
     c02 = mass.by_group(c01, gc, base["P04"])
+    # T38: a diferenca (declarada - calculada) vai para carroceria e chassi; com 0 nada muda.
+    c02 = mass_calibration.apply_to_c02(c02, float(mass_adjustment_kg), float(body_share))
     c03 = materials.by_material_group(c02, base["P16"], base["P09"], ef_table, gc,
                                       idvmr=idvmr, idefv=idefv, log=log)
     c07 = battery.by_material(base["P19"], base["P20"], base["P09"], ef_table, gc,
