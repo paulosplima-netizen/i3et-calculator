@@ -17,8 +17,11 @@ repository-code: "https://github.com/paulosplima-netizen/i3et-calculator"
 doi: 10.5281/zenodo.22867012
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.22867013
+    value: 10.5281/zenodo.24339392
     description: "Version 0.10.0"
+  - type: doi
+    value: 10.5281/zenodo.22867013
+    description: "Version 0.9.0"
   - type: doi
     value: 10.5281/zenodo.22867012
     description: "All versions (concept DOI)"

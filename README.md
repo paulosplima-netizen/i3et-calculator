@@ -127,8 +127,8 @@ tested, not assumed.
 ## How to cite
 
 Lima, P. S. P. (2026). *i3ET Calculator: Light Vehicle Cradle-to-Gate Carbon
-Footprint* (version 0.9.0) [Software]. Zenodo.
-https://doi.org/10.5281/zenodo.22867013
+Footprint* (version 0.10.0) [Software]. Zenodo.
+https://doi.org/10.5281/zenodo.24339392
 
 Cite the version you used: each release on GitHub is archived by Zenodo with its
 own DOI, so a result can always be traced to the exact code that produced it.
