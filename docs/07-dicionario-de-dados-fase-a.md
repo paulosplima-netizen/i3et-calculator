@@ -360,6 +360,7 @@ Duas linhas, de `tools/build_equation_constants.py`. `STARTER_PER_KW` (0,03) é 
 | `ParamProfile` | TEXT | — | S | `Basic`, `Expert` (padrão) ou `Expanded` |
 | `CombinedPowerRule` | TEXT | — | S | `Default` (padrão: fatores de `P53`) ou `ExcelParity` (fatores de `P56` onde existirem) |
 | `NotesIDA` | TEXT | — | N | Observações |
+| `EoLMethod` | TEXT | — | S | Método de fim de vida (B1, T17): `GLIDER_BATTERY` (padrão), `AGGREGATE_VEHICLE` ou `EXCLUDED`. Coluna acrescentada na 0.11 |
 
 O banco exige `IDVC` e `IDMVRef` preenchidos em `EC` e nulos em `FC`.
 
