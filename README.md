@@ -80,11 +80,15 @@ core reproduces the i3ET — mass on all 72 configurations of the spreadsheet (3
 twelve project vehicles — and the seven screens of the web interface run. Version
 0.9.0 is published.
 
-**Version 0.10.0 ("Fase A") is in progress**: project identity, analysis setup
-(equalized or free comparison), the catalogue of control-panel parameters and frozen
-runs. Schema 0.10 and the reference data extracted from the i3ET spreadsheet are in
-place (`docs/06` to `docs/08`); the calculation core for them and the new screens are
-not written yet. No result of the twelve project vehicles changed.
+**Version 0.11.0 ("Bloco B1") completes modules M1 and M2**: subsystems and mass
+parameters (T12, T13), materials and recipes (T14), emission factors (T15),
+maintenance (T16), end of life (T17), vehicle life by stage (T18), mass validation
+(T38) and battery and assembly models (T46). Users can keep their own copies of
+recipes, batteries, assemblies, emission-factor lists and mass-parameter sets without
+touching the reference data; every choice is stored in the frozen run. Schema 0.11
+adds the end-of-life method and the declared mass to the analysis. Where the
+calculator differs from the spreadsheet on purpose, `docs/05c-lista-de-diferencas-b1.md`
+lists each case for the author to decide. See `CHANGELOG.md`.
 
 ## Running it
 
@@ -119,6 +123,9 @@ Full specification, in Portuguese, in `docs/`:
 | `06-fase-a-navegacao-projeto-e-analise.md` | Fase A specification: navigation, project, analysis, combined-power rule, provenance badge, screens, parity matrix |
 | `07-dicionario-de-dados-fase-a.md` | Schema 0.10, column by column, integrity rules I16–I27, migration |
 | `08-fase-a-fixtures.md` | Where each Fase A table comes from, how to rebuild it, what the extraction found |
+| `09-dicionario-de-dados-b1.md` | Schema 0.11 (Bloco B1): tables, columns, integrity rules |
+| `05b-divergencias-b1.md` | Divergences found while building B1 |
+| `05c-lista-de-diferencas-b1.md` | Consolidated list of spreadsheet vs calculator differences, with a decision column |
 
 The specification is written to be sufficient on its own: someone should be able to
 rebuild this program from `docs/` alone, without reading the source. That claim is
@@ -127,7 +134,7 @@ tested, not assumed.
 ## How to cite
 
 Lima, P. S. P. (2026). *i3ET Calculator: Light Vehicle Cradle-to-Gate Carbon
-Footprint* (version 0.10.0) [Software]. Zenodo.
+Footprint* (version 0.11.0) [Software]. Zenodo.
 https://doi.org/10.5281/zenodo.24339392
 
 Cite the version you used: each release on GitHub is archived by Zenodo with its
