@@ -15,7 +15,7 @@ Conteudo:
                            massa declarada (linha 35) das colunas SV1 a SV4
 
 Uso:
-    python tools/extract_b1_reference.py [caminho/para/LCA_LV_i3ET_20261101.xlsx]
+    python tools/extract_b1_reference.py [caminho/para/LCA_LV_i3ET_20261119.xlsx]
 """
 
 from __future__ import annotations
@@ -76,7 +76,7 @@ def main(argv) -> int:
     wb = open_workbook(argv)
     m2, cp, ef = wb.grid(M2), wb.grid(CP), wb.grid(EFBR)
     data = {
-        "source_workbook": WORKBOOK_NAME,
+        "source_workbook": os.path.basename(argv[1]) if len(argv) > 1 else WORKBOOK_NAME,
         "note": "Valores em cache da planilha; nao recalculados. Gerado por tools/extract_b1_reference.py.",
         "m2_columns": m2_columns(m2),
         "br23_control_panel": control_panel(cp),

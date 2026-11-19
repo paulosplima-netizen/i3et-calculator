@@ -85,3 +85,4 @@ As 18 colunas do Projeto do Berço ao Portão (`CX:DC` e outras) têm pneus e ba
 
 - Massa da glider no fim de vida: a linha 662 do M2 soma as massas de material e passa 0,1% da massa por grupo nas receitas com participação negativa zerada (divergência D8, já registrada): 0,5 a 0,8 kg, ou 0,1 a 0,2 kg CO₂e no fim de vida.
 
+**Atualização de 19/11/2026 (B1-DIV-02).** O autor corrigiu a fórmula de `T495` nas 28 colunas em `LCA_LV_i3ET_20261119.xlsx`. A fixture `tests/fixtures/b1_reference.json` foi regerada dessa planilha: 122 colunas seguem o seletor e nenhuma é "antiga"; as 6 colunas PBP_BISD (`CX:DC`) ainda têm `T495` digitado (0), o que fica registrado como B1-DIV-03.

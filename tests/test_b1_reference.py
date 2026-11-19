@@ -47,17 +47,19 @@ def _forma_t495(r, chave):
 
 
 def test_reposicoes_t495_formas(ref):
-    """94 colunas usam a formula com a chave P495; 28 (GREET 2023 e BISD) usam uma
-    formula antiga que ignora a chave e soma o fim de vida (T509) dentro de T495,
-    contado de novo em T511 (divergencia B1-DIV-02). As colunas usadas pelo aplicativo
-    (GREET 2022 e 2024 e SV1 a SV4) usam a chave."""
+    """Na planilha de 19/11/2026 todas as colunas completas do M2 usam T495 com a chave P495.
+    Na de 01/11/2026, 28 colunas (GREET 2023 e BISD) usavam uma formula antiga que ignorava a
+    chave e somava o fim de vida (T509) dentro de T495, contado de novo em T511
+    (divergencia B1-DIV-02); o autor corrigiu a planilha e a fixture foi regerada."""
     cols = _completas(ref, [495, 496, 499, 500, 501, 509])
     forma = {c: _forma_t495(v["rows"], v["switch_P495"]) for c, v in cols.items()}
-    assert sum(f == "seletor" for f in forma.values()) == 94
     antigas = sorted(c for c, f in forma.items() if f == "antiga")
-    assert len(antigas) == 28
-    assert {"AF", "AO", "CD", "CV"} <= set(antigas)
-    for c in ("T", "AC", "AR", "CA", "FD", "FE", "FF", "FG"):
+    assert antigas == []
+    # as 6 colunas PBP_BISD (CX:DC) trazem T495 digitado (0) e nao seguem a formula (B1-DIV-03)
+    fora = sorted(c for c, f in forma.items() if f is None)
+    assert fora == ["CX", "CY", "CZ", "DA", "DB", "DC"]
+    assert sum(f == "seletor" for f in forma.values()) == 122
+    for c in ("T", "AC", "AF", "AO", "AR", "CA", "CD", "CV", "FD", "FE", "FF", "FG"):
         assert forma[c] == "seletor", c
 
 
