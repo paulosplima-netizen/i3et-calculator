@@ -39,5 +39,5 @@ Cada linha traz a decisão do autor, a justificativa e o cuidado para os testes 
 
 - Conferir a digitação das linhas 54 e 55 do M2 nas 6 receitas com `k` > 1 (FCV-P25, HEV-P27, PHEV-P28, BEV-P29, FCV-P30, PHEV-S28).
 - ~~Corrigir `T495` nas 28 colunas~~ (feito na planilha de 19/11). Reconstruir as fórmulas das PBP_BISD (`CX:DC`, item 3).
-- Decidir o item 1 (em debate), `MshareRaw` e a reconciliação 28 × 45 (item 4) e os itens 10 e 11.
+- Itens 1 e 10 a 13 decididos em 19/11/2026 (item 1: opção a; 11, 12 e 13 implementados). Falta decidir o escopo de `MshareRaw` e reconciliar 28 × 45 células negativas (item 4), e conferir se são 6 ou 18 colunas PBP_BISD (item 3).
 - Opcional, do lado da planilha: ligar `P124:P133` a `Z92:Z101` (item 7) e fazer `T509` ler `X76` e `X77` (item 5).
