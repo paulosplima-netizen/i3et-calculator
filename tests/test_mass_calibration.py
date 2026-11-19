@@ -127,3 +127,53 @@ def test_calculo_com_calibracao_soma_a_diferenca_a_massa_do_veiculo(base):
     ident = _um_veiculo(base, mass_adjustment_kg=0.0, body_share=0.3)
     assert ident["totals"]["MassIDV"] == zero["totals"]["MassIDV"]
     assert ident["totals"]["GHGCradleToGate"] == zero["totals"]["GHGCradleToGate"]
+
+
+# --------------------------------------------------------------------------
+# Decisao de 19/11/2026: s padrao = participacao nas massas estimadas
+# --------------------------------------------------------------------------
+def test_s_padrao_e_a_participacao_da_carroceria_nas_massas_estimadas(base):
+    zero = _um_veiculo(base)
+    cal = _um_veiculo(base, mass_adjustment_kg=40.0)          # sem s informado
+    c02z, c02c = zero["C02"].set_index("IDGG"), cal["C02"].set_index("IDGG")
+    a, b = float(c02z.loc["A", "MassIDGG"]), float(c02z.loc["B", "MassIDGG"])
+    s = a / (a + b)
+    assert cal["mass_calibration"]["BodyShare"] == pytest.approx(s)
+    assert cal["mass_calibration"]["BodyShareEstimated"] == pytest.approx(s)
+    assert c02c.loc["A", "CalibrationKg"] == pytest.approx(s * 40.0)
+    assert c02c.loc["B", "CalibrationKg"] == pytest.approx((1 - s) * 40.0)
+    # a proporcao A:B final e igual a estimada
+    fa, fb = float(c02c.loc["A", "FinalMassKg"]), float(c02c.loc["B", "FinalMassKg"])
+    assert fa / fb == pytest.approx(a / b, rel=1e-12)
+
+
+def test_s_do_usuario_substitui_o_padrao(base):
+    cal = _um_veiculo(base, mass_adjustment_kg=40.0, body_share=0.25)
+    assert cal["mass_calibration"]["BodyShare"] == 0.25
+    assert cal["mass_calibration"]["BodyShareEstimated"] != 0.25
+
+
+def test_proporcao_do_greet_nao_entra_no_calculo(base):
+    """P63 so e referencia: alterar P63 nao muda a massa nem o GEE calibrados."""
+    from core import b1_choices
+    antes = _um_veiculo(base, mass_adjustment_kg=40.0)
+    import copy
+    p63 = base["P63"].copy()
+    p63["BodyShareOfMassAdj"] = 0.9
+    base2 = copy.copy(base)
+    base2.tables = {**base.tables, "P63": p63}
+    depois = _um_veiculo(base2, mass_adjustment_kg=40.0)
+    assert depois["C02"]["FinalMassKg"].tolist() == antes["C02"]["FinalMassKg"].tolist()
+    assert depois["totals"]["GHGCradleToGate"] == antes["totals"]["GHGCradleToGate"]
+    # mas o diagnostico enxerga a mudanca
+    idvmr = base["D02"].iloc[0]["IDVMR"]
+    assert b1_choices.reference_body_share(base2, idvmr) == pytest.approx(0.9)
+
+
+def test_ajuda_de_s_e_desvio(base):
+    from core import b1_choices
+    assert b1_choices.body_share(None) is None
+    assert b1_choices.body_share(0.4) == 0.4
+    assert b1_choices.share_deviation(0.74, 0.68) == pytest.approx(0.06)
+    assert b1_choices.share_deviation(None, 0.68) is None
+    assert b1_choices.reference_body_share(base, "nao-existe") is None

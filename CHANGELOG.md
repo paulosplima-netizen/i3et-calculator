@@ -20,6 +20,10 @@ Added
   author to decide.
 
 Changed
+- Mass calibration (T38): the difference between declared and estimated mass is split between Body
+  and Chassis in proportion to the estimated masses (`s = A_est/(A_est + B_est)`), unless the user sets
+  `s`. The GREET Body/Chassis proportion (P63) is only a diagnostic (`C34.BodyShareEstimated`,
+  `C34.BodyShareReference`); the T38 warns when the two differ by 5 points or more.
 - The 0.9 emission-factor page was superseded by T15 (kept under `_superados/`).
 - Runs store the B1 choices and the hashes of user recipes in the snapshot, only
   when they exist, so earlier run hashes do not change.

@@ -106,14 +106,31 @@ def options(choices: dict | None, cp_values: dict[str, float]) -> Options:
 
 # --------------------------------------------------------------------------
 # BLOCO CH4 -- parcela da diferenca de massa para a carroceria (s)
-#   Prioridade: valor do usuario; s da receita (P63); None (o calculo usa a
-#   participacao nas massas estimadas do proprio veiculo).
+#   Decisao de 19/11/2026: o padrao e a participacao da carroceria nas massas
+#   estimadas do proprio veiculo (s = A_est / (A_est + B_est)), calculada em
+#   core/calc.py; so o valor informado pelo usuario a substitui. A proporcao
+#   carroceria/chassi do GREET (P63) nao entra no calculo: serve de diagnostico
+#   da calibracao dos betas e das massas de referencia (T38).
 # --------------------------------------------------------------------------
-def body_share(base, idvmr: str, user_value: float | None) -> float | None:
-    if user_value is not None:
-        return float(user_value)
+SHARE_DEVIATION_WARN = 0.05      # |s estimado - s do GREET| a partir do qual a T38 avisa
+
+
+def body_share(user_value: float | None) -> float | None:
+    """s do usuario, ou None (o calculo usa a proporcao das massas estimadas)."""
+    return None if user_value is None else float(user_value)
+
+
+def reference_body_share(base, idvmr: str) -> float | None:
+    """s = A/(A+B) do GREET para a receita (P63), so como referencia; None se nao ha."""
     p63 = base.get("P63")
     if p63 is None or not len(p63):
         return None
     hit = p63.loc[p63["IDVMR"] == idvmr, "BodyShareOfMassAdj"]
     return float(hit.iloc[0]) if len(hit) else None
+
+
+def share_deviation(estimated: float | None, reference: float | None) -> float | None:
+    """s estimado - s do GREET (pontos de participacao); None se falta um dos dois."""
+    if estimated is None or reference is None:
+        return None
+    return float(estimated) - float(reference)

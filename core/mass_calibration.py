@@ -8,8 +8,11 @@ chassi (B), os grupos sujeitos a personalizacao:
     A_final = A_est + s . Adj
     B_final = B_est + (1 - s) . Adj          0 <= s <= 1 (I45)
 
-Os outros grupos nao mudam. Com Adj = 0 nada muda. s e fixo por receita (P63),
-s = A / (A + B) = 1 / (1 + k), e pode ser editado pelo usuario.
+Os outros grupos nao mudam. Com Adj = 0 nada muda. Padrao (decisao de 19/11/2026):
+s = A_est / (A_est + B_est), a participacao da carroceria nas massas estimadas do
+proprio veiculo; assim a proporcao A:B final e igual a estimada. O usuario pode
+informar outro s. A proporcao do GREET (P63, s = 1 / (1 + k)) nao entra no calculo:
+e so o diagnostico de quanto a estimativa se afasta dela (C34.BodyShareReference).
 
 O metodo da planilha (M2 P69 = "Sim") e diferente: A = (declarada - soma dos
 demais grupos) / (1 + k) e B = k . A. Ele transfere massa entre A e B mesmo sem
@@ -92,7 +95,8 @@ def apply_to_c02(c02: pd.DataFrame, adjustment_kg: float, s: float) -> pd.DataFr
 # --------------------------------------------------------------------------
 def validation_row(c02_calibrated: pd.DataFrame, *, declared_kg: float | None,
                    adjustment_kg: float, s: float | None, mass_basis: str = "",
-                   declared_source: str = "") -> dict:
+                   declared_source: str = "", s_estimated: float | None = None,
+                   s_reference: float | None = None) -> dict:
     est = float(c02_calibrated["EstimatedMassKg"].sum())
     final = float(c02_calibrated["FinalMassKg"].sum())
     ab = c02_calibrated["IDGG"].isin([BODY, CHASSIS])
@@ -104,6 +108,7 @@ def validation_row(c02_calibrated: pd.DataFrame, *, declared_kg: float | None,
         "AdjustmentKg": adjustment_kg,
         "ResidualKg": None if declared_kg is None else declared_kg - final,
         "DeclaredSource": declared_source, "BodyShare": s,
+        "BodyShareEstimated": s_estimated, "BodyShareReference": s_reference,
         "BodyChassisMassBefore": float(c02_calibrated.loc[ab, "EstimatedMassKg"].sum()),
         "BodyChassisMassAfter": float(c02_calibrated.loc[ab, "FinalMassKg"].sum()),
     }

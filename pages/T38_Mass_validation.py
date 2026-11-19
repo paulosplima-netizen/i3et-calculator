@@ -3,8 +3,10 @@
 The estimated subsystem masses (owner's-manual parameters, betas and reference
 masses) split the vehicle among material-recipe groups. The gap to the declared
 total mass is allocated to Body and Chassis, the systems most subject to
-customization: Body gets s·Adj and Chassis (1−s)·Adj. Saved on D07; it takes effect
-in the next frozen run (T41).
+customization: Body gets s·Adj and Chassis (1−s)·Adj. By default s is the Body share of
+the estimated masses, so the final Body/Chassis proportion equals the estimated one. The
+GREET proportion (P63) is only a reference: it shows how far the estimate is from it.
+Saved on D07; it takes effect in the next frozen run (T41).
 """
 
 from __future__ import annotations
@@ -12,6 +14,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from core import b1_choices
 from ui import flow, navigation
 
 ctx = flow.begin("Mass validation", edit=True)
@@ -34,10 +37,9 @@ with flow.connect(ctx.path) as conn:
     last = rs[-1]["RunID"] if rs else None
     c34 = pd.read_sql_query(
         "SELECT IDCase, MassBasis, DeclaredMassKg, CalculatedMassKg, DiffKg, DiffPct, "
-        "AdjustmentKg, ResidualKg, BodyShare FROM C34_MassValidation WHERE RunID = ?",
+        "AdjustmentKg, ResidualKg, BodyShare, BodyShareEstimated, BodyShareReference "
+        "FROM C34_MassValidation WHERE RunID = ?",
         conn, params=(last,)) if last else pd.DataFrame()
-    p63 = pd.read_sql_query("SELECT IDVMR, BodyShareOfMassAdj FROM P63_RecipeBodyChassisMass",
-                            conn)
 
     st.subheader("Vehicles")
     summary = cases.merge(c34[["IDCase", "CalculatedMassKg"]], on="IDCase", how="left") \
@@ -71,8 +73,14 @@ with flow.connect(ctx.path) as conn:
     adj = st.number_input("Adjustment (kg, signed)", step=1.0, format="%.1f",
                           value=float(st.session_state.get(key + "_adj", row["MassAdjustmentKg"])),
                           key=key + "_adjin", disabled=not ctx.can_edit)
-    recipe = p63[p63["IDVMR"] == row["IDVMR"]]
-    default_s = float(recipe["BodyShareOfMassAdj"].iloc[0]) if len(recipe) else None
+    mine = c34[c34["IDCase"] == row["IDCase"]] if len(c34) else c34
+    est_s = ref_s = None
+    if len(mine):
+        est_s = None if pd.isna(mine["BodyShareEstimated"].iloc[0]) \
+            else float(mine["BodyShareEstimated"].iloc[0])
+        ref_s = None if pd.isna(mine["BodyShareReference"].iloc[0]) \
+            else float(mine["BodyShareReference"].iloc[0])
+    default_s = est_s
     own_s = st.checkbox("Set the Body share s myself", value=row["MassBodyShare"] is not None,
                         key=key + "_own", disabled=not ctx.can_edit)
     if own_s:
@@ -82,8 +90,20 @@ with flow.connect(ctx.path) as conn:
                       0.01, key=key + "_s", disabled=not ctx.can_edit)
     else:
         s = default_s
-        st.caption(f"s = {default_s:.3f} (reference of recipe {row['IDVMR']})" if default_s
-                   is not None else "s = Body share of the estimated masses of this vehicle")
+        st.caption(f"s = {default_s:.3f} (Body share of the estimated masses of this vehicle)"
+                   if default_s is not None else
+                   "s = Body share of the estimated masses of this vehicle (known after the "
+                   "first run)")
+    dev = b1_choices.share_deviation(est_s, ref_s)
+    if dev is not None:
+        msg = (f"Body share: estimated {est_s:.3f} · GREET reference {ref_s:.3f} "
+               f"(recipe {row['IDVMR']}) · difference {100 * dev:+.1f} points. "
+               "The reference does not enter the calculation.")
+        if abs(dev) >= b1_choices.SHARE_DEVIATION_WARN:
+            st.warning(msg + " The gap is large: consider reviewing the betas and the "
+                       "reference masses (T13).")
+        else:
+            st.caption(msg)
     if adj and s is not None:
         st.table(pd.DataFrame({"Group": ["Body (A)", "Chassis (B)", "Total"],
                                "Calibration (kg)": [round(s * adj, 1), round((1 - s) * adj, 1),

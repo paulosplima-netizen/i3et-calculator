@@ -1254,6 +1254,10 @@ CREATE TABLE IF NOT EXISTS C34_MassValidation (
   ResidualKg            REAL,
   DeclaredSource        TEXT,
   BodyShare             REAL CHECK (BodyShare IS NULL OR BodyShare BETWEEN 0 AND 1),
+  BodyShareEstimated    REAL CHECK (BodyShareEstimated IS NULL
+                                    OR BodyShareEstimated BETWEEN 0 AND 1),
+  BodyShareReference    REAL CHECK (BodyShareReference IS NULL
+                                    OR BodyShareReference BETWEEN 0 AND 1),
   BodyChassisMassBefore REAL,
   BodyChassisMassAfter  REAL,
   PRIMARY KEY (RunID, IDCase),
@@ -1321,6 +1325,10 @@ COLUMNS_011 = (
        ("C02_MassByGroup", "EstimatedMassKg", "REAL"),
        ("C02_MassByGroup", "CalibrationKg", "REAL NOT NULL DEFAULT 0"),
        ("C02_MassByGroup", "FinalMassKg", "REAL"),
+       ("C34_MassValidation", "BodyShareEstimated", "REAL CHECK (BodyShareEstimated IS NULL OR "
+        "BodyShareEstimated BETWEEN 0 AND 1)"),
+       ("C34_MassValidation", "BodyShareReference", "REAL CHECK (BodyShareReference IS NULL OR "
+        "BodyShareReference BETWEEN 0 AND 1)"),
        ("D07_AnalysisVehicle", "DeclaredMassKg", "REAL CHECK (DeclaredMassKg IS NULL OR "
         "DeclaredMassKg > 0)"),
        ("D07_AnalysisVehicle", "MassAdjustmentKg", "REAL NOT NULL DEFAULT 0"),

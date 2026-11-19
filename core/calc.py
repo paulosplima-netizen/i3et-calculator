@@ -50,11 +50,14 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
                            idmpv=idmpv, powertrain=powertrain, log=log)
     c02 = mass.by_group(c01, gc, base["P04"])
     # T38: a diferenca (declarada - calculada) vai para carroceria e chassi; com 0 nada muda.
-    # Sem s informado, vale a participacao da carroceria nas massas estimadas (T38).
+    # Sem s informado, vale a participacao da carroceria nas massas estimadas do proprio
+    # veiculo (decisao de 19/11/2026): a proporcao A:B final fica igual a estimada.
+    # P63 so serve de diagnostico.
+    ab = c02[c02["IDGG"].isin(mass_calibration.BODY_CHASSIS)]["MassIDGG"].astype(float)
+    share_estimated = (float(c02.loc[c02["IDGG"] == mass_calibration.BODY, "MassIDGG"].sum())
+                       / float(ab.sum())) if float(ab.sum()) > 0 else 0.5
     if body_share is None:
-        ab = c02[c02["IDGG"].isin(mass_calibration.BODY_CHASSIS)]["MassIDGG"].astype(float)
-        body_share = (float(c02.loc[c02["IDGG"] == mass_calibration.BODY, "MassIDGG"].sum())
-                      / float(ab.sum())) if float(ab.sum()) > 0 else 0.5
+        body_share = share_estimated
     c02 = mass_calibration.apply_to_c02(c02, float(mass_adjustment_kg), float(body_share))
     c03 = materials.by_material_group(c02, base["P16"], base["P09"], ef_table, gc,
                                       idvmr=idvmr, idefv=idefv, log=log)
@@ -69,6 +72,7 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
     c14 = totals.by_vehicle(c10, c13, boundary=boundary, c03=c03, c07=c07)
 
     return {"mass_calibration": {"BodyShare": float(body_share),
+                                 "BodyShareEstimated": share_estimated,
                                  "AdjustmentKg": float(mass_adjustment_kg)},
             "gc": gc, "C01": c01, "C02": c02, "C03": c03, "C07": c07,
             "C10": c10, "C11": c11, "C13": c13, "totals": c14, "log": log,

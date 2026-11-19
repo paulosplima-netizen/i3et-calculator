@@ -179,7 +179,8 @@ def build(base, results: dict, *, log: Log | None = None,
                                 "FactorBattery", "FactorVehicle", "GHGEoL"]),
                 ("C34", "R14", ["MassBasis", "DeclaredMassKg", "CalculatedMassKg", "DiffKg",
                                 "DiffPct", "AdjustmentKg", "ResidualKg", "DeclaredSource",
-                                "BodyShare", "BodyChassisMassBefore",
+                                "BodyShare", "BodyShareEstimated", "BodyShareReference",
+                                "BodyChassisMassBefore",
                                 "BodyChassisMassAfter"]),
                 ("C35", "R15", ["Stage", "SubStage", "GHGkg", "SourceCell", "Method", "Note"])):
             partes = [_identify(f[chave][cols], idv, idea, d02.loc[(idv, idea)])

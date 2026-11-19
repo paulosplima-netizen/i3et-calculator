@@ -111,7 +111,8 @@ def compute(res: dict, base, ef: dict[str, float], options: Options,
         c02, declared_kg=declarada, adjustment_kg=adj,
         s=mc.get("BodyShare") if abs(adj) > 0 else None,
         mass_basis="Declared" if declarada is not None else "Estimated",
-        declared_source=options.declared_source)
+        declared_source=options.declared_source,
+        s_estimated=mc.get("BodyShareEstimated"), s_reference=mc.get("BodyShareReference"))
 
     etapas = life_stages.build(
         c10=c10, assembly_kg=float(res["totals"]["GHGAssembly"]), replacements=rep, eol=fim,
@@ -149,12 +150,14 @@ def write_db(conn, run_id: str, *, ida: int, idcase: int, idv: int, idea: int,
         return None if x is None or pd.isna(x) else float(x)
     conn.execute("INSERT INTO C34_MassValidation (RunID, IDA, IDCase, IDV, IDEA, MassBasis, "
                  "DeclaredMassKg, CalculatedMassKg, DiffKg, DiffPct, AdjustmentKg, ResidualKg, "
-                 "DeclaredSource, BodyShare, BodyChassisMassBefore, BodyChassisMassAfter) "
-                 "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                 "DeclaredSource, BodyShare, BodyShareEstimated, BodyShareReference, "
+                 "BodyChassisMassBefore, BodyChassisMassAfter) "
+                 "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                  (run_id, ida, idcase, idv, idea, m["MassBasis"], nul(m["DeclaredMassKg"]),
                   float(m["CalculatedMassKg"]), nul(m["DiffKg"]), nul(m["DiffPct"]),
                   float(m["AdjustmentKg"]), nul(m["ResidualKg"]), m["DeclaredSource"],
-                  nul(m["BodyShare"]), nul(m["BodyChassisMassBefore"]),
+                  nul(m["BodyShare"]), nul(m["BodyShareEstimated"]),
+                  nul(m["BodyShareReference"]), nul(m["BodyChassisMassBefore"]),
                   nul(m["BodyChassisMassAfter"])))
     for r in frames["C35"].itertuples(index=False):
         conn.execute("INSERT INTO C35_VehicleLifeStage (RunID, IDA, IDCase, IDV, Stage, "

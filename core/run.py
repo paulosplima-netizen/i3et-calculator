@@ -149,16 +149,18 @@ def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
             supplied = {p["IDVP"] for p in c["params"] if not p["IsCalculated"]}
             battery = next((p["GCText"] for p in c["params"] if p["IDVP"] == 32), None)
             battery = battery if battery not in (None, "", "ND") else None
-            results[c["case"]["CaseKey"]] = (c, calc.calculate_vehicle(
+            res = calc.calculate_vehicle(
                 base, gc, powertrain=c["vehicle"]["IDVPT"], battery_id=battery,
                 idmpv=alt["IDMPV"], idvmr=alt["IDVMR"], idefv=alt["IDEFV"], idapv=alt["IDAPV"],
                 boundary=alt["Boundary"], ef_table=ef_table, supplied=supplied,
                 power_factors=(pf["ice"], pf["ee"]),
                 mass_adjustment_kg=float(c["case"].get("MassAdjustmentKg") or 0.0),
-                body_share=b1_choices.body_share(base, alt["IDVMR"],
-                                                 c["case"].get("MassBodyShare")),
+                body_share=b1_choices.body_share(c["case"].get("MassBodyShare")),
                 generic_battery=battery_mod.generic_model(base.get("P58"), battery, cp_values),
-                log=log))
+                log=log)
+            res["mass_calibration"]["BodyShareReference"] = b1_choices.reference_body_share(
+                base, alt["IDVMR"])
+            results[c["case"]["CaseKey"]] = (c, res)
     except Exception:
         conn.execute("UPDATE D09_Run SET Status = 'Failed' WHERE RunID = ?", (run_id,))
         conn.commit()
