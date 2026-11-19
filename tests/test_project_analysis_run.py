@@ -165,3 +165,34 @@ def test_i53_fator_alterado_depois_de_congelar_recusa_a_execucao(proj):
     conn.commit()
     rid2 = run.freeze(conn, ida, calculator_version="test", reference_workbook="x")
     run.execute(conn, path, rid2)                                  # congelar de novo resolve
+
+
+def test_versoes_do_usuario_de_massa_e_montagem_entram_na_analise(proj):
+    from core import user_assets, user_mass_params
+    conn, path = proj
+    cfg = _cfg(conn)
+    # D02 e D06 nao tem mais chave para P05 e P23
+    for tabela in ("D02_EvaluationAlternative", "D06_Analysis"):
+        alvos = {r[2] for r in conn.execute(f"PRAGMA foreign_key_list({tabela})")}
+        assert "P05_MassParamVersion" not in alvos and "P23_AssemblyParamVersion" not in alvos
+    base_mpv = conn.execute("SELECT IDMPV FROM P05_MassParamVersion LIMIT 1").fetchone()[0]
+    user_mass_params.copy_version(conn, "UM-1", base_mpv, "copia")
+    user_assets.copy_assembly(conn, "UA-1", cfg["idapv"], "copia")
+    conn.commit()
+    ida = analysis.create_ec(conn, "EC", "A0", dict(cfg, idmpv="UM-1", idapv="UA-1"))
+    assert validate.check_analysis(conn, ida) == []
+    rid = run.freeze(conn, ida, calculator_version="test", reference_workbook="x")
+    assert "user_versions" in conn.execute(
+        "SELECT InputSnapshot FROM D09_Run WHERE RunID = ?", (rid,)).fetchone()[0]
+    run.execute(conn, path, rid)                        # copias iguais as da base: executa
+    # I53: alterar a copia depois de congelar recusa a execucao
+    sg = conn.execute("SELECT IDSG, Beta, GCR, MR, fLM FROM D21_UserMassParam "
+                      "WHERE IDMPVU = 'UM-1' AND MR > 0 LIMIT 1").fetchone()
+    user_mass_params.set_param(conn, "UM-1", sg[0], beta=sg[1], gcr=sg[2], mr=sg[3] + 1,
+                               flm=sg[4])
+    conn.commit()
+    with pytest.raises(ValueError, match="I53.*UM-1"):
+        run.execute(conn, path, rid)
+    # I60: versao que nao existe em lugar nenhum
+    conn.execute("UPDATE D06_Analysis SET IDAPV = 'UA-99' WHERE IDA = ?", (ida,))
+    assert any(p.startswith("I60") for p in validate.check_analysis(conn, ida))

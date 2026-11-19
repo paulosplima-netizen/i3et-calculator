@@ -8,6 +8,7 @@ versao da base, em memoria, pelo identificador.
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import sqlite3
 
 import pandas as pd
@@ -69,3 +70,10 @@ def merge_into_base(tables: dict[str, pd.DataFrame]) -> None:
                         "DateIDMPV": d20["CreatedAt"], "SourceMPV": "Versao do usuario"})
     tables["P05"] = pd.concat([tables["P05"], p05], ignore_index=True)
     tables["P06"] = pd.concat([tables["P06"], *novos], ignore_index=True)
+
+
+def params_hash(conn: sqlite3.Connection, idmpvu: str) -> str:
+    """Impressao digital dos parametros de massa de uma copia do usuario (I53)."""
+    rows = conn.execute("SELECT IDSG, Beta, GCR, utGCR, MR, fLM FROM D21_UserMassParam "
+                        "WHERE IDMPVU = ? ORDER BY IDSG", (idmpvu,)).fetchall()
+    return hashlib.sha256(repr(rows).encode("utf-8")).hexdigest()

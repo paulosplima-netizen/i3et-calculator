@@ -31,6 +31,8 @@ from . import (
     loader,
     power_rule,
     provenance,
+    user_assets,
+    user_mass_params,
     user_recipes,
 )
 from . import battery as battery_mod
@@ -97,6 +99,15 @@ def _snapshot(conn, ida: int, *, calculator_version: str, base_hash: str,
                  if ef_edit.needs_hash(conn, i)}
     if usadas_ef:                   # I53: hash dos fatores efetivos das listas do usuario/alteradas
         snap["emission_factors"] = usadas_ef
+    versoes_u = {}
+    for c in cases:                 # I53: montagens (UA-) e parametros de massa (UM-) usados
+        a = c["alternative"]
+        if str(a["IDAPV"]).startswith("UA-"):
+            versoes_u[a["IDAPV"]] = user_assets.assembly_hash(conn, a["IDAPV"])
+        if str(a["IDMPV"]).startswith(user_mass_params.PREFIX):
+            versoes_u[a["IDMPV"]] = user_mass_params.params_hash(conn, a["IDMPV"])
+    if versoes_u:
+        snap["user_versions"] = versoes_u
     escolhas = b1_choices.load(conn, ida)
     if escolhas is not None:        # sem escolha, o instantaneo e o mesmo de antes do B1
         snap["b1"] = escolhas
@@ -143,8 +154,13 @@ def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
                                    (run_id,)).fetchone()[0])
     stale = [i for i, h in snap.get("emission_factors", {}).items()
              if ef_edit.factors_hash(conn, i) != h]
+    for i, h in snap.get("user_versions", {}).items():
+        atual = (user_assets.assembly_hash(conn, i) if i.startswith("UA-")
+                 else user_mass_params.params_hash(conn, i))
+        if atual != h:
+            stale.append(i)
     if stale:                                                          # I53
-        raise ValueError("I53: the emission factors of " + ", ".join(stale) + " changed after "
+        raise ValueError("I53: " + ", ".join(stale) + " changed after "
                          "this run was frozen; freeze the analysis again (T41)")
     base = loader.load_sqlite(db_path)
     ef_table = loader.effective_emission_factors(base)

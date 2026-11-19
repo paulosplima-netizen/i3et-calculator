@@ -277,10 +277,10 @@ CREATE TABLE D01_Vehicle (
 CREATE TABLE D02_EvaluationAlternative (
   IDV       INTEGER NOT NULL REFERENCES D01_Vehicle(IDV),
   IDEA      INTEGER NOT NULL,
-  IDMPV     INTEGER NOT NULL REFERENCES P05_MassParamVersion(IDMPV),
+  IDMPV     INTEGER NOT NULL,
   IDVMR     TEXT    NOT NULL REFERENCES P15_VehicleMaterialRecipe(IDVMR),
   IDEFV     TEXT    NOT NULL,
-  IDAPV     TEXT    NOT NULL REFERENCES P23_AssemblyParamVersion(IDAPV),
+  IDAPV     TEXT    NOT NULL,
   Boundary  TEXT    NOT NULL DEFAULT 'MAT_ASM' CHECK (Boundary IN ('MAT','MAT_ASM')),
   NotesIDEA TEXT,
   PRIMARY KEY (IDV, IDEA)
@@ -314,6 +314,10 @@ CREATE TABLE D05_UserEmissionFactor (
 );
 """
 
+# D02 and D06 have no FOREIGN KEY on IDMPV and IDAPV either (0.11): they may name a version of
+# the base (P05, P23) or one of the user (D20, D17); validate.py reports the ones that
+# resolve to neither (I60).
+#
 # D05.IDEFV has no FOREIGN KEY either (0.11, decision 11 of 19/11/2026): a row may
 # override a factor of a typed version of the base (P10) or of a version of the
 # user (D04). ef_edit checks the version on every write and validate.py reports
@@ -781,8 +785,8 @@ CREATE TABLE IF NOT EXISTS D06_Analysis (
   TestNorm          TEXT NOT NULL CHECK (TestNorm IN ('NBR','EPA','NEDC','WLTC')),
   DistanceCurve     TEXT NOT NULL,
   IDEFV             TEXT NOT NULL,
-  IDMPV             INTEGER NOT NULL REFERENCES P05_MassParamVersion(IDMPV),
-  IDAPV             TEXT NOT NULL REFERENCES P23_AssemblyParamVersion(IDAPV),
+  IDMPV             INTEGER NOT NULL,
+  IDAPV             TEXT NOT NULL,
   Boundary          TEXT NOT NULL DEFAULT 'MAT_ASM' CHECK (Boundary IN ('MAT','MAT_ASM')),
   SPHEVEco          INTEGER NOT NULL DEFAULT 0 CHECK (SPHEVEco IN (0,1)),
   LightweightingOn  INTEGER NOT NULL DEFAULT 0 CHECK (LightweightingOn IN (0,1)),
@@ -1373,6 +1377,7 @@ def apply_011(conn: sqlite3.Connection) -> list[str]:
             conn.execute(f"ALTER TABLE {tabela} ADD COLUMN {coluna} {decl}")
             feito.append(f"{tabela}: coluna {coluna}")
     feito.extend(relax_d05(conn))
+    feito.extend(relax_d02_d06(conn))
     return feito
 
 
@@ -1481,4 +1486,49 @@ def sync_fase_a(conn: sqlite3.Connection, reference_db: str) -> dict[str, int]:
         raise
     finally:
         conn.execute("DETACH DATABASE ref")
+    return feito
+
+
+_VERSION_REFS = (r"\s+REFERENCES\s+P05_MassParamVersion\(IDMPV\)",
+                 r"\s+REFERENCES\s+P23_AssemblyParamVersion\(IDAPV\)")
+
+
+def relax_d02_d06(conn: sqlite3.Connection) -> list[str]:
+    """Tira de D02 e D06 as chaves de IDMPV (para P05) e IDAPV (para P23).
+
+    Permite escolher numa analise a versao de parametros de massa (UM-) ou de montagem
+    (UA-) do usuario. O SQLite nao remove chave de tabela existente: cada tabela e
+    recriada a partir do proprio SQL, com os mesmos dados e indices.
+    """
+    import re
+    feito: list[str] = []
+    presentes = table_names(conn)
+    conn.commit()
+    conn.execute("PRAGMA foreign_keys = OFF")
+    try:
+        for tabela in ("D02_EvaluationAlternative", "D06_Analysis"):
+            if tabela not in presentes:
+                continue
+            sql = conn.execute("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = ?",
+                               (tabela,)).fetchone()[0]
+            novo = sql
+            for padrao in _VERSION_REFS:
+                novo = re.sub(padrao, "", novo)
+            if novo == sql:
+                continue
+            indices = [r[0] for r in conn.execute(
+                "SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ? "
+                "AND sql IS NOT NULL", (tabela,))]
+            colunas = ", ".join(r[1] for r in conn.execute(f"PRAGMA table_info({tabela})"))
+            conn.execute(re.sub(rf"CREATE TABLE\s+{tabela}\b", f"CREATE TABLE {tabela}_new",
+                                novo, count=1))
+            conn.execute(f"INSERT INTO {tabela}_new ({colunas}) SELECT {colunas} FROM {tabela}")
+            conn.execute(f"DROP TABLE {tabela}")
+            conn.execute(f"ALTER TABLE {tabela}_new RENAME TO {tabela}")
+            for criar in indices:
+                conn.execute(criar)
+            feito.append(f"{tabela}: chaves de IDMPV e IDAPV removidas")
+        conn.commit()
+    finally:
+        conn.execute("PRAGMA foreign_keys = ON")
     return feito

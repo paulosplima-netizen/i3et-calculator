@@ -13,6 +13,7 @@ Blocos:
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import sqlite3
 
 import pandas as pd
@@ -148,3 +149,11 @@ def merge_into_base(tables: dict[str, pd.DataFrame]) -> None:
         p22 = d18.rename(columns={"IDAPVU": "IDAPV"})
         tables["P23"] = pd.concat([tables["P23"], p23], ignore_index=True)
         tables["P22"] = pd.concat([tables["P22"], p22], ignore_index=True)
+
+
+def assembly_hash(conn: sqlite3.Connection, idapvu: str) -> str:
+    """Impressao digital da energia de uma montagem do usuario (I53)."""
+    rows = conn.execute("SELECT IDAP, IDFuel, EnergyPerVehicle, FuelShare FROM "
+                        "D18_UserAssemblyEnergy WHERE IDAPVU = ? ORDER BY IDAP, IDFuel",
+                        (idapvu,)).fetchall()
+    return hashlib.sha256(repr(rows).encode("utf-8")).hexdigest()

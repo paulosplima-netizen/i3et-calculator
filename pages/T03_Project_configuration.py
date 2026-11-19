@@ -12,10 +12,16 @@ ctx = flow.begin("Project Configuration", edit=True)
 
 with flow.connect(ctx.path) as conn:
     cats = conn.execute("SELECT IDVC, DsVC FROM P29_VehicleCategory ORDER BY IDVC").fetchall()
-    efvs = [r[0] for r in conn.execute("SELECT IDEFV FROM P10_EFVersion ORDER BY IDEFV")]
-    apvs = [r[0] for r in conn.execute("SELECT IDAPV FROM P23_AssemblyParamVersion ORDER BY IDAPV")]
+    # your own copies (T15, T46, T13) can be chosen next to the reference ones
+    efvs = [r[0] for r in conn.execute(
+        "SELECT IDEFV FROM P10_EFVersion UNION SELECT IDEFV FROM D04_UserEFVersion "
+        "ORDER BY IDEFV")]
+    apvs = [r[0] for r in conn.execute(
+        "SELECT IDAPV FROM P23_AssemblyParamVersion UNION SELECT IDAPVU FROM "
+        "D17_UserAssemblyVersion ORDER BY 1")]
     mpvs = [r[0] for r in conn.execute(
-        "SELECT DISTINCT IDMPV FROM P06_MassEstimationParam ORDER BY IDMPV")]
+        "SELECT DISTINCT IDMPV FROM P06_MassEstimationParam ORDER BY IDMPV")] + [
+        r[0] for r in conn.execute("SELECT IDMPVU FROM D20_UserMassParamVersion ORDER BY 1")]
     market = {r[0]: r[1] for r in conn.execute(
         "SELECT IDMV, DsMV FROM P26_MarketVehicle ORDER BY IDMV")}
 

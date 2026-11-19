@@ -149,6 +149,17 @@ def check_analysis(conn, ida: int) -> list[str]:
         problems.append("I59: D05 has factors of versions that do not exist: "
                         + ", ".join(r[0] for r in orfas))
 
+    for idea_row in q("SELECT DISTINCT IDMPV, IDAPV FROM D02_EvaluationAlternative d "
+                      "JOIN D07_AnalysisVehicle a ON a.IDV = d.IDV AND a.IDEA = d.IDEA "
+                      "WHERE a.IDA = ?", ida) + [(idmpv, idapv)]:         # I60
+        m, a_ = idea_row
+        if not q("SELECT 1 FROM P05_MassParamVersion WHERE IDMPV = ? UNION "
+                 "SELECT 1 FROM D20_UserMassParamVersion WHERE IDMPVU = ?", m, str(m)):
+            problems.append(f"I60: mass parameters {m!r} exist neither in P05 nor in D20")
+        if not q("SELECT 1 FROM P23_AssemblyParamVersion WHERE IDAPV = ? UNION "
+                 "SELECT 1 FROM D17_UserAssemblyVersion WHERE IDAPVU = ?", a_, a_):
+            problems.append(f"I60: assembly {a_!r} exists neither in P23 nor in D17")
+
     for idcase, _, _, idv, idea in cases:                                 # I19
         alt = q("SELECT IDEFV, IDMPV, IDAPV, Boundary FROM D02_EvaluationAlternative "
                 "WHERE IDV = ? AND IDEA = ?", idv, idea)

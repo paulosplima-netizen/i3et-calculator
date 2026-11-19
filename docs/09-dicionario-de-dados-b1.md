@@ -121,6 +121,10 @@ Opcionais: `Route`, `Region`, `RefYear`, `EFLow`, `EFHigh`.
 
 Configuração de exibição do projeto (decisão 12 de 19/11/2026). Colunas: `SettingKey` (PK; hoje só `format`) e `SettingValue` (JSON: perfil `default`/`article`/`audit`/`custom`, casas decimais por classe de grandeza, unidade de massa e de GEE `kg`/`t`, participação em `percent`/`fraction`, separadores decimal e de milhar, separador de campos do CSV, limite de notação científica e `csv_rounded`). Sem linha, vale o perfil padrão e o relatório mantém o formato anterior. O formato só muda a exibição (telas, relatório HTML, formato de célula do XLSX e CSV); cálculo e resultados congelados nunca são arredondados. Regras em `core/formatting.py`.
 
+### D02 e D06 (alteradas na 0.11 — 19/11/2026)
+
+`D02_EvaluationAlternative.IDMPV`/`IDAPV` e `D06_Analysis.IDMPV`/`IDAPV` deixam de ter chave estrangeira para `P05` e `P23`: aceitam também `D20.IDMPVU` (prefixo `UM-`) e `D17.IDAPVU` (prefixo `UA-`). A regra I60 confere que cada versão existe em uma das duas tabelas. A rodada congelada guarda `user_versions` (hash de `D18` e `D21`) e `execute` recusa a execução se mudaram (I53). `core/schema.relax_d02_d06` recria as tabelas, com os mesmos dados e índices.
+
 ### D05 (alterada na 0.11 — decisão 11 de 19/11/2026)
 
 `D05_UserEmissionFactor.IDEFV` deixa de ter chave estrangeira para `D04`: uma linha pode sobrepor um fator de uma versão `Typed` da base (`P10`) ou de uma versão do usuário (`D04`). Versões `Published` não recebem linhas (a regra está em `core/ef_edit.py`, I48); linhas sem versão correspondente são apontadas por I59. A rodada congelada guarda `emission_factors` (hash dos fatores efetivos de cada lista do usuário ou alterada) e `execute` recusa a execução se o hash mudou (I53). Colunas `Author`, `ChangedAt` e `Reason` registram a última alteração; o histórico completo está em `D19`. `core/schema.relax_d05` faz a migração (recria a tabela e a visão `EF_Effective`).
@@ -198,6 +202,7 @@ Uma linha por receita de `P15` (68: 56 GREET, 6 BISD, 6 PBP_BISD), vinda das col
 | I56 | Estágio com material sem fator mostra dado ausente | código |
 | I58 | Conjunto de parâmetros de massa do usuário: `MR` ≥ 0, `GCR` > 0, `fLM` ≥ 0; consumíveis neutros | código |
 | I59 | Todo fator de `D05` pertence a uma versão que existe em `P10` ou `D04` (a chave estrangeira foi removida) | código, teste |
+| I60 | Toda versão de massa (`IDMPV`) e de montagem (`IDAPV`) usada em `D06` e `D02` existe em `P05`/`D20` e `P23`/`D17` | código, teste |
 | I57 | A T18 mostra o método de fim de vida e os intervalos usados | código |
 
 ## 7. Migração e fixtures

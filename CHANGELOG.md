@@ -28,7 +28,12 @@ Added
   has a foreign key to `D04`; Published lists are locked and can be copied to a Typed version
   (`ef_edit.copy_to_typed`); results show "Typed, altered"; the corrections can be exported (T15).
 
+- Your own mass-parameter sets (UM-) and assembly versions (UA-), and your emission-factor
+  lists, can be chosen in an analysis (T03): `D02` and `D06` no longer have a foreign key on
+  `IDMPV` and `IDAPV` (rule I60).
+
 Changed
+- I53 also covers UA- and UM- versions (`user_versions` in the snapshot).
 - I53: a frozen run stores the hash of the effective emission factors of user or altered lists
   (`emission_factors` in the snapshot); executing it after the factors changed is refused.
 - T12: the caption on IDSG 43 no longer calls row 37 of M1 a defect: it is the hybrid combination
