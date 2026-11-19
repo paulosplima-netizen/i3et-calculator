@@ -93,7 +93,7 @@ Opcionais: `Route`, `Region`, `RefYear`, `EFLow`, `EFHigh`.
 
 ### Ampliação de `P02_VehicleSubgroup`
 
-`IDVPGC` (FK→P54; parâmetro do veículo usado como GC), `SourceRow` (linha do M1), `NotesSG` (nota sobre o ID 23 duplicado: linha 37 = IDSG 43).
+`IDVPGC` (FK→P54; parâmetro do veículo usado como GC), `SourceRow` (linha do M1), `NotesSG` (nota livre; a linha 37 do M1, IDSG 43, é o módulo de combinação híbrida, que soma massa à caixa de câmbio da linha 36, IDSG 23, e tem parâmetros próprios).
 
 ## 4. Tabelas do usuário (D)
 

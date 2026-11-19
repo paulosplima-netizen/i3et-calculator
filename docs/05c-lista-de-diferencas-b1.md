@@ -22,10 +22,10 @@ Cada linha traz a decisão do autor, a justificativa e o cuidado para os testes 
 
 | # | Assunto | Calculadora | Sugestão | Decisão |
 |---|---|---|---|---|
-| 10 | Massa declarada, ajuste e `s` por caso | Guardados em colunas novas de D07 (`DeclaredMassKg`, `MassAdjustmentKg`, `MassBodyShare`, `DeclaredSource`); você decidiu `MassAdjBodyChassisKg` em P54/D03 | Manter em D07 (valor é por caso e já entra no congelamento) ou mover para P54/D03 | |
-| 11 | Fatores de emissão do usuário | Versão própria herdada de uma da base (D04/D05) com histórico (D19); lista Digitada da base não é editada no lugar (a D05 só aceita versões de D04) | Manter, ou relaxar a chave de D05 para editar listas Digitadas diretamente | |
-| 12 | Exibição | kg e kg CO₂e com 1 casa decimal nas telas; CSV sem arredondar | Manter (decisão 1) | |
-| 13 | M1 linha 37 | IDSG 43 (a planilha repete o ID 23) | Manter; corrigir a planilha | |
+| 10 | Massa declarada, ajuste e `s` por caso | Guardados em colunas novas de D07 (`DeclaredMassKg`, `MassAdjustmentKg`, `MassBodyShare`, `DeclaredSource`); você decidiu `MassAdjBodyChassisKg` em P54/D03 | Manter em D07 (valor é por caso e já entra no congelamento) ou mover para P54/D03 | Manter em D07 (decisão de 19/11/2026). Se a massa declarada vier de importação (PBEV, B2), preenche `DeclaredMassKg` e `DeclaredSource`, sem segunda fonte. |
+| 11 | Fatores de emissão do usuário | Versão própria herdada de uma da base (D04/D05) com histórico (D19); lista Digitada da base não é editada no lugar (a D05 só aceita versões de D04) | Manter, ou relaxar a chave de D05 para editar listas Digitadas diretamente | Autorizar alterações na versão Digitada (correção de erros), não na Publicada (cita origem). Alterar a Publicada exige antes uma cópia Digitada. Implementado: D05 sem chave para D04, override no projeto com histórico D19, marca "Digitada, alterada", I53 aplicada, exportação do histórico. |
+| 12 | Exibição | kg e kg CO₂e com 1 casa decimal nas telas; CSV sem arredondar | Manter (decisão 1) | Criar tela de parametrização de formato, a mais abrangente que fizer sentido (decisão de 19/11/2026). Só exibição: cálculo e resultados congelados nunca são arredondados. |
+| 13 | M1 linha 37 | IDSG 43 (a coluna P da planilha repete o ID 23) | Manter | Manter o IDSG 43. Não é repetição: a linha 37 do M1 é o módulo de combinação híbrida e soma massa ao que a linha 36 calculou. Textos corrigidos; a base o atribui ao grupo GREET D. |
 
 ## C. Limitações técnicas abertas (não são divergências com a planilha)
 

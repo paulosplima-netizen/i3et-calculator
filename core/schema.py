@@ -307,13 +307,18 @@ CREATE TABLE D04_UserEFVersion (
 
 CREATE TABLE D05_UserEmissionFactor (
   IDM     TEXT NOT NULL REFERENCES P09_Material(IDM),
-  IDEFV   TEXT NOT NULL REFERENCES D04_UserEFVersion(IDEFV),
+  IDEFV   TEXT NOT NULL,
   EF      REAL NOT NULL CHECK (EF >= 0),
   EFnotes TEXT,
   PRIMARY KEY (IDM, IDEFV)
 );
 """
 
+# D05.IDEFV has no FOREIGN KEY either (0.11, decision 11 of 19/11/2026): a row may
+# override a factor of a typed version of the base (P10) or of a version of the
+# user (D04). ef_edit checks the version on every write and validate.py reports
+# rows that point to nowhere (I54).
+#
 # D02.IDEFV has no FOREIGN KEY on purpose: it may name a version of the
 # reference base (P10) or one the user created (D04). Rule I14 forbids the two
 # from colliding, and validate.py checks that every IDEFV used resolves to
@@ -326,7 +331,9 @@ CREATE TABLE D05_UserEmissionFactor (
 DDL_VIEWS = """
 CREATE VIEW EF_Effective AS
   SELECT IDM, IDEFV, EF, EFnotes, 0 AS IsUserDefined
-    FROM P11_EmissionFactor
+    FROM P11_EmissionFactor p
+   WHERE NOT EXISTS (SELECT 1 FROM D05_UserEmissionFactor d
+                      WHERE d.IDEFV = p.IDEFV AND d.IDM = p.IDM)
   UNION ALL
   SELECT IDM, IDEFV, EF, EFnotes, 1
     FROM D05_UserEmissionFactor
@@ -1360,7 +1367,42 @@ def apply_011(conn: sqlite3.Connection) -> list[str]:
         if coluna not in existentes:
             conn.execute(f"ALTER TABLE {tabela} ADD COLUMN {coluna} {decl}")
             feito.append(f"{tabela}: coluna {coluna}")
+    feito.extend(relax_d05(conn))
     return feito
+
+
+def relax_d05(conn: sqlite3.Connection) -> list[str]:
+    """Recria D05 sem a chave estrangeira para D04 (decisao 11, 19/11/2026).
+
+    O SQLite nao remove uma chave de tabela existente; por isso a tabela e
+    recriada com as mesmas colunas e linhas, e a visao EF_Effective acompanha.
+    Nao faz nada se D05 nao existe ou ja esta sem a chave.
+    """
+    if "D05_UserEmissionFactor" not in table_names(conn):
+        return []
+    if not any(r[2] == "D04_UserEFVersion"
+               for r in conn.execute("PRAGMA foreign_key_list(D05_UserEmissionFactor)")):
+        return []
+    colunas = ", ".join(r[1] for r in conn.execute("PRAGMA table_info(D05_UserEmissionFactor)"))
+    conn.commit()
+    conn.execute("PRAGMA foreign_keys = OFF")
+    try:
+        conn.execute("DROP VIEW IF EXISTS EF_Effective")
+        conn.execute("ALTER TABLE D05_UserEmissionFactor RENAME TO D05_old")
+        conn.executescript(
+            "CREATE TABLE D05_UserEmissionFactor ("
+            " IDM TEXT NOT NULL REFERENCES P09_Material(IDM), IDEFV TEXT NOT NULL,"
+            " EF REAL NOT NULL CHECK (EF >= 0), EFnotes TEXT, PRIMARY KEY (IDM, IDEFV));")
+        for coluna in ("Author", "ChangedAt", "Reason"):
+            conn.execute(f"ALTER TABLE D05_UserEmissionFactor ADD COLUMN {coluna} TEXT")
+        conn.execute(f"INSERT INTO D05_UserEmissionFactor ({colunas}) "
+                     f"SELECT {colunas} FROM D05_old")
+        conn.execute("DROP TABLE D05_old")
+        conn.executescript(DDL_VIEWS)
+        conn.commit()
+    finally:
+        conn.execute("PRAGMA foreign_keys = ON")
+    return ["D05_UserEmissionFactor: chave para D04 removida"]
 
 
 # --------------------------------------------------------------------------

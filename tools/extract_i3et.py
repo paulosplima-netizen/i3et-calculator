@@ -137,9 +137,11 @@ def main() -> int:
           f"{len(codes)} em ambas")
 
     # --- subgroup rows in M1 -------------------------------------------------
-    # In M1 the subgroup identifier is merged across two rows in one case: the
-    # gearbox and the hybrid combination module share IDS 23. The base keeps
-    # them apart, so the second occurrence is mapped to its own subgroup.
+    # In M1 column P the identifier 23 appears on two rows: the gearbox (row 36)
+    # and the hybrid combination module (row 37, additional mass). The base keeps
+    # them as two subgroups, so the second occurrence is mapped to IDSG 43.
+    # Column P of the sheet repeats ID 23 on row 37, which is the additional-mass
+    # hybrid module (IDSG 43, own parameters, GREET group D), not a duplicate.
     SECOND_ROW_IDSG = {23: 43}
     subgroup_rows, seen = [], set()
     for r in M1_ROWS_SUBGROUPS:

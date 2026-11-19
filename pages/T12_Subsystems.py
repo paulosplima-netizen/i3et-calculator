@@ -28,8 +28,9 @@ with flow.connect(ctx.path):
     cols = [c for c in ("IDSG", "DsSG", "IDG", "DsG", "IDGG", "DsGG", "IDVP", "DsVP", "utVP",
                         "ExcludedVPT", "SourceRow", "NotesSG") if c in df.columns]
     st.dataframe(df[cols], hide_index=True, use_container_width=True)
-    st.caption(f"{len(df)} subsystems. In the workbook, ID 23 appears twice in M1 (row 36 is "
-               "IDSG 23; row 37 is IDSG 43): a defect of the sheet, not reproduced here.")
+    st.caption(f"{len(df)} subsystems. M1 row 37 (IDSG 43) is the hybrid combination module: "
+               "it adds mass to the gearbox of row 36 (IDSG 23) and has its own parameters "
+               "and GREET group (D, against E for the gearbox).")
     pending = df["IDGG"].isna().sum()
     if pending:
         st.warning(f"{int(pending)} subsystems have no GREET group.")

@@ -1,8 +1,10 @@
 """T15 · Emission factors — the reference versions, and the ones you make.
 
-The reference base is never edited. A version of your own inherits from a reference
-version and overrides only the materials you change; every change is logged with
-author, date and reason (D19). A missing factor (ND) is absence of data, never zero.
+The reference base file is never edited. Typed lists (and lists of your own) can be
+corrected: the new value is kept in your project, over the base value, and every change
+is logged with author, date and reason (D19). Published lists cite a source and are
+locked: copy one to a typed version first. A missing factor (ND) is absence of data,
+never zero.
 """
 
 from __future__ import annotations
@@ -31,12 +33,13 @@ with flow.connect(ctx.path) as conn:
 
     with tab_f:
         chosen = st.selectbox("Version", list(versions["IDEFV"]))
-        mine = ef_edit.is_editable(conn, chosen)
+        info = ef_edit.status(conn, chosen)
+        mine = info["editable"]
         sub = eff[eff["IDEFV"] == chosen].merge(materials, on="IDM", how="left")
         c1, c2, c3 = st.columns(3)
         c1.metric("Materials", len(sub))
         c2.metric("Without a published factor", int(sub["EF"].isna().sum()))
-        c3.metric("Origin", ef_edit.origin(conn, chosen) or "")
+        c3.metric("Origin", info["label"])
         basis = st.multiselect("Application basis", sorted(sub["EFBasis"].dropna().unique()))
         only_missing = st.checkbox("Only materials without a factor")
         text = st.text_input("Search material")
@@ -49,11 +52,16 @@ with flow.connect(ctx.path) as conn:
                       | sub["IDM"].astype(str).str.contains(text)]
         st.dataframe(sub[["IDM", "DsM", "EFBasis", "EF", "IsUserDefined", "EFnotes"]],
                      hide_index=True, use_container_width=True)
+        if info["changed"]:
+            st.warning(f"{info['changed']} factor(s) of {chosen} were changed in this project; "
+                       "results using this list say so, and a frozen run that used it must be "
+                       "frozen again (I53).")
         if not mine:
-            st.info("Reference versions cannot be edited (the workbook prevails). "
-                    "Create a version of your own in the next tabs to change factors.")
+            st.info("Published lists cannot be edited (they cite their source). To change a "
+                    "value, copy this list to a typed version in the tab \"Versions & coverage\" "
+                    "and edit the copy; the copy keeps the link to the original.")
         elif ctx.can_edit:
-            st.subheader(f"Override a factor in {chosen}")
+            st.subheader(f"Correct a factor in {chosen}")
             idm = st.selectbox("Material", list(materials["IDM"]),
                                format_func=lambda m: f"{m} · "
                                f"{materials.set_index('IDM').loc[m, 'DsM']}")
@@ -69,7 +77,8 @@ with flow.connect(ctx.path) as conn:
                 try:
                     ef_edit.set_factor(conn, chosen, str(idm), value, reason=reason,
                                        author=author, confirm_zero=zero)
-                    st.success("Saved. Freeze the analysis again (T41) to use it.")
+                    st.success("Saved. A run frozen before this change cannot be executed "
+                               "any more (I53): freeze the analysis again (T41).")
                 except ValueError as e:
                     st.error(str(e))
             if right.button("Use inherited factor"):
@@ -101,6 +110,18 @@ with flow.connect(ctx.path) as conn:
         st.caption("Zero only with a documented override; bases are never mixed in a sum; "
                    "IDs 87–97 detail the battery chemistry; end-of-life belongs to T17.")
         if ctx.can_edit:
+            st.subheader("Copy a list to a typed version")
+            with st.form("copy_version"):
+                c1, c2 = st.columns(2)
+                src_id = c1.selectbox("Copy from", list(p10["IDEFV"]))
+                new_id = c2.text_input("Identifier of the copy", value="TYPED-COPY")
+                why = st.text_area("Why do you need to change values? (required)")
+                if st.form_submit_button("Copy"):
+                    try:
+                        ef_edit.copy_to_typed(conn, src_id, new_id, reason=why, author=author)
+                        st.success(f"{new_id} created from {src_id}; edit it in the tab Factors.")
+                    except ValueError as e:
+                        st.error(str(e))
             st.subheader("Create a version of your own")
             with st.form("new_version"):
                 c1, c2 = st.columns(2)
@@ -121,5 +142,10 @@ with flow.connect(ctx.path) as conn:
         st.dataframe(log, hide_index=True, use_container_width=True)
         st.download_button("Download CSV", log.to_csv(index=False), file_name="ef_history.csv",
                            mime="text/csv")
+        st.subheader("Corrections to take back to the workbook and the base")
+        corr = ef_edit.corrections(conn)
+        st.dataframe(corr, hide_index=True, use_container_width=True)
+        st.download_button("Download corrections (CSV)", corr.to_csv(index=False),
+                           file_name="ef_corrections.csv", mime="text/csv")
 
 navigation.link("T18L")

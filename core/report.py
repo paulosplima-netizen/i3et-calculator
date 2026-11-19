@@ -281,6 +281,14 @@ def _snapshots(base, results, p09) -> dict[str, pd.DataFrame]:
     if d05 is not None and len(d05):
         propria = d05[d05["IDEFV"].isin(idefv)].copy()
         if len(propria):
-            snap["R28"] = pd.concat([snap["R28"], propria], ignore_index=True)
+            # um fator alterado substitui o da base: nao aparece duas vezes (decisao 11)
+            chaves = set(zip(propria["IDM"], propria["IDEFV"]))
+            r28 = snap["R28"]
+            r28 = r28[[k not in chaves for k in zip(r28["IDM"], r28["IDEFV"])]]
+            snap["R28"] = pd.concat([r28, propria], ignore_index=True)
+            # R27 diz quantos fatores de cada lista foram alterados
+            alterados = propria.groupby("IDEFV").size()
+            n = snap["R27"]["IDEFV"].map(alterados)
+            snap["R27"]["AlteredFactors"] = n.fillna(0).astype(int)
 
     return snap

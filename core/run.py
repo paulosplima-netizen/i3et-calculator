@@ -27,6 +27,7 @@ from . import (
     b1_choices,
     calc,
     control_params,
+    ef_edit,
     loader,
     power_rule,
     provenance,
@@ -91,6 +92,11 @@ def _snapshot(conn, ida: int, *, calculator_version: str, base_hash: str,
                      if str(c["alternative"]["IDVMR"]).startswith(user_recipes.PREFIX)})
     if usadas:                      # I30: a rodada guarda o hash das participacoes usadas
         snap["user_recipes"] = {i: user_recipes.shares_hash(conn, i) for i in usadas}
+    versoes_ef = sorted({d06["IDEFV"]} | {c["alternative"]["IDEFV"] for c in cases})
+    usadas_ef = {i: ef_edit.factors_hash(conn, i) for i in versoes_ef
+                 if ef_edit.needs_hash(conn, i)}
+    if usadas_ef:                   # I53: hash dos fatores efetivos das listas do usuario/alteradas
+        snap["emission_factors"] = usadas_ef
     escolhas = b1_choices.load(conn, ida)
     if escolhas is not None:        # sem escolha, o instantaneo e o mesmo de antes do B1
         snap["b1"] = escolhas
@@ -135,6 +141,11 @@ def freeze(conn: sqlite3.Connection, ida: int, *, calculator_version: str,
 def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
     snap = json.loads(conn.execute("SELECT InputSnapshot FROM D09_Run WHERE RunID = ?",
                                    (run_id,)).fetchone()[0])
+    stale = [i for i, h in snap.get("emission_factors", {}).items()
+             if ef_edit.factors_hash(conn, i) != h]
+    if stale:                                                          # I53
+        raise ValueError("I53: the emission factors of " + ", ".join(stale) + " changed after "
+                         "this run was frozen; freeze the analysis again (T41)")
     base = loader.load_sqlite(db_path)
     ef_table = loader.effective_emission_factors(base)
     log = Log()

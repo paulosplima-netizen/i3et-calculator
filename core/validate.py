@@ -143,6 +143,12 @@ def check_analysis(conn, ida: int) -> list[str]:
     if n != 1:
         problems.append(f"I18: IDEFV {idefv!r} resolves to {n} versions, expected 1")
 
+    orfas = q("SELECT DISTINCT IDEFV FROM D05_UserEmissionFactor WHERE IDEFV NOT IN "
+              "(SELECT IDEFV FROM P10_EFVersion UNION SELECT IDEFV FROM D04_UserEFVersion)")
+    if orfas:                                                         # I54
+        problems.append("I54: D05 has factors of versions that do not exist: "
+                        + ", ".join(r[0] for r in orfas))
+
     for idcase, _, _, idv, idea in cases:                                 # I19
         alt = q("SELECT IDEFV, IDMPV, IDAPV, Boundary FROM D02_EvaluationAlternative "
                 "WHERE IDV = ? AND IDEA = ?", idv, idea)
