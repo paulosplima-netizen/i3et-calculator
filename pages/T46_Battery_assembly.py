@@ -11,6 +11,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from core import formatting as fm
 from core import loader, user_assets
 from ui import flow, navigation
 
@@ -32,8 +33,10 @@ with flow.connect(ctx.path) as conn:
         pick = st.selectbox("Composition of", list(models["IDBMd"]))
         comp = p20[p20["IDBMd"] == pick].merge(p09[["IDM", "DsM", "ShareRole"]], on="IDM")
         comp = comp[comp["BMshareGG"] > 0]
-        comp["Share (%)"] = (100 * comp["BMshareGG"]).round(2)
-        st.dataframe(comp[["IDGG", "IDM", "DsM", "ShareRole", "Share (%)"]], hide_index=True,
+        fmt_ = flow.display_format(conn)
+        share_col = f"Share ({fm.unit('share', fmt_) or 'fraction'})"
+        comp[share_col] = fm.frame(comp, {"BMshareGG": "share"}, fmt_)["BMshareGG"]
+        st.dataframe(comp[["IDGG", "IDM", "DsM", "ShareRole", share_col]], hide_index=True,
                      use_container_width=True)
         if len(comp) == 0:
             st.caption("No composition: this model is dimensioned by mass and carbon density.")

@@ -12,6 +12,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from core import formatting as fm
 from core import loader, user_mass_params
 from ui import flow, navigation
 
@@ -36,7 +37,7 @@ with flow.connect(ctx.path) as conn:
     gc = st.number_input("GC (value of the vehicle parameter)", min_value=0.0,
                          value=float(r["GCR"]))
     me = user_mass_params.preview(r["MR"], gc, r["GCR"], r["Beta"], r["fLM"])
-    st.metric("ME (kg)", f"{me:,.1f}")
+    st.metric("ME", fm.fmt(me, "mass", flow.display_format(conn), with_unit=True))
 
     st.subheader("Your copies")
     if ctx.can_edit:

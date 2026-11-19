@@ -10,6 +10,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from core import formatting as fm
 from core import loader, user_recipes
 from ui import flow, navigation
 
@@ -56,10 +57,12 @@ with flow.connect(ctx.path) as conn:
         hide_zero = st.checkbox("Hide zero entries", value=True)
         one = sh[sh["IDGG"] == group].copy()
         one["Role"] = one["ShareRole"].map(ROLE)
-        one["Share (%)"] = (100 * one["MshareGG"]).round(2)
+        fmt_ = flow.display_format(conn)
+        share_col = f"Share ({fm.unit('share', fmt_) or 'fraction'})"
+        one[share_col] = fm.frame(one, {"MshareGG": "share"}, fmt_)["MshareGG"]
         if hide_zero:
             one = one[one["MshareGG"] > 0]
-        st.dataframe(one[["IDM", "DsM", "Role", "Share (%)"]], hide_index=True,
+        st.dataframe(one[["IDM", "DsM", "Role", share_col]], hide_index=True,
                      use_container_width=True)
         st.caption("Origin: " + str(recipes.set_index("IDVMR").loc[chosen, "DsVMR"])
                    + ". Negative shares of the workbook were stored as zero and the group "
@@ -76,8 +79,11 @@ with flow.connect(ctx.path) as conn:
         a = shares_of(chosen).groupby(["IDGG", "IDM"])["MshareGG"].sum()
         b = shares_of(other).groupby(["IDGG", "IDM"])["MshareGG"].sum()
         diff = pd.DataFrame({"A": a, "B": b}).fillna(0.0)
-        diff["Diff (pp)"] = (100 * (diff["B"] - diff["A"])).round(2)
-        diff = diff[diff["Diff (pp)"].abs() > 0].reset_index()
+        fmt_ = flow.display_format(conn)
+        raw = diff["B"] - diff["A"]
+        diff["Diff (pp)" if fmt_.share_as == "percent" else "Diff"] = fm.frame(
+            pd.DataFrame({"d": raw}), {"d": "share"}, fmt_)["d"]
+        diff = diff[raw.abs() > 0].reset_index()
         st.dataframe(diff, hide_index=True, use_container_width=True)
 
     with tab_e:

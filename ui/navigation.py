@@ -34,6 +34,7 @@ SCREENS = {
     "T15": ("pages/T15_Emission_factors.py", "Emission factors", "🏭"),
     "T07": ("pages/T07_Equations_and_glossary.py", "Equations & glossary", "📖"),
     "T08": ("pages/T08_Export.py", "Export", "📤"),
+    "T47": ("pages/T47_Display_format.py", "Display format", "🔢"),
 }
 
 MENUS = {
@@ -41,7 +42,7 @@ MENUS = {
     "Analysis Parameters Setup": ["T04", "T10", "T11", "T16", "T17", "T38", "T41"],
     "Results": ["T05", "T06", "T18", "T18L"],
     "Auxiliary Data": ["T09", "T12", "T13", "T14", "T15", "T46"],
-    "Help and export": ["T07", "T08"],
+    "Help and export": ["T07", "T08", "T47"],
 }
 
 

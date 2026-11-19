@@ -17,7 +17,7 @@ from dataclasses import dataclass
 import streamlit as st
 from streamlit.runtime.scriptrunner import RerunException, StopException
 
-from core import project, provenance
+from core import formatting, project, provenance
 
 from . import state
 
@@ -155,3 +155,8 @@ def runs(conn: sqlite3.Connection, ida: int | None = None) -> list[dict]:
     cur = conn.execute(sql + " ORDER BY IDA, RunSeq", args)
     names = [d[0] for d in cur.description]
     return [dict(zip(names, r)) for r in cur.fetchall()]
+
+
+def display_format(conn: sqlite3.Connection) -> formatting.Format:
+    """The project's number format (T47), or the default if none was saved."""
+    return formatting.load(conn)[0]

@@ -29,6 +29,7 @@ with flow.connect(ctx.path) as conn:
     default = st.session_state.get("run_id")
     rid = st.selectbox("Run", ids, format_func=labels.get,
                        index=ids.index(default) if default in ids else len(ids) - 1)
+    FMT = flow.display_format(conn)
     life = pd.read_sql_query(
         "SELECT c.IDCase, a.CaseKey, v.DsV, c.Stage, c.SubStage, c.GHGkg, c.SourceCell, "
         "c.Method, c.Note FROM C35_VehicleLifeStage c "
@@ -49,9 +50,14 @@ if life.empty:
 st.warning("This is not the full life-cycle footprint: the supply and use of fuel and "
            "electricity belong to the use-phase results (M4). Replacements and end of life "
            "are always shown apart from cradle to gate.")
-tonnes = st.radio("Unit", ["kg CO₂e / vehicle", "t CO₂e / vehicle"], horizontal=True) != \
-    "kg CO₂e / vehicle"
-factor, digits = (0.001, 3) if tonnes else (1.0, 1)
+_fmt = FMT
+_units = ["kg CO₂e / vehicle", "t CO₂e / vehicle"]
+tonnes = st.radio("Unit", _units, index=1 if _fmt.ghg_unit == "t" else 0,
+                  horizontal=True) != _units[0]
+_d = _fmt.decimals["ghg"]
+factor, digits = (0.001, 6 if _d is None else _d + (2 if _fmt.ghg_unit == "kg" else 0)) \
+    if tonnes else (1.0, 6 if _d is None else _d)
+_sd = 6 if _fmt.decimals["share"] is None else _fmt.decimals["share"]
 unit = "t CO₂e" if tonnes else "kg CO₂e"
 
 cases = life[["CaseKey", "DsV"]].drop_duplicates()
@@ -68,7 +74,7 @@ with tab_stage:
     total = float(per.sum())
     rows = [{"Stage": STAGE_NAMES[s], f"GHG ({unit})": round(float(per.get(s, 0.0)) * factor,
                                                              digits),
-             "Share (%)": round(100 * float(per.get(s, 0.0)) / total, 1) if total else 0.0}
+             "Share (%)": round(100 * float(per.get(s, 0.0)) / total, _sd) if total else 0.0}
             for s in STAGE_NAMES]
     rows.append({"Stage": "Vehicle life, without use of energy",
                  f"GHG ({unit})": round(total * factor, digits), "Share (%)": 100.0})

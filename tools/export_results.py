@@ -19,11 +19,12 @@ from __future__ import annotations
 
 import argparse
 import os
+import sqlite3
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core import calc, export, loader, report, validate  # noqa: E402
+from core import calc, export, formatting, loader, report, validate  # noqa: E402
 from core.log import Log  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,6 +38,8 @@ def main(argv=None) -> int:
     ap.add_argument("--formatos", default="xlsx,csv,html,pdf")
     ap.add_argument("--csv-dialeto", default="br", choices=sorted(export.CSV_DIALECTS))
     ap.add_argument("--base", default=DB)
+    ap.add_argument("--formato", default=None, metavar="PROJETO.sqlite",
+                    help="usa o formato de exibicao (T47) gravado neste projeto")
     ap.add_argument("--forcar", action="store_true",
                     help="exportar mesmo com erros de validacao (nao recomendado)")
     args = ap.parse_args(argv)
@@ -60,6 +63,12 @@ def main(argv=None) -> int:
         print("\nNada foi exportado. Corrija os erros ou use --forcar.")
         return 1
 
+    fmt = None
+    if args.formato:
+        with sqlite3.connect(args.formato) as c:
+            fmt, gravado = formatting.load(c)
+        fmt = fmt if gravado else None
+
     # 4 -- montar as tabelas
     R = report.build(base, resultados, log=log)
     print(f"{len(R)} tabelas, {sum(len(df) for df in R.values())} linhas no total")
@@ -68,13 +77,14 @@ def main(argv=None) -> int:
     gerados = []
     if "xlsx" in formatos:
         gerados.append(export.to_xlsx(
-            R, export.filename(PREFIXO, "xlsx", args.pasta)))
+            R, export.filename(PREFIXO, "xlsx", args.pasta), fmt))
     if "csv" in formatos:
         gerados.append(export.to_csv_zip(
-            R, export.filename(PREFIXO, "zip", args.pasta), dialect=args.csv_dialeto))
+            R, export.filename(PREFIXO, "zip", args.pasta), dialect=args.csv_dialeto,
+            fmt=fmt))
     html = None
     if "html" in formatos or "pdf" in formatos:
-        html = export.to_html(R, export.filename(PREFIXO, "html", args.pasta))
+        html = export.to_html(R, export.filename(PREFIXO, "html", args.pasta), fmt=fmt)
         if "html" in formatos:
             gerados.append(html)
     if "pdf" in formatos and html:

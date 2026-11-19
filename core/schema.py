@@ -1192,6 +1192,11 @@ CREATE TABLE IF NOT EXISTS D19_EFChangeLog (
   Reason    TEXT
 );
 
+CREATE TABLE IF NOT EXISTS D22_FormatSetting (
+  SettingKey   TEXT PRIMARY KEY,
+  SettingValue TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS D20_UserMassParamVersion (
   IDMPVU    TEXT PRIMARY KEY,
   DsMPVU    TEXT NOT NULL,
@@ -1298,7 +1303,7 @@ USER_TABLES_011 = ["D10_MaintenanceScenario", "D10_Item", "D13_UserRecipe",
                    "D14_UserMaterialShare", "D15_UserBatteryModel",
                    "D16_UserBatteryShare", "D17_UserAssemblyVersion",
                    "D18_UserAssemblyEnergy", "D19_EFChangeLog",
-                   "D20_UserMassParamVersion", "D21_UserMassParam"]
+                   "D20_UserMassParamVersion", "D21_UserMassParam", "D22_FormatSetting"]
 
 #: Tabelas de resultado do B1.
 CALC_TABLES_011 = ["C15_Replacement", "C16_EndOfLife", "C34_MassValidation",

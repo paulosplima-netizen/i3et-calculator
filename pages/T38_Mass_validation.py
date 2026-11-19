@@ -15,6 +15,7 @@ import pandas as pd
 import streamlit as st
 
 from core import b1_choices
+from core import formatting as fm
 from ui import flow, navigation
 
 ctx = flow.begin("Mass validation", edit=True)
@@ -46,9 +47,12 @@ with flow.connect(ctx.path) as conn:
         if len(c34) else cases.assign(CalculatedMassKg=None)
     summary["Gap (kg)"] = summary["DeclaredMassKg"] - summary["CalculatedMassKg"]
     summary["Gap (%)"] = 100 * summary["Gap (kg)"] / summary["CalculatedMassKg"]
-    st.dataframe(summary[["CaseKey", "CaseRole", "DsV", "DeclaredMassKg", "CalculatedMassKg",
-                          "Gap (kg)", "Gap (%)", "MassAdjustmentKg"]].round(1),
-                 hide_index=True, use_container_width=True)
+    fmt_ = flow.display_format(conn)
+    shown = fm.frame(summary[["CaseKey", "CaseRole", "DsV", "DeclaredMassKg", "CalculatedMassKg",
+                              "Gap (kg)", "Gap (%)", "MassAdjustmentKg"]],
+                     {"DeclaredMassKg": "mass", "CalculatedMassKg": "mass", "Gap (kg)": "mass",
+                      "MassAdjustmentKg": "mass", "Gap (%)": "generic"}, fmt_)
+    st.dataframe(shown, hide_index=True, use_container_width=True)
     if not len(c34):
         st.caption("Estimated mass appears after the first run (T41).")
 
@@ -65,8 +69,11 @@ with flow.connect(ctx.path) as conn:
     source = st.text_input("Source of the declared mass", value=row["DeclaredSource"] or "",
                            key=key + "_src", disabled=not ctx.can_edit)
     if declared and est is not None:
-        st.info(f"Declared {declared:,.1f} kg · Estimated {est:,.1f} kg · "
-                f"Gap {declared - est:+,.1f} kg")
+        fmt_ = flow.display_format(conn)
+        st.info(f"Declared {fm.fmt(declared, 'mass', fmt_, with_unit=True)} · Estimated "
+                f"{fm.fmt(est, 'mass', fmt_, with_unit=True)} · Gap "
+                f"{'+' if declared >= est else '-'}"
+                f"{fm.fmt(abs(declared - est), 'mass', fmt_, with_unit=True)}")
     if st.button("Calibrate to declared mass", disabled=not ctx.can_edit or est is None
                  or not declared):
         st.session_state[key + "_adj"] = round(declared - est, 6)
@@ -105,9 +112,10 @@ with flow.connect(ctx.path) as conn:
         else:
             st.caption(msg)
     if adj and s is not None:
-        st.table(pd.DataFrame({"Group": ["Body (A)", "Chassis (B)", "Total"],
-                               "Calibration (kg)": [round(s * adj, 1), round((1 - s) * adj, 1),
-                                                    round(adj, 1)]}))
+        fmt_ = flow.display_format(conn)
+        calib = pd.DataFrame({"Group": ["Body (A)", "Chassis (B)", "Total"],
+                              "Calibration": [s * adj, (1 - s) * adj, adj]})
+        st.table(fm.frame(calib, {"Calibration": "mass"}, fmt_, rename=True))
     st.caption("Body and Chassis cannot become negative (I40); a violating adjustment stops "
                "the run with the minimum allowed value.")
     left, right = st.columns(2)

@@ -16,7 +16,7 @@ Convenções do Documento 2, §2. Na coluna **Obr.**, `S` é `NOT NULL`. Datas e
 
 ## 2. Numeração
 
-Próximos livres antes do B1: P60 (reservado à ANFAVEA, B2), D14, C35, R54. Tomados pelo B1: `P31`, `P31b`, `P32`, `P61`, `P62`, `D10` (já no quadro como MaintenanceScenario), `D13` a `D21`, `C15`, `C16`, `C34`, `C35`. Correção de 18/11: o `D10` do quadro Monday é MaintenanceScenario; as tabelas de receita, bateria, montagem e histórico do usuário usam `D13` a `D21`. Reservados a outros blocos: `D11` (M5), `D12` existente. `P47` e `P48` são do B2.
+Próximos livres antes do B1: P60 (reservado à ANFAVEA, B2), D14, C35, R54. Tomados pelo B1: `P31`, `P31b`, `P32`, `P61`, `P62`, `D10` (já no quadro como MaintenanceScenario), `D13` a `D22`, `C15`, `C16`, `C34`, `C35`. Correção de 18/11: o `D10` do quadro Monday é MaintenanceScenario; as tabelas de receita, bateria, montagem e histórico do usuário usam `D13` a `D21`. Reservados a outros blocos: `D11` (M5), `D12` existente. `P47` e `P48` são do B2.
 
 ## 3. Tabelas de parâmetros (P)
 
@@ -116,6 +116,14 @@ Opcionais: `Route`, `Region`, `RefYear`, `EFLow`, `EFHigh`.
 ### D17 e D18 — `D17_UserAssemblyVersion` e `D18_UserAssemblyEnergy`
 
 `D17`: `IDAPVU` PK, `DsAPVU`, `Method` (`fixed`, `from_EF`, `process`), `FixedGHGPerVehicle`, origem, autor, datas. `D18`: `IDAPVU`, `IDAP` (FK→P21), `IDFuel`, `EnergyPerVehicle`, `FuelShare`.
+
+### D22 — `D22_FormatSetting` (formato de exibição dos números; T47)
+
+Configuração de exibição do projeto (decisão 12 de 19/11/2026). Colunas: `SettingKey` (PK; hoje só `format`) e `SettingValue` (JSON: perfil `default`/`article`/`audit`/`custom`, casas decimais por classe de grandeza, unidade de massa e de GEE `kg`/`t`, participação em `percent`/`fraction`, separadores decimal e de milhar, separador de campos do CSV, limite de notação científica e `csv_rounded`). Sem linha, vale o perfil padrão e o relatório mantém o formato anterior. O formato só muda a exibição (telas, relatório HTML, formato de célula do XLSX e CSV); cálculo e resultados congelados nunca são arredondados. Regras em `core/formatting.py`.
+
+### D05 (alterada na 0.11 — decisão 11 de 19/11/2026)
+
+`D05_UserEmissionFactor.IDEFV` deixa de ter chave estrangeira para `D04`: uma linha pode sobrepor um fator de uma versão `Typed` da base (`P10`) ou de uma versão do usuário (`D04`). Versões `Published` não recebem linhas (a regra está em `core/ef_edit.py`, I48); linhas sem versão correspondente são apontadas por I54. A rodada congelada guarda `emission_factors` (hash dos fatores efetivos de cada lista do usuário ou alterada) e `execute` recusa a execução se o hash mudou (I53). Colunas `Author`, `ChangedAt` e `Reason` registram a última alteração; o histórico completo está em `D19`. `core/schema.relax_d05` faz a migração (recria a tabela e a visão `EF_Effective`).
 
 ### D20 e D21 — `D20_UserMassParamVersion` e `D21_UserMassParam` (conjunto de parâmetros de massa do usuário; T13)
 

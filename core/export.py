@@ -20,6 +20,7 @@ import zipfile
 
 import pandas as pd
 
+from . import formatting
 from .report import TITLES
 
 #: Documento 4, secao 6.2: ';' and ',' for a Brazilian spreadsheet, '.' and ','
@@ -57,8 +58,12 @@ def index_table(R: dict[str, pd.DataFrame]) -> pd.DataFrame:
     return pd.DataFrame(linhas)
 
 
-def to_xlsx(R: dict[str, pd.DataFrame], path: str) -> str:
-    """One sheet per table, headers frozen, columns sized to their content."""
+def to_xlsx(R: dict[str, pd.DataFrame], path: str, fmt: formatting.Format | None = None) -> str:
+    """One sheet per table, headers frozen, columns sized to their content.
+
+    With `fmt` (T47) the numeric cells get the format's number format; the stored
+    values are never rounded.
+    """
     from openpyxl.styles import Alignment, Font, PatternFill
 
     fill = PatternFill("solid", fgColor="1F3864")
@@ -75,6 +80,15 @@ def to_xlsx(R: dict[str, pd.DataFrame], path: str) -> str:
                 c.font = font
                 c.alignment = Alignment(vertical="center")
             ws.freeze_panes = "A2"
+            if fmt is not None:
+                for col in ws.iter_cols(min_row=1, max_row=1):
+                    qclass = formatting.column_class(col[0].value)
+                    if qclass:
+                        code = formatting.excel_number_format(qclass, fmt)
+                        for cell in ws.iter_cols(min_col=col[0].column, max_col=col[0].column,
+                                                 min_row=2):
+                            for c in cell:
+                                c.number_format = code
             for i, col in enumerate(ws.iter_cols(min_row=1, max_row=1), 1):
                 largura = max(len(str(col[0].value or "")) + 2, 10)
                 ws.column_dimensions[
@@ -82,11 +96,16 @@ def to_xlsx(R: dict[str, pd.DataFrame], path: str) -> str:
     return path
 
 
-def to_csv_zip(R: dict[str, pd.DataFrame], path: str, *, dialect: str = "br") -> str:
+def to_csv_zip(R: dict[str, pd.DataFrame], path: str, *, dialect: str = "br",
+               fmt: formatting.Format | None = None) -> str:
     """One `.csv` per table inside one `.zip`, so nothing arrives half-copied."""
     if dialect not in CSV_DIALECTS:
         raise ValueError(f"dialeto desconhecido: {dialect}")
-    cfg = CSV_DIALECTS[dialect]
+    cfg = dict(CSV_DIALECTS[dialect])
+    if fmt is not None:           # T47: separadores do projeto; arredonda so se pedido
+        cfg["sep"], cfg["decimal"] = fmt.csv_sep, fmt.decimal_sep
+        if fmt.csv_rounded:
+            R = {k: formatting.round_only(v, fmt) for k, v in R.items()}
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         buf = io.StringIO()
         index_table(R).to_csv(buf, index=False, sep=cfg["sep"],
@@ -282,7 +301,8 @@ def _casas_coluna(coluna, padrao: int) -> int:
     return padrao
 
 
-def _html_table(df: pd.DataFrame, *, casas: int = 3, maximo: int | None = None) -> str:
+def _html_table(df: pd.DataFrame, *, casas: int = 3, maximo: int | None = None,
+                fmt: formatting.Format | None = None) -> str:
     """A table as HTML, numbers right-aligned and tabular, no masks applied."""
     if not len(df):
         return '<p class="nota">Tabela vazia neste conjunto de cenários.</p>'
@@ -290,15 +310,19 @@ def _html_table(df: pd.DataFrame, *, casas: int = 3, maximo: int | None = None) 
     numericas = {c for c in corte.columns
                  if pd.api.types.is_numeric_dtype(corte[c])
                  and c not in ("IDV", "IDEA", "IDVP", "IDSG", "IDMPV", "IDAP")}
+    classes = {c: formatting.column_class(c) for c in corte.columns} if fmt else {}
     cabecalho = "".join(
-        f'<th class="{"num" if c in numericas else ""}">{_esc(c)}</th>'
+        f'<th class="{"num" if c in numericas else ""}">'
+        f'{_esc(formatting.header(c, classes.get(c), fmt) if fmt else c)}</th>'
         for c in corte.columns)
     linhas = []
     for _, r in corte.iterrows():
         celulas = []
         for c in corte.columns:
             v = r[c]
-            if c in numericas and pd.notna(v):
+            if c in numericas and pd.notna(v) and classes.get(c):
+                celulas.append(f'<td class="num">{formatting.fmt(v, classes[c], fmt)}</td>')
+            elif c in numericas and pd.notna(v):
                 celulas.append(f'<td class="num">{_num(v, _casas_coluna(c, casas))}</td>')
             else:
                 celulas.append(f"<td>{'' if pd.isna(v) else _esc(v)}</td>")
@@ -342,7 +366,8 @@ def _rotulo_grupo(idgg, descricao) -> str:
     return f"{idgg} · {curto}"
 
 
-def to_html(R: dict[str, pd.DataFrame], path: str, *, titulo: str | None = None) -> str:
+def to_html(R: dict[str, pd.DataFrame], path: str, *, titulo: str | None = None,
+            fmt: formatting.Format | None = None) -> str:
     """The narrated report: the same content the PDF will carry."""
     from jinja2 import Template
 
@@ -392,7 +417,7 @@ def to_html(R: dict[str, pd.DataFrame], path: str, *, titulo: str | None = None)
         anexo.append(
             f'<details{aberto}><summary>{_esc(nome)} — '
             f'{_esc(TITLES.get(nome, ""))} ({len(df)} linhas)</summary>'
-            f'{_html_table(df, maximo=400)}</details>')
+            f'{_html_table(df, maximo=400, fmt=fmt)}</details>')
 
     html_final = Template(TEMPLATE).render(
         titulo=titulo or "Pegada de carbono do berço ao portão",
@@ -403,26 +428,27 @@ def to_html(R: dict[str, pd.DataFrame], path: str, *, titulo: str | None = None)
         selo=("Validação aprovada" if aprovado else "Validação reprovada"),
         aprovado=aprovado,
         paleta_clara=PALETA_CLARA, paleta_escura=PALETA_ESCURA,
-        tabela_meta=_html_table(R["R00"]),
+        tabela_meta=_html_table(R["R00"], fmt=fmt),
         grafico_total=grafico_total,
         legenda_total=("Total do berço ao portão por veículo, na fronteira de cada "
                        "cenário. Os valores completos estão na tabela abaixo."),
-        tabela_total=_html_table(r10),
+        tabela_total=_html_table(r10, fmt=fmt),
         grafico_grupos=grafico_grupos,
         legenda_grupos=("Composição das emissões por grupo GREET, **sem a "
                         "montagem** — por isso os totais aqui são menores que os "
                         "da seção 2. Os grupos além dos sete maiores aparecem "
                         "somados em “Outros”; a tabela R07, no anexo, traz todos "
                         "separadamente.").replace("**", ""),
-        tabela_grupos=_html_table(r07, maximo=LIMITE_ABERTO),
-        tabela_materiais=_html_table(materiais),
-        tabela_montagem=_html_table(R["R09"]),
+        tabela_grupos=_html_table(r07, maximo=LIMITE_ABERTO, fmt=fmt),
+        tabela_materiais=_html_table(materiais, fmt=fmt),
+        tabela_montagem=_html_table(R["R09"], fmt=fmt),
         texto_validacao=texto_validacao,
-        tabela_validacao=_html_table(R["R11"]),
+        tabela_validacao=_html_table(R["R11"], fmt=fmt),
         anexo="".join(anexo),
         rodape=("Calculadora da Pegada de Carbono de Veículos Leves — do Berço ao "
                 "Portão · NIPE/UNICAMP · Fatores derivados do GREET (UChicago "
-                "Argonne, LLC), uso não comercial · kg CO₂e, GWP-100, IPCC AR6."),
+                "Argonne, LLC), uso não comercial · kg CO₂e, GWP-100, IPCC AR6."
+                + (" " + formatting.describe(fmt) if fmt else "")),
     )
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(html_final)
