@@ -145,8 +145,8 @@ def check_analysis(conn, ida: int) -> list[str]:
 
     orfas = q("SELECT DISTINCT IDEFV FROM D05_UserEmissionFactor WHERE IDEFV NOT IN "
               "(SELECT IDEFV FROM P10_EFVersion UNION SELECT IDEFV FROM D04_UserEFVersion)")
-    if orfas:                                                         # I54
-        problems.append("I54: D05 has factors of versions that do not exist: "
+    if orfas:                                                         # I59
+        problems.append("I59: D05 has factors of versions that do not exist: "
                         + ", ".join(r[0] for r in orfas))
 
     for idcase, _, _, idv, idea in cases:                                 # I19

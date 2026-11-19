@@ -106,7 +106,7 @@ def set_factor(conn: sqlite3.Connection, idefv: str, idm: str, ef: float, *, rea
                author: str = "", confirm_zero: bool = False) -> None:
     kind = origin(conn, idefv)
     if kind is None:
-        raise ValueError(f"a versao {idefv} nao existe (I54)")
+        raise ValueError(f"a versao {idefv} nao existe (I59)")
     if kind == "Published":
         raise ValueError(f"{idefv} e uma lista publicada e nao pode ser editada (I48); "
                          "copie-a antes para uma versao digitada")
@@ -231,7 +231,7 @@ def needs_hash(conn: sqlite3.Connection, idefv: str) -> bool:
 
 
 def orphans(conn: sqlite3.Connection) -> list[str]:
-    """Linhas de D05 cuja lista nao existe nem em P10 nem em D04 (I54)."""
+    """Linhas de D05 cuja lista nao existe nem em P10 nem em D04 (I59)."""
     rows = conn.execute(
         "SELECT DISTINCT IDEFV FROM D05_UserEmissionFactor WHERE IDEFV NOT IN "
         "(SELECT IDEFV FROM P10_EFVersion UNION SELECT IDEFV FROM D04_UserEFVersion)").fetchall()

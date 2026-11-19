@@ -140,3 +140,28 @@ def test_rename_e_summary(proj):
         project.rename(conn, "   ")
     analysis.create_ec(conn, "EC", "A0", _cfg(conn))
     assert project.summary(conn)["Mode"] == "EC"
+
+
+def test_i53_fator_alterado_depois_de_congelar_recusa_a_execucao(proj):
+    from core import ef_edit
+    conn, path = proj
+    cfg = _cfg(conn)
+    ida = analysis.create_ec(conn, "EC", "A0", cfg)
+    # lista da base intacta: o instantaneo nao ganha chave nova (hash igual ao de antes)
+    rid0 = run.freeze(conn, ida, calculator_version="test", reference_workbook="x")
+    assert "emission_factors" not in conn.execute(
+        "SELECT InputSnapshot FROM D09_Run WHERE RunID = ?", (rid0,)).fetchone()[0]
+    ef_edit.set_factor(conn, cfg["idefv"], "1", 9.0, reason="correcao de digitacao")
+    conn.commit()
+    rid1 = run.freeze(conn, ida, calculator_version="test", reference_workbook="x")
+    assert "emission_factors" in conn.execute(
+        "SELECT InputSnapshot FROM D09_Run WHERE RunID = ?", (rid1,)).fetchone()[0]
+    run.execute(conn, path, rid1)                                  # fatores iguais: executa
+    ef_edit.set_factor(conn, cfg["idefv"], "1", 10.0, reason="outra correcao")
+    conn.commit()
+    with pytest.raises(ValueError, match="I53"):
+        run.execute(conn, path, rid1)
+    ef_edit.restore_factor(conn, cfg["idefv"], "1", reason="volta")
+    conn.commit()
+    rid2 = run.freeze(conn, ida, calculator_version="test", reference_workbook="x")
+    run.execute(conn, path, rid2)                                  # congelar de novo resolve

@@ -317,7 +317,7 @@ CREATE TABLE D05_UserEmissionFactor (
 # D05.IDEFV has no FOREIGN KEY either (0.11, decision 11 of 19/11/2026): a row may
 # override a factor of a typed version of the base (P10) or of a version of the
 # user (D04). ef_edit checks the version on every write and validate.py reports
-# rows that point to nowhere (I54).
+# rows that point to nowhere (I59).
 #
 # D02.IDEFV has no FOREIGN KEY on purpose: it may name a version of the
 # reference base (P10) or one the user created (D04). Rule I14 forbids the two

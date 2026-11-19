@@ -123,7 +123,7 @@ Configuração de exibição do projeto (decisão 12 de 19/11/2026). Colunas: `S
 
 ### D05 (alterada na 0.11 — decisão 11 de 19/11/2026)
 
-`D05_UserEmissionFactor.IDEFV` deixa de ter chave estrangeira para `D04`: uma linha pode sobrepor um fator de uma versão `Typed` da base (`P10`) ou de uma versão do usuário (`D04`). Versões `Published` não recebem linhas (a regra está em `core/ef_edit.py`, I48); linhas sem versão correspondente são apontadas por I54. A rodada congelada guarda `emission_factors` (hash dos fatores efetivos de cada lista do usuário ou alterada) e `execute` recusa a execução se o hash mudou (I53). Colunas `Author`, `ChangedAt` e `Reason` registram a última alteração; o histórico completo está em `D19`. `core/schema.relax_d05` faz a migração (recria a tabela e a visão `EF_Effective`).
+`D05_UserEmissionFactor.IDEFV` deixa de ter chave estrangeira para `D04`: uma linha pode sobrepor um fator de uma versão `Typed` da base (`P10`) ou de uma versão do usuário (`D04`). Versões `Published` não recebem linhas (a regra está em `core/ef_edit.py`, I48); linhas sem versão correspondente são apontadas por I59. A rodada congelada guarda `emission_factors` (hash dos fatores efetivos de cada lista do usuário ou alterada) e `execute` recusa a execução se o hash mudou (I53). Colunas `Author`, `ChangedAt` e `Reason` registram a última alteração; o histórico completo está em `D19`. `core/schema.relax_d05` faz a migração (recria a tabela e a visão `EF_Effective`).
 
 ### D20 e D21 — `D20_UserMassParamVersion` e `D21_UserMassParam` (conjunto de parâmetros de massa do usuário; T13)
 
@@ -187,16 +187,17 @@ Uma linha por receita de `P15` (68: 56 GREET, 6 BISD, 6 PBP_BISD), vinda das col
 | I45 | Bateria genérica não admite composição | banco |
 | I46 | Montagem `process` reconcilia com `from_EF` (relatório, não bloqueia) | teste |
 | I47 | A versão de montagem é escolha da análise; mudar cria nova rodada | código |
-| I48 | `Published` não é editável; `Typed` e `Own` registram toda alteração em `D19` | código |
+| I48 | `Published` não é editável; `Typed` (da base, alterada só no projeto) e `Own` registram toda alteração em `D19` | código |
 | I49 | Alterar valor exige motivo; remover sobrescrita registra `restore` | código |
 | I50 | Zero explícito só com sobrescrita documentada; `ND` nunca vira zero | código |
 | I51 | Versão do usuário exige fonte e ID único | banco |
 | I52 | Comparar versões com `GWPSet` diferente avisa | código |
-| I53 | Fatores efetivos da rodada são congelados (hash) | código |
+| I53 | Fatores efetivos da rodada são congelados (hash): a rodada guarda `emission_factors` e `execute` recusa a execução se os fatores mudaram | código, teste |
 | I54 | O berço ao portão não contém reposições nem fim de vida | teste |
 | I55 | Com "Aggregate vehicle factor" e as contagens de referência, a vida do veículo reproduz `T511` | teste |
 | I56 | Estágio com material sem fator mostra dado ausente | código |
 | I58 | Conjunto de parâmetros de massa do usuário: `MR` ≥ 0, `GCR` > 0, `fLM` ≥ 0; consumíveis neutros | código |
+| I59 | Todo fator de `D05` pertence a uma versão que existe em `P10` ou `D04` (a chave estrangeira foi removida) | código, teste |
 | I57 | A T18 mostra o método de fim de vida e os intervalos usados | código |
 
 ## 7. Migração e fixtures

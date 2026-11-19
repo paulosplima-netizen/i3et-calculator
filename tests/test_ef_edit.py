@@ -50,7 +50,7 @@ def test_publicada_nao_e_editavel(conn):
     assert not ef_edit.is_editable(c, base)
     with pytest.raises(ValueError, match="I48"):
         ef_edit.set_factor(c, base, "1", 1.0, reason="x")
-    with pytest.raises(ValueError, match="I54"):
+    with pytest.raises(ValueError, match="I59"):
         ef_edit.set_factor(c, "NAO-EXISTE", "1", 1.0, reason="x")
 
 
