@@ -38,5 +38,6 @@ Cada linha traz a decisão do autor, a justificativa e o cuidado para os testes 
 ## D. Pendências suas, que não bloqueiam
 
 - Conferir a digitação das linhas 54 e 55 do M2 nas 6 receitas com `k` > 1 (FCV-P25, HEV-P27, PHEV-P28, BEV-P29, FCV-P30, PHEV-S28).
-- Corrigir `T495` nas 28 colunas e identificar a fórmula das PBP_BISD.
-- Decidir `MshareRaw` (item 4) e os itens 5, 10 e 11.
+- ~~Corrigir `T495` nas 28 colunas~~ (feito na planilha de 19/11). Reconstruir as fórmulas das PBP_BISD (`CX:DC`, item 3).
+- Decidir o item 1 (em debate), `MshareRaw` e a reconciliação 28 × 45 (item 4) e os itens 10 e 11.
+- Opcional, do lado da planilha: ligar `P124:P133` a `Z92:Z101` (item 7) e fazer `T509` ler `X76` e `X77` (item 5).
