@@ -152,3 +152,42 @@ def test_t12_t13_abrem_e_t13_lista_copias(projeto):  # noqa: F811
     conn.close()
     at = _abrir("T13_Mass_parameters", projeto)
     assert not at.exception, at.exception
+
+
+def test_t14_lista_de_materiais_acumulada_do_veiculo(projeto):  # noqa: F811
+    """'All groups' soma os materiais do veiculo (e da bateria) e fecha com a massa da C11."""
+    at = _abrir("T14_Materials_recipes", projeto)
+    assert not at.exception, at.exception
+    grupo = next(s for s in at.selectbox if s.label == "Group")
+    assert grupo.options[0].startswith("All groups")
+    grupo.select("__all__").run()
+    assert not at.exception, at.exception
+    assert any(m.label == "Total mass in the list (kg)" for m in at.metric)
+    com = float(next(m for m in at.metric if m.label.startswith("Total mass")).value
+                .replace(",", ""))
+    assert com > 0
+    caixa = next(c for c in at.checkbox if c.label.startswith("Include the traction"))
+    caixa.uncheck().run()
+    assert not at.exception, at.exception
+    sem = float(next(m for m in at.metric if m.label.startswith("Total mass")).value
+                .replace(",", ""))
+    assert sem <= com
+
+
+def test_vehicle_bill_fecha_com_c11():
+    import pandas as pd
+
+    from core import materials, totals
+    c03 = pd.DataFrame({"IDGG": ["G1", "G2", "G2"], "IDM": ["a", "a", "p"],
+                        "DsM": ["A", "A", "Proc"], "MassIDMpGG": [10.0, 5.0, 0.0],
+                        "GHGIDMpGG": [1.0, 1.0, 1.0], "CountsAsMass": [1, 1, 0]})
+    c07 = pd.DataFrame({"IDGG": ["B"], "IDM": ["b"], "DsM": ["B"], "MassIDMpGGB": [20.0],
+                        "GHGIDMpGGB": [2.0], "CountsAsMass": [1]})
+    full = materials.vehicle_bill(c03, c07)
+    assert abs(full["MassKg"].sum() - 35.0) < 1e-9
+    assert "p" not in set(full["IDM"])
+    assert abs(full["ShareOfMass"].sum() - 1) < 1e-9
+    nobat = materials.vehicle_bill(c03, c07, include_battery=False)
+    assert abs(nobat["MassKg"].sum() - 15.0) < 1e-9
+    c11 = totals.by_material(c03, c07)
+    assert abs(c11["MassIDM"].sum() - 35.0) < 1e-9

@@ -79,3 +79,36 @@ def by_group(c03: pd.DataFrame) -> pd.DataFrame:
     """C05 — emissions per group, materials only (the battery is elsewhere)."""
     return (c03.groupby("IDGG", as_index=False)["GHGIDMpGG"].sum()
                .rename(columns={"GHGIDMpGG": "GHGIDGG"}))
+
+
+def vehicle_bill(c03: pd.DataFrame, c07: pd.DataFrame, *,
+                 include_battery: bool = True) -> pd.DataFrame:
+    """Lista de materiais acumulada do veiculo (todos os grupos GREET somados).
+
+    Soma, por material, a massa do veiculo (C03) e, se pedido, a da bateria (C07). So entram
+    linhas que contam como massa (``CountsAsMass``): processos e detalhamentos ficam de fora,
+    como na C11. Colunas: IDM, DsM, MassVehicleKg, MassBatteryKg, MassKg, ShareOfMass.
+    """
+    def _sum(df, col):
+        if df is None or not len(df):
+            return pd.Series(dtype=float)
+        real = df[df["CountsAsMass"] == 1].copy()
+        real["IDM"] = real["IDM"].fillna("(no material)")
+        return real.groupby("IDM")[col].sum()
+
+    veh = _sum(c03, "MassIDMpGG")
+    bat = _sum(c07, "MassIDMpGGB") if include_battery else pd.Series(dtype=float)
+    out = pd.DataFrame({"MassVehicleKg": veh, "MassBatteryKg": bat}).fillna(0.0)
+    names: dict = {}
+    for df in (c03, c07):
+        if df is not None and len(df):
+            names.update(dict(zip(df["IDM"].fillna("(no material)"), df["DsM"])))
+    out.index.name = "IDM"
+    out = out.reset_index()
+    out["DsM"] = out["IDM"].map(names)
+    out["MassKg"] = out["MassVehicleKg"] + out["MassBatteryKg"]
+    total = float(out["MassKg"].sum())
+    out["ShareOfMass"] = out["MassKg"] / total if total else 0.0
+    out = out[out["MassKg"] > 0].sort_values("MassKg", ascending=False)
+    return out[["IDM", "DsM", "MassVehicleKg", "MassBatteryKg", "MassKg", "ShareOfMass"]
+               ].reset_index(drop=True)

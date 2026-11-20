@@ -3,6 +3,9 @@
 ## 0.11.0 - Bloco B1 (M1 and M2 complete)
 
 Changed (20/11/2026)
+- T14 Materials and recipes: new "All groups (vehicle bill of materials)" option in the Group
+  list. It sums the mass of each material over all GREET groups of one vehicle of a frozen run,
+  with a switch to include or leave out the traction battery (`core.materials.vehicle_bill`).
 - Mass calibration follows parameter 25: a known mass (market vehicle) is calibrated
   automatically (gap goes to Body and Chassis by the estimated share); a calculated parameter 25
   (theoretical vehicle) is not allocated. New D07.MassCalibrationMode (ON/OFF) and C34.MassBasis

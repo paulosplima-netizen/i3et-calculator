@@ -11,10 +11,54 @@ import pandas as pd
 import streamlit as st
 
 from core import formatting as fm
-from core import loader, user_recipes
+from core import loader, materials, run, user_recipes
 from ui import flow, navigation
 
 ROLE = {"material": "Material", "process": "Process", "breakdown": "Breakdown"}
+
+
+def _bill(conn, ctx, flow) -> None:
+    """Accumulated material list of one vehicle of a frozen run (all groups together)."""
+    st.caption("Mass of each material summed over all GREET groups of a vehicle. It needs a "
+               "frozen run, because the masses depend on the vehicle; the recipe used is the "
+               "one frozen with that run, not the one chosen above.")
+    ida = flow.pick_analysis(conn, key="t14_analysis")
+    rs = flow.runs(conn, ida) if ida else []
+    if not rs:
+        st.info("No frozen run yet. Use **Validate and Freeze Inputs** (T41).")
+        return
+    ids = [r["RunID"] for r in rs]
+    labels = {r["RunID"]: f"S{r['RunSeq']} · {r['FrozenAt']} · {r['Status']}" for r in rs}
+    rid = st.selectbox("Run", ids, format_func=labels.get, index=len(ids) - 1, key="t14_run")
+    try:
+        detail = run.recompute(conn, ctx.path, rid)
+    except ValueError as exc:                                  # I53
+        st.error(str(exc))
+        return
+    if not detail:
+        st.info("This run has no vehicles.")
+        return
+    key = st.selectbox("Vehicle", list(detail), key="t14_vehicle")
+    res = detail[key][1]
+    with_bat = st.checkbox("Include the traction battery materials", value=True)
+    has_bat = len(res["C07"]) > 0
+    if with_bat and not has_bat:
+        st.caption("This vehicle has no traction battery composition.")
+    bill = materials.vehicle_bill(res["C03"], res["C07"],
+                                                   include_battery=with_bat)
+    fmt_ = flow.display_format(conn)
+    show = bill.rename(columns={"MassVehicleKg": "Vehicle (kg)", "MassBatteryKg": "Battery (kg)",
+                                "MassKg": "Total (kg)", "ShareOfMass": "Share of total"})
+    show["Share of total"] = fm.frame(bill, {"ShareOfMass": "share"}, fmt_)["ShareOfMass"]
+    c1, c2 = st.columns(2)
+    c1.metric("Total mass in the list (kg)", f"{bill['MassKg'].sum():,.1f}")
+    c2.metric("Battery included", "Yes" if with_bat and has_bat else "No")
+    st.dataframe(show.drop(columns=["IDM"]).assign(IDM=bill["IDM"])[
+        ["IDM", "DsM", "Vehicle (kg)", "Battery (kg)", "Total (kg)", "Share of total"]],
+        hide_index=True, use_container_width=True)
+    st.caption("Only lines that count as mass; processes and breakdowns are not listed. "
+               "Without the battery the total is the glider and powertrain mass.")
+
 
 ctx = flow.begin("Materials and recipes", edit=True)
 author = st.sidebar.text_input("Your name", value=st.session_state.get("author", ""),
@@ -52,21 +96,26 @@ with flow.connect(ctx.path) as conn:
             status.append({"Group": g, "Sum of material shares": round(total, 6),
                            "Check": state})
         st.dataframe(pd.DataFrame(status), hide_index=True, use_container_width=True)
-        group = st.selectbox("Group", list(groups["IDGG"]), format_func=lambda g: (
-            f"{g} · {groups.set_index('IDGG').loc[g, 'DsGG']}"))
-        hide_zero = st.checkbox("Hide zero entries", value=True)
-        one = sh[sh["IDGG"] == group].copy()
-        one["Role"] = one["ShareRole"].map(ROLE)
-        fmt_ = flow.display_format(conn)
-        share_col = f"Share ({fm.unit('share', fmt_) or 'fraction'})"
-        one[share_col] = fm.frame(one, {"MshareGG": "share"}, fmt_)["MshareGG"]
-        if hide_zero:
-            one = one[one["MshareGG"] > 0]
-        st.dataframe(one[["IDM", "DsM", "Role", share_col]], hide_index=True,
-                     use_container_width=True)
-        st.caption("Origin: " + str(recipes.set_index("IDVMR").loc[chosen, "DsVMR"])
-                   + ". Negative shares of the workbook were stored as zero and the group "
-                     "renormalized (divergence D8).")
+        ALL = "__all__"
+        group = st.selectbox("Group", [ALL] + list(groups["IDGG"]), format_func=lambda g: (
+            "All groups (vehicle bill of materials)" if g == ALL
+            else f"{g} · {groups.set_index('IDGG').loc[g, 'DsGG']}"))
+        if group == ALL:
+            _bill(conn, ctx, flow)
+        else:
+            hide_zero = st.checkbox("Hide zero entries", value=True)
+            one = sh[sh["IDGG"] == group].copy()
+            one["Role"] = one["ShareRole"].map(ROLE)
+            fmt_ = flow.display_format(conn)
+            share_col = f"Share ({fm.unit('share', fmt_) or 'fraction'})"
+            one[share_col] = fm.frame(one, {"MshareGG": "share"}, fmt_)["MshareGG"]
+            if hide_zero:
+                one = one[one["MshareGG"] > 0]
+            st.dataframe(one[["IDM", "DsM", "Role", share_col]], hide_index=True,
+                         use_container_width=True)
+            st.caption("Origin: " + str(recipes.set_index("IDVMR").loc[chosen, "DsVMR"])
+                       + ". Negative shares of the workbook were stored as zero and the group "
+                         "renormalized (divergence D8).")
         if chosen in set(own["IDVMRU"]):
             problems = user_recipes.check(conn, chosen)
             if problems:
