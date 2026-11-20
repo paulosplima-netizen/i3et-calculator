@@ -35,6 +35,7 @@ class Options:
     factor_battery: float = 20.0
     declared_mass_kg: float | None = None
     declared_source: str = ""
+    mass_basis: str = ""
     intervals: dict | None = None          # {IDMI: km} do cenario do usuario
     active: dict | None = None             # {IDMI: bool}
 
@@ -110,7 +111,8 @@ def compute(res: dict, base, ef: dict[str, float], options: Options,
     c34 = mass_calibration.validation_row(
         c02, declared_kg=declarada, adjustment_kg=adj,
         s=mc.get("BodyShare") if abs(adj) > 0 else None,
-        mass_basis="Declared" if declarada is not None else "Estimated",
+        mass_basis=options.mass_basis or ("Declared" if declarada is not None
+                                          else "Estimated"),
         declared_source=options.declared_source,
         s_estimated=mc.get("BodyShareEstimated"), s_reference=mc.get("BodyShareReference"))
 

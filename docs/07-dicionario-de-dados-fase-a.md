@@ -383,6 +383,7 @@ O banco exige `IDVC` e `IDMVRef` preenchidos em `EC` e nulos em `FC`.
 | `MassAdjustmentKg` | REAL | — | S | Diferença de massa alocada a carroceria e chassi, kg com sinal; padrão 0. Coluna da 0.11 |
 | `MassBodyShare` | REAL | — | N | Parcela `s` da diferença para a carroceria, 0 a 1. Nulo: `P63` da receita. Coluna da 0.11 |
 | `DeclaredSource` | TEXT | — | N | Origem da massa declarada. Coluna da 0.11 |
+| `MassCalibrationMode` | TEXT | `ON`, `OFF` | N | Calibração automática da massa: nulo = regra padrão (automática só para `SizingOrigin = Manufacturer`), `ON` liga, `OFF` desliga. Coluna da 0.11 (20/11/2026) |
 
 (`IDV`, `IDEA`) é chave estrangeira composta para `D02`.
 

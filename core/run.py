@@ -179,6 +179,7 @@ def _compute_cases(db_path: str, snap: dict):
         if c["case"]["SizingOrigin"] == "Pending":
             continue
         alt, pf = c["alternative"], c["power_factors"]
+        mb = b1_choices.mass_basis(c["case"], c["params"])
         gc = {p["IDVP"]: float(p["GC"] or 0.0) for p in c["params"]}
         supplied = {p["IDVP"] for p in c["params"] if not p["IsCalculated"]}
         battery = next((p["GCText"] for p in c["params"] if p["IDVP"] == 32), None)
@@ -190,6 +191,7 @@ def _compute_cases(db_path: str, snap: dict):
             power_factors=(pf["ice"], pf["ee"]),
             mass_adjustment_kg=float(c["case"].get("MassAdjustmentKg") or 0.0),
             body_share=b1_choices.body_share(c["case"].get("MassBodyShare")),
+            declared_mass_kg=mb["declared_kg"], auto_calibrate=mb["auto"],
             generic_battery=battery_mod.generic_model(base.get("P58"), battery, cp_values),
             log=log)
         res["mass_calibration"]["BodyShareReference"] = b1_choices.reference_body_share(
@@ -241,8 +243,10 @@ def write_b1(conn, run_id, base, ef_table, results, cp_values, choices=None) -> 
     for c, res in results.values():
         case = c["case"]
         options = copy.copy(base_options)
-        options.declared_mass_kg = case.get("DeclaredMassKg")
-        options.declared_source = case.get("DeclaredSource") or ""
+        mb = b1_choices.mass_basis(case, c["params"])
+        options.declared_mass_kg = mb["declared_kg"]
+        options.declared_source = mb["source"]
+        options.mass_basis = mb["basis"]
         ef = b1_results.ef_for(ef_table, c["alternative"]["IDEFV"])
         frames = b1_results.compute(res, base, ef, options,
                                     boundary=c["alternative"]["Boundary"])

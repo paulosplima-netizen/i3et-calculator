@@ -1351,6 +1351,8 @@ COLUMNS_011 = (
        ("D07_AnalysisVehicle", "MassBodyShare", "REAL CHECK (MassBodyShare IS NULL OR "
         "MassBodyShare BETWEEN 0 AND 1)"),
        ("D07_AnalysisVehicle", "DeclaredSource", "TEXT"),
+       ("D07_AnalysisVehicle", "MassCalibrationMode", "TEXT CHECK (MassCalibrationMode IS NULL OR "
+        "MassCalibrationMode IN ('ON','OFF'))"),
        ("D06_Analysis", "EoLMethod", "TEXT NOT NULL DEFAULT 'GLIDER_BATTERY' "
         "CHECK (EoLMethod IN ('GLIDER_BATTERY','AGGREGATE_VEHICLE','EXCLUDED'))")]
 )

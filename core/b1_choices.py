@@ -115,6 +115,53 @@ def options(choices: dict | None, cp_values: dict[str, float]) -> Options:
 SHARE_DEVIATION_WARN = 0.05      # |s estimado - s do GREET| a partir do qual a T38 avisa
 
 
+# --------------------------------------------------------------------------
+# BLOCO CH5 -- massa declarada efetiva e calibracao automatica (decisao de 20/11/2026)
+#   O parametro 25 do veiculo e a massa conhecida quando e informado (veiculo de mercado); em
+#   veiculo teorico (potencia e bateria variadas) ele e calculado e nao ha massa conhecida:
+#   nao ha rateio, e a massa estimada e o resultado.
+#   Precedencia da massa declarada: a digitada na T38 (D07.DeclaredMassKg), depois o parametro
+#   25 informado. A calibracao e automatica para SizingOrigin = Manufacturer (padrao); nos
+#   demais casos (inclusive ExcelReference, para manter a paridade) so com MassCalibrationMode
+#   = 'ON'; 'OFF' desliga. Um ajuste manual (MassAdjustmentKg != 0) prevalece sobre o automatico.
+# --------------------------------------------------------------------------
+BASIS_TYPED = "DECLARED_TYPED"
+BASIS_MARKET = "DECLARED_MARKET"
+BASIS_ITERATIVE = "ESTIMATED_ITERATIVE"
+BASIS_ESTIMATED = "ESTIMATED"
+SOURCE_PARAM25 = "Parameter 25 (market vehicle)"
+IDVP_MASS = 25
+
+
+def param25_known(params: list[dict] | None) -> float | None:
+    """Massa do parametro 25 quando e informada (nao calculada) e positiva; senao None."""
+    for p in params or []:
+        if int(p["IDVP"]) == IDVP_MASS:
+            if not p.get("IsCalculated") and float(p.get("GC") or 0.0) > 0:
+                return float(p["GC"])
+            return None
+    return None
+
+
+def mass_basis(case: dict, params: list[dict] | None) -> dict:
+    """{'declared_kg', 'source', 'basis', 'auto', 'default_auto'} do caso (D07 + parametros)."""
+    typed = case.get("DeclaredMassKg")
+    known = param25_known(params)
+    if typed:
+        declared, source, basis = float(typed), case.get("DeclaredSource") or "", BASIS_TYPED
+    elif known is not None and (case.get("SizingOrigin") == "Manufacturer"
+                                or case.get("MassCalibrationMode") == "ON"):
+        declared, source, basis = known, SOURCE_PARAM25, BASIS_MARKET
+    else:
+        declared, source = None, ""
+        basis = BASIS_ESTIMATED if known is not None else BASIS_ITERATIVE
+    default_auto = declared is not None and case.get("SizingOrigin") == "Manufacturer"
+    mode = case.get("MassCalibrationMode")
+    auto = declared is not None and (mode == "ON" or (mode != "OFF" and default_auto))
+    return {"declared_kg": declared, "source": source, "basis": basis, "auto": auto,
+            "default_auto": default_auto}
+
+
 def body_share(user_value: float | None) -> float | None:
     """s do usuario, ou None (o calculo usa a proporcao das massas estimadas)."""
     return None if user_value is None else float(user_value)

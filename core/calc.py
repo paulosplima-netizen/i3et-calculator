@@ -21,13 +21,15 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
                       power_factors: tuple[float, float] | None = None,
                       generic_battery: dict | None = None,
                       mass_adjustment_kg: float = 0.0, body_share: float | None = None,
+                      declared_mass_kg: float | None = None, auto_calibrate: bool = False,
                       log: Log | None = None) -> dict:
     """Run one vehicle through the whole chain.
 
     `gc_input` holds the exogenous parameters; the endogenous ones are computed
     here and overwrite whatever was supplied.
 
-    `mass_adjustment_kg` e `body_share` (T38): ver core/mass_calibration.py.
+    `mass_adjustment_kg` e `body_share` (T38): ver core/mass_calibration.py. Com
+    `auto_calibrate` e `declared_mass_kg`, o ajuste e declarada - estimada (veiculo de mercado).
     """
     from .loader import effective_emission_factors
 
@@ -58,6 +60,9 @@ def calculate_vehicle(base, gc_input: dict[int, float], *, powertrain: str,
                        / float(ab.sum())) if float(ab.sum()) > 0 else 0.5
     if body_share is None:
         body_share = share_estimated
+    if auto_calibrate and declared_mass_kg and not mass_adjustment_kg:
+        # veiculo de mercado: a diferenca (declarada - estimada) e calculada na propria rodada
+        mass_adjustment_kg = float(declared_mass_kg) - float(c02["MassIDGG"].astype(float).sum())
     c02 = mass_calibration.apply_to_c02(c02, float(mass_adjustment_kg), float(body_share))
     c03 = materials.by_material_group(c02, base["P16"], base["P09"], ef_table, gc,
                                       idvmr=idvmr, idefv=idefv, log=log)
