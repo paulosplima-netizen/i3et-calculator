@@ -3,6 +3,8 @@
 ## 0.11.0 - Bloco B1 (M1 and M2 complete)
 
 Changed (20/11/2026)
+- T15 Emission factors and T17 End of life now follow the display format of T47 (decimal places
+  and units); before, they showed the raw values. History and corrections keep full precision.
 - T14 Materials and recipes: new "All groups (vehicle bill of materials)" option in the Group
   list. It sums the mass of each material over all GREET groups of one vehicle of a frozen run,
   with a switch to include or leave out the traction battery (`core.materials.vehicle_bill`).

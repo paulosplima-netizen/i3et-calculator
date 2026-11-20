@@ -191,3 +191,18 @@ def test_vehicle_bill_fecha_com_c11():
     assert abs(nobat["MassKg"].sum() - 15.0) < 1e-9
     c11 = totals.by_material(c03, c07)
     assert abs(c11["MassIDM"].sum() - 35.0) < 1e-9
+
+
+def test_t15_aplica_as_casas_decimais_do_formato(projeto):  # noqa: F811
+    """O fator de emissao da T15 segue as casas decimais da T47 (classe 'factor')."""
+    import sqlite3
+
+    from core import formatting as fm
+    at = _abrir("T15_Emission_factors", projeto)
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    conn.close()
+    tab = next(d.value for d in at.dataframe if "EF" in d.value.columns)
+    casas = fm.DEFAULT.decimals["factor"]
+    vals = tab["EF"].dropna()
+    assert len(vals) and all(abs(v - round(v, casas)) < 1e-12 for v in vals)

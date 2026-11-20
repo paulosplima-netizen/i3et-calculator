@@ -13,6 +13,7 @@ import pandas as pd
 import streamlit as st
 
 from core import ef_edit, loader
+from core import formatting as fm
 from ui import flow, navigation
 
 ctx = flow.begin("Emission factors", edit=True)
@@ -50,7 +51,8 @@ with flow.connect(ctx.path) as conn:
         if text:
             sub = sub[sub["DsM"].fillna("").str.contains(text, case=False)
                       | sub["IDM"].astype(str).str.contains(text)]
-        st.dataframe(sub[["IDM", "DsM", "EFBasis", "EF", "IsUserDefined", "EFnotes"]],
+        st.dataframe(fm.frame(sub[["IDM", "DsM", "EFBasis", "EF", "IsUserDefined", "EFnotes"]],
+                              {"EF": "factor"}, flow.display_format(conn)),
                      hide_index=True, use_container_width=True)
         if info["changed"]:
             st.warning(f"{info['changed']} factor(s) of {chosen} were changed in this project; "
@@ -96,7 +98,9 @@ with flow.connect(ctx.path) as conn:
         table, warning = ef_edit.compare(eff, materials, a, b, gwp)
         if warning:
             st.warning(warning)
-        st.dataframe(table[["IDM", "DsM", "EFBasis", "EF_a", "EF_b", "Diff", "DiffPct"]],
+        st.dataframe(fm.frame(table[["IDM", "DsM", "EFBasis", "EF_a", "EF_b", "Diff", "DiffPct"]],
+                              {"EF_a": "factor", "EF_b": "factor", "Diff": "factor"},
+                              flow.display_format(conn)),
                      hide_index=True, use_container_width=True)
 
     with tab_v:
@@ -139,6 +143,7 @@ with flow.connect(ctx.path) as conn:
     with tab_h:
         log = pd.read_sql_query("SELECT ChangedAt, IDEFV, IDM, Action, OldEF, NewEF, Author, "
                                 "Reason FROM D19_EFChangeLog ORDER BY IDLog DESC", conn)
+        st.caption("The history and the corrections keep the full precision of the values.")
         st.dataframe(log, hide_index=True, use_container_width=True)
         st.download_button("Download CSV", log.to_csv(index=False), file_name="ef_history.csv",
                            mime="text/csv")
