@@ -217,7 +217,7 @@ def test_t05_grafico_aceita_selecao_e_t18_recebe_o_caso(projeto):
     assert not at.exception, at.exception
     # O AppTest nao simula o clique no grafico: confere que a T05 abre e que a T18
     # escolhe o veiculo que a T05 deixa em `results_vehicle`.
-    at18 = _abrir("../pages/5_Results", projeto, results_vehicle="A01 ICEV")
+    at18 = _abrir("T18_Vehicle_life", projeto, results_vehicle="A01 ICEV")
     assert not at18.exception, at18.exception
     escolha = next(s for s in at18.selectbox if s.label == "Vehicle")
-    assert escolha.value == "A01 ICEV"
+    assert escolha.value == "A01"      # CaseKey do veiculo "A01 ICEV"

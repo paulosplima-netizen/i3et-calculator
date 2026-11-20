@@ -148,4 +148,4 @@ with flow.connect(ctx.path) as conn:
         st.download_button("Download corrections (CSV)", corr.to_csv(index=False),
                            file_name="ef_corrections.csv", mime="text/csv")
 
-navigation.link("T18L")
+navigation.link("T18")

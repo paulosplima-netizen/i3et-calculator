@@ -18,6 +18,23 @@ def test_t18_vida_do_veiculo_abre_e_soma_os_estagios(projeto):  # noqa: F811
     assert abs(estagios[col].sum() - total[col].iloc[0]) < 0.2
 
 
+def test_t18_fundida_mostra_o_berco_ao_portao_e_o_detalhe(projeto):  # noqa: F811
+    """A T18 reune a antiga Results (0.9) e a Vehicle life: totais, grupo, material, bateria."""
+    at = _abrir("T18_Vehicle_life", projeto)
+    assert not at.exception, at.exception
+    valores = {m.label: m.value for m in at.metric}
+    assert "Cradle to gate (kg CO₂e)" in valores, list(valores)
+    abas = [t.label for t in at.tabs]
+    for esperado in ("Life stages", "By GREET group", "By material", "Battery", "Assembly"):
+        assert esperado in abas, abas
+    # o total do berco ao portao da metrica e a producao inicial da aba de etapas
+    tabela = at.dataframe[0].value
+    col = [c for c in tabela.columns if c.startswith("GHG")][0]
+    inicial = tabela[tabela["Stage"].str.startswith("Initial production")][col].iloc[0]
+    berco = float(valores["Cradle to gate (kg CO₂e)"].replace(",", ""))
+    assert abs(inicial - berco) < 0.2, (inicial, berco)
+
+
 def test_t18_sem_projeto_pede_para_abrir():
     at = _abrir("T18_Vehicle_life")
     assert not at.exception

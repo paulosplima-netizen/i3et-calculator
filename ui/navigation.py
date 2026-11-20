@@ -2,7 +2,7 @@
 
 Four menus plus global access. Each screen has one menu of origin; the other
 ways in are shortcuts (`st.page_link`). Only delivered screens are listed.
-T18 and T15 are the 0.9.0 Results and Emission factors screens, unchanged.
+T18 (Vehicle life) replaces the 0.9.0 Results screen and the 0.11 Vehicle life screen (20/11/2026).
 """
 
 from __future__ import annotations
@@ -21,11 +21,10 @@ SCREENS = {
     "T41": ("pages/T41_Validate_and_freeze.py", "Validate and Freeze Inputs", "❄"),
     "T05": ("pages/T05_Dashboard.py", "Dashboard", "📊"),
     "T06": ("pages/T06_Multiple_projects.py", "Multiple Projects", "🗂"),
-    "T18": ("pages/5_Results.py", "Manufacturing results", "🏗"),
+    "T18": ("pages/T18_Vehicle_life.py", "Vehicle life", "♻"),
     "T16": ("pages/T16_Maintenance.py", "Maintenance", "🛠"),
     "T17": ("pages/T17_End_of_life.py", "End of life", "🗑"),
     "T38": ("pages/T38_Mass_validation.py", "Mass validation", "⚖"),
-    "T18L": ("pages/T18_Vehicle_life.py", "Vehicle life", "♻"),
     "T09": ("pages/T09_Market_vehicles.py", "Market Vehicles", "🚗"),
     "T12": ("pages/T12_Subsystems.py", "Subsystems", "🧩"),
     "T13": ("pages/T13_Mass_parameters.py", "Mass parameters", "📏"),
@@ -40,7 +39,7 @@ SCREENS = {
 MENUS = {
     "Home": ["T01", "T02", "T03"],
     "Analysis Parameters Setup": ["T04", "T10", "T11", "T16", "T17", "T38", "T41"],
-    "Results": ["T05", "T06", "T18", "T18L"],
+    "Results": ["T05", "T06", "T18"],
     "Auxiliary Data": ["T09", "T12", "T13", "T14", "T15", "T46"],
     "Help and export": ["T07", "T08", "T47"],
 }

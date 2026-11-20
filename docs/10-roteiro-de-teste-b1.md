@@ -14,7 +14,7 @@
 | 8 | T38 | Informar a massa declarada de um veículo e calibrar | O `s` padrão é o das massas estimadas; o aviso aparece só se a diferença para o GREET for de 5 pontos ou mais |
 | 9 | T14 e T46 | Ver as participações de uma receita e de uma bateria | Participações com 2 casas decimais (formato padrão) |
 | 10 | T47 | Escolher o perfil Custom, massa em t, separador decimal vírgula; salvar | T13, T14, T18, T38 e T46 passam a mostrar o novo formato; o relatório diz qual formato usou |
-| 11 | T18 (Vehicle life) | Abrir uma rodada executada | A soma das etapas fecha com o total; a unidade segue o formato do projeto |
+| 11 | T18 (Vehicle life) | Abrir uma rodada executada; percorrer as abas Life stages, By GREET group, By material, Battery e Assembly | Os quatro totais no topo aparecem; a produção inicial da aba Life stages é igual ao Cradle to gate; a soma das etapas fecha com o total; a unidade segue o formato do projeto; vindo do clique na T05, o veículo já vem escolhido |
 | 12 | T08 | Exportar a rodada (JSON) | O arquivo baixa; o hash confere |
 
 Se algo falhar, anote o número do passo e a mensagem na tela.

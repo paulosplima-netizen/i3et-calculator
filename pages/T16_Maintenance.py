@@ -65,4 +65,4 @@ with flow.connect(ctx.path) as conn:
         except ValueError as e:
             st.error(str(e))
 
-navigation.link("T18L")
+navigation.link("T18")

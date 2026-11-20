@@ -40,4 +40,4 @@ with flow.connect(ctx.path) as conn:
         st.subheader(f"Last run ({last})")
         st.dataframe(eol, hide_index=True, use_container_width=True)
 
-navigation.link("T18L")
+navigation.link("T18")

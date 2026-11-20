@@ -25,7 +25,7 @@ PAGINAS = [
     "pages/2_Vehicles.py",
     "pages/3_Vehicle_parameters.py",
     "_superados/pages/4_Scenario.py",
-    "pages/5_Results.py",
+    "_superados/pages/5_Results.py",
     "_superados/pages/6_Emission_factors.py",
     "_superados/pages/7_Export.py",
 ]
@@ -68,7 +68,7 @@ def test_the_home_screen_offers_to_create_a_project():
 
 def test_the_version_bar_states_the_four_versions(projeto):
     """As quatro versoes e a fronteira, inteiras -- nao cortadas numa caixa."""
-    at = _abrir("pages/5_Results.py", projeto)
+    at = _abrir("_superados/pages/5_Results.py", projeto)
     barra = " ".join(m.value for m in at.markdown)
     for esperado in ("Mass params", "Material recipe", "Emission factors",
                      "Assembly", "Boundary", "MAT_ASM"):
@@ -78,7 +78,7 @@ def test_the_version_bar_states_the_four_versions(projeto):
 
 
 def test_the_results_screen_shows_the_cradle_to_gate_total(projeto):
-    at = _abrir("pages/5_Results.py", projeto)
+    at = _abrir("_superados/pages/5_Results.py", projeto)
     valores = {m.label: m.value for m in at.metric}
     assert "Cradle to gate (kg CO₂e)" in valores, list(valores)
     # o numero cabe inteiro na caixa: sem reticencias, com separador brasileiro

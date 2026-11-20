@@ -33,12 +33,12 @@ Cada linha traz a decisão do autor, a justificativa e o cuidado para os testes 
 2. **Modelo de bateria do usuário (`UB-`):** vale quando o parâmetro 32 do veículo traz o identificador; a T10 ainda não oferece a escolha.
 3. **I53 (fatores efetivos congelados):** resolvido para os fatores de emissão em 19/11/2026 (decisão 11): a rodada guarda o hash dos fatores efetivos das listas do usuário ou alteradas e a execução é recusada se mudarem. Receitas do usuário já guardavam hash (I30); montagens (`UA-`) e parâmetros de massa (`UM-`) passaram a guardar hash em 19/11/2026 (`user_versions` no instantâneo).
 4. **C02 por grupo (Estimated/Calibration/Final) não é gravado por rodada:** a T38 não avisa antes da rodada que A ou B ficaria negativo (I40); a rodada para com o valor mínimo.
-5. **Telas T18 e "Vehicle life" (T18L)** coexistem; falta decidir se uma absorve a outra.
+5. ~~Telas T18 e "Vehicle life" (T18L) coexistem~~ **Resolvido em 20/11/2026 (decisão do autor):** fundidas na T18 "Vehicle life" (`pages/T18_Vehicle_life.py`), com as abas Life stages, Initial production, By GREET group, By material, Battery, Assembly, Compare vehicles e Traceability. A rodada congelada não grava o detalhe por grupo e material, então a tela o recalcula do mesmo instantaneo (`run.recompute`, sem gravar; recusa com I53 se uma lista do usuário mudou). A tela da 0.9 foi para `_superados/pages/`.
 
 ## D. Pendências suas, que não bloqueiam
 
 - ~~Linhas 54 e 55 do M2 nas 6 receitas com `k` > 1~~ (conferidas pelo autor em 20/11/2026; não entram no cálculo, pois o rateio usa as massas estimadas, decisão 1 opção a).
 - ~~Reconstruir as fórmulas das PBP_BISD~~ (feito em 20/11/2026).
 - ~~Fonte de `X77`~~ (já está em `P30`; a revisão completa virá com o painel de parâmetros).
-- Item 5 das limitações (T18 × T18L): proposta de fusão em uma tela T18 com duas abas, aguardando sua decisão.
+- ~~T18 × T18L~~ (fundidas em 20/11/2026).
 - Opcional, do lado da planilha: ligar `P124:P133` a `Z92:Z101` (item 7) e fazer `T509` ler `X76` e `X77` (item 5).

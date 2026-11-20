@@ -3,6 +3,9 @@
 ## 0.11.0 - Bloco B1 (M1 and M2 complete)
 
 Changed (20/11/2026)
+- T18 Vehicle life merges the 0.9 Results screen and the 0.11 Vehicle life screen (tabs: life
+  stages, initial production, GREET group, material, battery, assembly); the 0.9 page moved to
+  `_superados/`. `core.run.recompute` rebuilds the cradle-to-gate detail of a frozen run.
 - Reference fixture regenerated from LCA_LV_i3ET_20261119.xlsx: the six PBP_BISD columns
   (CX:DC) now follow the P495 switch and match the replacements of the app (B1-DIV-03 closed).
 

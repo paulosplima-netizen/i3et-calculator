@@ -149,9 +149,8 @@ def freeze(conn: sqlite3.Connection, ida: int, *, calculator_version: str,
 #   Calcula cada caso do instantaneo congelado, nao o estado atual do projeto.
 #   `db_path` e o arquivo do projeto (o nucleo le as tabelas de parametros dele).
 # --------------------------------------------------------------------------
-def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
-    snap = json.loads(conn.execute("SELECT InputSnapshot FROM D09_Run WHERE RunID = ?",
-                                   (run_id,)).fetchone()[0])
+def stale_versions(conn: sqlite3.Connection, snap: dict) -> list[str]:
+    """Versoes do usuario cujo conteudo mudou depois do congelamento (I53)."""
     stale = [i for i, h in snap.get("emission_factors", {}).items()
              if ef_edit.factors_hash(conn, i) != h]
     for i, h in snap.get("user_versions", {}).items():
@@ -159,35 +158,65 @@ def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
                  else user_mass_params.params_hash(conn, i))
         if atual != h:
             stale.append(i)
+    return stale
+
+
+def _check_i53(conn: sqlite3.Connection, snap: dict) -> None:
+    stale = stale_versions(conn, snap)
     if stale:                                                          # I53
         raise ValueError("I53: " + ", ".join(stale) + " changed after "
                          "this run was frozen; freeze the analysis again (T41)")
+
+
+def _compute_cases(db_path: str, snap: dict):
+    """Calcula todos os casos do instantaneo; devolve (base, ef_table, cp_values, results)."""
     base = loader.load_sqlite(db_path)
     ef_table = loader.effective_emission_factors(base)
     log = Log()
     results = {}
     cp_values = {k: v[0] for k, v in snap["control_params"].items()}
+    for c in snap["cases"]:
+        if c["case"]["SizingOrigin"] == "Pending":
+            continue
+        alt, pf = c["alternative"], c["power_factors"]
+        gc = {p["IDVP"]: float(p["GC"] or 0.0) for p in c["params"]}
+        supplied = {p["IDVP"] for p in c["params"] if not p["IsCalculated"]}
+        battery = next((p["GCText"] for p in c["params"] if p["IDVP"] == 32), None)
+        battery = battery if battery not in (None, "", "ND") else None
+        res = calc.calculate_vehicle(
+            base, gc, powertrain=c["vehicle"]["IDVPT"], battery_id=battery,
+            idmpv=alt["IDMPV"], idvmr=alt["IDVMR"], idefv=alt["IDEFV"], idapv=alt["IDAPV"],
+            boundary=alt["Boundary"], ef_table=ef_table, supplied=supplied,
+            power_factors=(pf["ice"], pf["ee"]),
+            mass_adjustment_kg=float(c["case"].get("MassAdjustmentKg") or 0.0),
+            body_share=b1_choices.body_share(c["case"].get("MassBodyShare")),
+            generic_battery=battery_mod.generic_model(base.get("P58"), battery, cp_values),
+            log=log)
+        res["mass_calibration"]["BodyShareReference"] = b1_choices.reference_body_share(
+            base, alt["IDVMR"])
+        results[c["case"]["CaseKey"]] = (c, res)
+    return base, ef_table, cp_values, results
+
+
+def recompute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
+    """Recalcula, sem gravar, os resultados de uma rodada congelada ({CaseKey: (caso, res)}).
+
+    Serve as telas que mostram o detalhe (grupo, material, bateria, montagem) que a rodada nao
+    grava. O instantaneo e o mesmo da execucao, entao o resultado e o mesmo; se uma lista ou
+    versao do usuario mudou depois do congelamento, levanta ValueError (I53).
+    """
+    snap = json.loads(conn.execute("SELECT InputSnapshot FROM D09_Run WHERE RunID = ?",
+                                   (run_id,)).fetchone()[0])
+    _check_i53(conn, snap)
+    return _compute_cases(db_path, snap)[3]
+
+
+def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
+    snap = json.loads(conn.execute("SELECT InputSnapshot FROM D09_Run WHERE RunID = ?",
+                                   (run_id,)).fetchone()[0])
+    _check_i53(conn, snap)
     try:
-        for c in snap["cases"]:
-            if c["case"]["SizingOrigin"] == "Pending":
-                continue
-            alt, pf = c["alternative"], c["power_factors"]
-            gc = {p["IDVP"]: float(p["GC"] or 0.0) for p in c["params"]}
-            supplied = {p["IDVP"] for p in c["params"] if not p["IsCalculated"]}
-            battery = next((p["GCText"] for p in c["params"] if p["IDVP"] == 32), None)
-            battery = battery if battery not in (None, "", "ND") else None
-            res = calc.calculate_vehicle(
-                base, gc, powertrain=c["vehicle"]["IDVPT"], battery_id=battery,
-                idmpv=alt["IDMPV"], idvmr=alt["IDVMR"], idefv=alt["IDEFV"], idapv=alt["IDAPV"],
-                boundary=alt["Boundary"], ef_table=ef_table, supplied=supplied,
-                power_factors=(pf["ice"], pf["ee"]),
-                mass_adjustment_kg=float(c["case"].get("MassAdjustmentKg") or 0.0),
-                body_share=b1_choices.body_share(c["case"].get("MassBodyShare")),
-                generic_battery=battery_mod.generic_model(base.get("P58"), battery, cp_values),
-                log=log)
-            res["mass_calibration"]["BodyShareReference"] = b1_choices.reference_body_share(
-                base, alt["IDVMR"])
-            results[c["case"]["CaseKey"]] = (c, res)
+        base, ef_table, cp_values, results = _compute_cases(db_path, snap)
     except Exception:
         conn.execute("UPDATE D09_Run SET Status = 'Failed' WHERE RunID = ?", (run_id,))
         conn.commit()
