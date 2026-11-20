@@ -110,19 +110,19 @@ def test_cenario_do_usuario_igual_a_referencia_reproduz_a_referencia(base):
 
 # --------------------------------------------------------------------------
 # Paridade com a planilha: colunas do M2 com receita em P15
-#   Ficam de fora as colunas PBP_BISD (CX:DC), que tem pneus e bateria auxiliar
-#   proprios na planilha, e as de receitas BISD9 e BISD11, que nao estao em P15.
+#   Ficam de fora as colunas de receitas BISD9 e BISD11, que nao estao em P15. As colunas
+#   PBP_BISD entram desde que o autor as reconstruiu na planilha de 19/11/2026 (B1-DIV-03).
 # --------------------------------------------------------------------------
 def _validas(c, ref):
     ids = {r[0] for r in c.execute("SELECT IDVMR FROM P15_VehicleMaterialRecipe")}
     return {col: d for col, d in ref.items()
-            if "PBP_" not in d["recipe"] and _idvmr(d["recipe"]) in ids}
+            if _idvmr(d["recipe"]) in ids}
 
 
 def test_parcelas_reproduzem_t496_t499_t501(base, ref):
     c, items, shares, ef = base
     cols = _validas(c, ref)
-    assert len(cols) == 108
+    assert len(cols) == 126
     for col, d in cols.items():
         r = d["rows"]
         fm, aux = _entradas(c, d["recipe"], r, ef)

@@ -55,11 +55,11 @@ def test_reposicoes_t495_formas(ref):
     forma = {c: _forma_t495(v["rows"], v["switch_P495"]) for c, v in cols.items()}
     antigas = sorted(c for c, f in forma.items() if f == "antiga")
     assert antigas == []
-    # as 6 colunas PBP_BISD (CX:DC) trazem T495 digitado (0) e nao seguem a formula (B1-DIV-03)
+    # as 6 colunas PBP_BISD (CX:DC) foram reconstruidas pelo autor em 19/11 (B1-DIV-03)
     fora = sorted(c for c, f in forma.items() if f is None)
-    assert fora == ["CX", "CY", "CZ", "DA", "DB", "DC"]
-    assert sum(f == "seletor" for f in forma.values()) == 122
-    for c in ("T", "AC", "AF", "AO", "AR", "CA", "CD", "CV", "FD", "FE", "FF", "FG"):
+    assert fora == []
+    assert sum(f == "seletor" for f in forma.values()) == 128
+    for c in ("T", "AC", "AF", "AO", "AR", "CA", "CD", "CV", "CX", "DC", "FD", "FE", "FF", "FG"):
         assert forma[c] == "seletor", c
 
 

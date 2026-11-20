@@ -152,18 +152,13 @@ def main() -> int:
               f"{_f(max(pcs), 2)}% do T511 (mediana {_f(statistics.median(pcs), 2)}%). "
               "**Sugestão para o i3ET:** usar a fórmula com seletor nas 28 colunas (o autor "
               "informou que corrigirá).", ""]
-    t += ["## B1-DIV-03 — Colunas PBP_BISD", "",
-          f"As {len(d3)} colunas do Projeto do Berço ao Portão (`CX:DC` e outras) têm pneus e "
-          "bateria auxiliar próprios na "
-          "planilha (jogo de pneus e reposição da bateria auxiliar diferentes dos demais). O "
-          "aplicativo usa os mesmos itens de reposição (P31) para todas as receitas. Diferença "
-          "planilha − aplicativo na vida de 200 mil km:", "",
-          "| Coluna | Receita | Pneus | Bateria auxiliar | Fluidos | Total | % do T511 |",
-          "|---|---|---|---|---|---|---|"]
-    for col, rec, a, b, cc, tot, pc in d3:
-        t.append(f"| {col} | {rec} | {_f(a)} | {_f(b)} | {_f(cc, 2)} | {_f(tot)} | {_f(pc, 2)} |")
-    t += ["", "**Pendência:** identificar a fórmula própria dessas colunas (autor) antes de decidir "
-          "se P31 ganha um cenário PBP.", "",
+    t += ["## B1-DIV-03 — Colunas PBP_BISD (resolvida em 20/11/2026)", "",
+          "As colunas `CX:DC` e as demais do Projeto do Berço ao Portão traziam `T495` digitado "
+          "(0) e, na comparação, pneus e bateria auxiliar aparentemente próprios. O autor "
+          "reconstruiu as fórmulas em `LCA_LV_i3ET_20261119.xlsx`: as 128 colunas completas do "
+          "M2 seguem agora o seletor `P495`, e as 18 colunas PBP_BISD passam a reproduzir as "
+          "reposições do aplicativo (P31) no teste de paridade. Não é necessário um cenário "
+          "PBP em P31.", "",
           "## Efeito por ordem de grandeza",
           "", "- Massa da glider no fim de vida: a linha 662 do M2 soma as massas de material e passa "
           "0,1% da massa por grupo nas receitas com participação negativa zerada (divergência D8, "

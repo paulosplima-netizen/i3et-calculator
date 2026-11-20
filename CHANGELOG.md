@@ -2,6 +2,10 @@
 
 ## 0.11.0 - Bloco B1 (M1 and M2 complete)
 
+Changed (20/11/2026)
+- Reference fixture regenerated from LCA_LV_i3ET_20261119.xlsx: the six PBP_BISD columns
+  (CX:DC) now follow the P495 switch and match the replacements of the app (B1-DIV-03 closed).
+
 Added
 - Screens T12 Subsystems, T13 Mass parameters, T14 Materials and recipes,
   T15 Emission factors, T16 Maintenance, T17 End of life, T18 Vehicle life,
