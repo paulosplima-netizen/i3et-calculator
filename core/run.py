@@ -233,14 +233,12 @@ def execute(conn: sqlite3.Connection, db_path: str, run_id: str) -> dict:
 #   Com as escolhas padrao (core/b1_results.Options); as escolhas do usuario
 #   (D10, D06) entram quando as telas T12-T18 existirem.
 # --------------------------------------------------------------------------
-def write_b1(conn, run_id, base, ef_table, results, cp_values, choices=None) -> None:
+def b1_frames(base, ef_table, results, cp_values, choices=None) -> dict:
+    """C15, C16, C34 e C35 de cada caso ({CaseKey: (caso, quadros)}), sem gravar."""
     from . import b1_results
-    if "P31" not in base or conn.execute(
-            "SELECT name FROM sqlite_master WHERE name = 'C35_VehicleLifeStage'"
-    ).fetchone() is None:
-        return
     base_options = b1_choices.options(choices, cp_values)
-    for c, res in results.values():
+    out = {}
+    for key, (c, res) in results.items():
         case = c["case"]
         options = copy.copy(base_options)
         mb = b1_choices.mass_basis(case, c["params"])
@@ -248,11 +246,46 @@ def write_b1(conn, run_id, base, ef_table, results, cp_values, choices=None) -> 
         options.declared_source = mb["source"]
         options.mass_basis = mb["basis"]
         ef = b1_results.ef_for(ef_table, c["alternative"]["IDEFV"])
-        frames = b1_results.compute(res, base, ef, options,
-                                    boundary=c["alternative"]["Boundary"])
+        out[key] = (c, b1_results.compute(res, base, ef, options,
+                                          boundary=c["alternative"]["Boundary"]))
+    return out
+
+
+def write_b1(conn, run_id, base, ef_table, results, cp_values, choices=None) -> None:
+    from . import b1_results
+    if "P31" not in base or conn.execute(
+            "SELECT name FROM sqlite_master WHERE name = 'C35_VehicleLifeStage'"
+    ).fetchone() is None:
+        return
+    for c, frames in b1_frames(base, ef_table, results, cp_values, choices).values():
+        case = c["case"]
         b1_results.write_db(conn, run_id, ida=case["IDA"], idcase=case["IDCase"],
                             idv=case["IDV"], idea=case["IDEA"], frames=frames)
     conn.commit()
+
+
+def report_tables(conn: sqlite3.Connection, db_path: str, run_id: str):
+    """As tabelas do relatorio (R00..R44, mais R12..R15 do B1) de uma rodada congelada.
+
+    Recalcula a partir do instantaneo (sem gravar), valida e devolve (R, log). Levanta
+    ValueError se uma lista ou versao do usuario mudou depois do congelamento (I53).
+    """
+    from . import report, validate
+    snap = json.loads(conn.execute("SELECT InputSnapshot FROM D09_Run WHERE RunID = ?",
+                                   (run_id,)).fetchone()[0])
+    _check_i53(conn, snap)
+    base, ef_table, cp_values, results = _compute_cases(db_path, snap)
+    log = Log()
+    validate.check_base(base, log)
+    by_scenario = {(c["case"]["IDV"], c["case"]["IDEA"]): res for c, res in results.values()}
+    for (idv, idea), res in sorted(by_scenario.items()):
+        validate.check_result(res, log, context=f"IDV {idv} / IDEA {idea}")
+    b1 = None
+    if "P31" in base:
+        b1 = {(c["case"]["IDV"], c["case"]["IDEA"]): fr
+              for c, fr in b1_frames(base, ef_table, results, cp_values,
+                                     snap.get("b1")).values()}
+    return report.build(base, by_scenario, log=log, b1=b1), log
 
 
 # --------------------------------------------------------------------------

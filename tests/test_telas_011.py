@@ -206,3 +206,42 @@ def test_t15_aplica_as_casas_decimais_do_formato(projeto):  # noqa: F811
     casas = fm.DEFAULT.decimals["factor"]
     vals = tab["EF"].dropna()
     assert len(vals) and all(abs(v - round(v, casas)) < 1e-12 for v in vals)
+
+
+def test_t08_prepara_excel_csv_e_relatorio_no_formato_da_t47(projeto):  # noqa: F811
+    at = _abrir("T08_Export", projeto)
+    assert not at.exception, at.exception
+    botao = next(b for b in at.button if b.label == "Prepare Excel, CSV and report")
+    botao.click().run()
+    assert not at.exception, at.exception
+    pronto = at.session_state["t08_files"]
+    assert pronto[0] == projeto[1]
+    assert set(pronto[1]) == {"xlsx", "zip", "html"} and all(pronto[1].values())
+    import io
+
+    import openpyxl
+    wb = openpyxl.load_workbook(io.BytesIO(pronto[1]["xlsx"]))
+    assert "R10" in wb.sheetnames and "R14" in wb.sheetnames
+
+
+def test_t05_e_t06_seguem_o_formato(projeto):  # noqa: F811
+    import sqlite3
+
+    from core import formatting as fm
+    conn = sqlite3.connect(projeto[0])
+    cru = conn.execute("SELECT Value FROM R45_PowertrainSummary WHERE IDInd = 'O20' AND "
+                       "Value IS NOT NULL LIMIT 1").fetchone()[0]
+    conn.close()
+    texto, unidade = fm.indicator(cru, "kg", fm.DEFAULT)
+    assert texto == fm.fmt(cru, "mass", fm.DEFAULT) and unidade == "kg"
+    for tela in ("T05_Dashboard", "T06_Multiple_projects"):
+        at = _abrir(tela, projeto)
+        assert not at.exception, (tela, at.exception)
+
+
+def test_formatting_indicator_converte_para_toneladas():
+    from core import formatting as fm
+    f = fm.Format(ghg_unit="t", mass_unit="t")
+    assert fm.indicator(4500.0, "kg CO2e/v", f)[1] == "t CO₂e/v"
+    assert fm.indicator(1500.0, "kg", f)[1] == "t"
+    assert fm.indicator(None, "kW", f) == ("", "kW")

@@ -6,12 +6,14 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
+from core import formatting as fm
 from core import provenance
 from ui import flow, navigation
 
 ctx = flow.begin("Dashboard")
 with flow.connect(ctx.path) as conn:
     ida = flow.pick_analysis(conn)
+    FMT = flow.display_format(conn)
     rs = flow.runs(conn, ida) if ida else []
     if not rs:
         st.info("No frozen run yet. Use **Validate and Freeze Inputs** (T41).")
@@ -35,9 +37,10 @@ with flow.connect(ctx.path) as conn:
 df["Seal"] = [provenance.label(flow.seal_of(o), seq) for o in df["ValueOrigin"]]
 shown = df[df["ValueOrigin"].notna()]
 st.subheader("Results")
-table = shown.assign(Result=[
-    f"{v:.6g}" if v == v and v is not None else (t or "")
-    for v, t in zip(shown["Value"], shown["ValueText"])])
+_shown = [fm.indicator(v, u, FMT) for v, u in zip(shown["Value"], shown["utInd"])]
+table = shown.assign(
+    Result=[t if t else (vt or "") for (t, _), vt in zip(_shown, shown["ValueText"])],
+    utInd=[u for _, u in _shown])
 st.dataframe(table[["CaseKey", "IDVPT", "IDInd", "Result", "utInd", "Seal", "DsInd"]]
              .rename(columns={"IDVPT": "Powertrain", "IDInd": "Indicator", "DsInd": "Description",
                               "utInd": "Unit"}),

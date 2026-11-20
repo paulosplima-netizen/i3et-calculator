@@ -247,6 +247,30 @@ def column_class(name) -> str | None:
     return None
 
 
+_UNIT_CLASS = {"kg": "mass", "kg CO2e/v": "ghg", "kg CO2e/kg of v": "ratio", "kW": "power",
+               "m": "distance_m"}
+
+
+def indicator(value, ut, f: Format = DEFAULT) -> tuple[str, str]:
+    """Texto e unidade de um indicador de saida (R45/R46), pela unidade da planilha.
+
+    Massa e GHG por veiculo seguem a unidade (kg/t) e as casas do formato; potencia e razao
+    seguem as casas; o resto usa as casas genericas. Sem valor, devolve ("", unidade).
+    """
+    ut = "" if ut is None else str(ut)
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return "", ut
+    qclass = _UNIT_CLASS.get(ut, "generic")
+    if qclass == "distance_m":
+        qclass = "generic"
+    text = fmt(value, qclass, f)
+    if qclass == "mass":
+        return text, unit("mass", f)
+    if qclass == "ghg":
+        return text, f"{f.ghg_unit} CO₂e/v"
+    return text, ut
+
+
 def header(name, qclass: str | None, f: Format = DEFAULT) -> str:
     """Nome da coluna com a unidade, quando o formato muda a unidade guardada."""
     changed = (qclass == "mass" and f.mass_unit == "t") or (qclass == "ghg" and f.ghg_unit == "t") \

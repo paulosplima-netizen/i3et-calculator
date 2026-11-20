@@ -5,6 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from core import formatting as fm
 from core import provenance
 from ui import flow
 
@@ -23,6 +24,11 @@ frames = []
 for path in chosen:
     with flow.connect(path) as conn:
         df = pd.read_sql_query("SELECT * FROM R46_RunComparison", conn)
+        fmt_ = flow.display_format(conn)          # each project keeps its own T47 format
+    shown = [fm.indicator(v, u, fmt_) for v, u in zip(df["Value"], df["utInd"])]
+    df["Value"] = [t if t else (vt or "") for (t, _), vt in zip(shown, df["ValueText"])]
+    df["utInd"] = [u for _, u in shown]
+    df = df.drop(columns=["ValueText"])
     df.insert(0, "Project", names[path])
     frames.append(df)
 if frames:

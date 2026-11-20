@@ -3,6 +3,10 @@
 ## 0.11.0 - Bloco B1 (M1 and M2 complete)
 
 Changed (20/11/2026)
+- T08 Export: new "Prepare Excel, CSV and report" for a frozen run (tables R00-R15 recalculated
+  from the snapshot, validated), following the T47 display format; JSON stays full precision.
+  T05 and T06 show indicators in the T47 format (`formatting.indicator`). T16 has no quantities
+  of the format classes (km intervals), so it is unchanged.
 - T15 Emission factors and T17 End of life now follow the display format of T47 (decimal places
   and units); before, they showed the raw values. History and corrections keep full precision.
 - T14 Materials and recipes: new "All groups (vehicle bill of materials)" option in the Group
