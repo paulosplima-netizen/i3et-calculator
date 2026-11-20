@@ -3,6 +3,10 @@
 ## 0.11.0 - Bloco B1 (M1 and M2 complete)
 
 Changed (20/11/2026)
+- Mass calibration follows parameter 25: a known mass (market vehicle) is calibrated
+  automatically (gap goes to Body and Chassis by the estimated share); a calculated parameter 25
+  (theoretical vehicle) is not allocated. New D07.MassCalibrationMode (ON/OFF) and C34.MassBasis
+  values; T38 shows the basis and the automatic switch.
 - T18 Vehicle life merges the 0.9 Results screen and the 0.11 Vehicle life screen (tabs: life
   stages, initial production, GREET group, material, battery, assembly); the 0.9 page moved to
   `_superados/`. `core.run.recompute` rebuilds the cradle-to-gate detail of a frozen run.
