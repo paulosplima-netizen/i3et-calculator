@@ -6,7 +6,7 @@
 |---|---|---|---|
 | 1 | T03 | Criar uma análise EC com a categoria padrão | A análise aparece; os campos Emission factors, Mass parameters e Assembly listam também as suas cópias, quando existirem |
 | 2 | T41 | Validar e congelar | Sem erros; uma rodada `Frozen`; depois executar e ver o resultado |
-| 3 | T12 | Abrir e procurar "Hybrid" | O IDSG 43 aparece como módulo de combinação híbrida; a legenda não fala em defeito da planilha |
+| 3 | T12 | Procurar "Híbrida" (ou IDSG 43) na tabela e ler a legenda abaixo dela | A linha "Modulo de Combinação Híbrida (adicional de massa)" existe (nome em português, como no M1); a legenda em inglês fala em módulo de combinação híbrida e não em defeito da planilha |
 | 4 | T13 | Copiar o conjunto de parâmetros (UM-1), mudar MR de um subsistema | A pré-visualização muda; a base não muda |
 | 5 | T15 | Escolher uma lista Typed, corrigir um fator com motivo | Marca "Typed, altered"; o histórico mostra a alteração; a aba History exporta as correções em CSV |
 | 6 | T15 | Aba "Versions & coverage": copiar uma lista para uma versão Typed | A cópia aparece como "Typed, derived from …" e é editável |
