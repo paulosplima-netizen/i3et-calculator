@@ -316,3 +316,32 @@ def test_t48_valor_adotado_e_o_do_catalogo():
     assert "400" in html
 
 
+
+
+def test_t48_coluna_adopted_segue_o_projeto_aberto(projeto, tmp_path):  # noqa: F811
+    import shutil
+    import sqlite3
+
+    from core import control_params as cp
+    copia = str(tmp_path / "editado.sqlite")
+    shutil.copyfile(projeto[0], copia)
+    conn = sqlite3.connect(copia)
+    ida = conn.execute("SELECT MAX(IDA) FROM D06_Analysis").fetchone()[0]
+    perfil = conn.execute("SELECT ParamProfile FROM D06_Analysis WHERE IDA=?",
+                          (ida,)).fetchone()[0]
+    cp.set_value(conn, ida, "X23", perfil, value=450.0, source="teste")
+    conn.commit()
+    conn.close()
+    at = _abrir("T48_Parameter_review", (copia, projeto[1]))
+    assert not at.exception, at.exception
+    html = _html(at)
+    assert "Adopted in Telas" in html
+    assert "edited in this project" in html and "<b>450</b>" in html
+    assert "<s style='color:#9ca3af'>400</s>" in html
+    assert any("1 edited" in c.value for c in at.caption)
+
+
+def test_t48_sem_projeto_o_titulo_e_o_do_modelo_excel():
+    at = _abrir("T48_Parameter_review")
+    assert "Adopted in Excel Model LCA_LV_i3ET_20261119" in _html(at)
+    assert "edited in this project" not in _html(at)

@@ -1,11 +1,12 @@
 """T48 · Parameter review — the expert-block parameters with the periodic literature review.
 
-Query only, independent of any project: ranges and adopted values come from the reference
-base (P30); the review (P64–P68) adds the recommendation, the sources, the alerts of new
-developments and the notes. The "Adopted" column is the value of the workbook catalogue
-(not editable here and not tied to a project): a suggested value never reaches the
-calculation — to change a value of an analysis, open Selected Parameters (T04). The
-workbook prevails and the reference base is immutable.
+Query only. Ranges, recommendations, sources, alerts and notes come from the reference base
+(P30, P64–P68). The "Adopted in …" column follows the open project: its values are the
+workbook catalogue (the Excel model) overlaid with what the user changed in that project's
+analysis (D08); edited values are marked and show the workbook value struck through. With no
+project open, it shows the Excel model itself. Nothing is editable here and a suggested value
+never reaches the calculation — to change a value of an analysis, open Selected Parameters
+(T04). The workbook prevails and the reference base is immutable.
 New screen: it replaces the "I3et Parametros Expert" artifact and has no revised prototype.
 """
 
@@ -19,6 +20,7 @@ from contextlib import closing
 import streamlit as st
 
 from core import param_review as pr
+from core import project as project_core
 from ui import flow, navigation, state
 
 flow.begin("Parameter review", needs_project=False)
@@ -30,6 +32,7 @@ SEV_COLOR = {"high": "#c0392b", "medium": "#d98a00", "low": "#6b7280"}
 TAG_LABEL = {"bat": "Battery", "ice": "Combustion engine"}
 FILTERS = ["All", "Batteries", "Combustion engines", "With recommendation"]
 CHANGED = 1e-12
+MASTER_NAME = "Excel Model LCA_LV_i3ET_20261119"
 BLOCK_TITLE = pr.BLOCK_NAMES
 
 
@@ -98,7 +101,13 @@ def _row_html(r: pr.PanelRow, dec) -> str:
     tag = (f" <span style='font-size:11px;background:#f3f4f6;border-radius:8px;"
            f"padding:0 6px'>{_e(TAG_LABEL[rev.tag])}</span>") if rev.tag else ""
     adotado = r.text if (r.value is None and r.text) else None
-    cel_val = _e(adotado) if adotado else _cell(r.value, rev.baseline_value, r.unit, dec)
+    if r.source == "User":
+        antes = _e(r.text if r.default is None else pr.fmt(r.default, r.unit, dec))
+        agora = _e(adotado) if adotado else _e(pr.fmt(r.value, r.unit, dec))
+        cel_val = (f"<s style='color:#9ca3af'>{antes}</s> <b>{agora}</b>"
+                   "<div style='font-size:11px;color:#9a5b00'>edited in this project</div>")
+    else:
+        cel_val = _e(adotado) if adotado else _cell(r.value, rev.baseline_value, r.unit, dec)
     fontes = "<br>".join(_e(ref) + (f" ({_e(y)})" if y else "") for ref, y in rev.sources)
     nota = f"<div style='font-size:11px;color:#6b7280'>{_e(r.note)}</div>" if r.note else ""
     avisos = "".join(f"<div style='font-size:11px;color:#c0392b'>⚠ {_e(f)}</div>"
@@ -116,10 +125,10 @@ def _row_html(r: pr.PanelRow, dec) -> str:
         f"<td {td};font-size:11px;color:#4b5563'>{fontes}</td></tr>")
 
 
-def _table_html(grupo: list[pr.PanelRow], dec) -> str:
+def _table_html(grupo: list[pr.PanelRow], dec, adopted_title: str) -> str:
     th = "style='text-align:left;padding:6px 8px;font-size:12px;color:#4b5563'"
     head = ("<tr>" + "".join(f"<th {th}>{c}</th>" for c in (
-        "#", "Parameter", "Min.", "Most freq.", "Max.", "Adopted", "Recommendation",
+        "#", "Parameter", "Min.", "Most freq.", "Max.", _e(adopted_title), "Recommendation",
         "Sources")) + "</tr>")
     return ("<div style='overflow-x:auto'><table style='border-collapse:collapse;width:100%;"
             f"font-size:13px'>{head}{''.join(_row_html(r, dec) for r in grupo)}</table></div>")
@@ -150,8 +159,24 @@ def _alert_html(a: pr.Alert) -> str:
 
 # Consulta independente de projeto: tudo vem da base de referencia (P30, P64–P68).
 with closing(sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)) as conn:
+    adopted_title, adopted_note, overrides = f"Adopted in {MASTER_NAME}", None, None
+    ppath = state.project_path()
+    if ppath and flow.selected_count() == 1:
+        try:
+            with closing(sqlite3.connect(f"file:{ppath}?mode=ro", uri=True)) as pconn:
+                ident = project_core.identity(pconn)
+                ida = flow.current_ida(pconn)
+                if ident and ida is not None:
+                    prof = pconn.execute("SELECT ParamProfile FROM D06_Analysis WHERE IDA = ?",
+                                         (ida,)).fetchone()[0]
+                    overrides = pr.user_overrides(pconn, ida, prof)
+                    adopted_title = f"Adopted in {ident['ProjectName']}"
+                    adopted_note = (f"Adopted values: project {ident['ProjectName']} · analysis "
+                                    f"A{ida} · depth {prof} · {len(overrides)} edited.")
+        except sqlite3.Error:
+            overrides = None
     try:
-        rows = pr.panel_rows(conn)
+        rows = pr.panel_rows(conn, overrides=overrides)
     except sqlite3.Error:
         rows = []
     if not rows:
@@ -169,6 +194,10 @@ with closing(sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)) as
         f"Baseline {summary['review_date']} · adopted values and ranges are those of the "
         "workbook catalogue; suggestions do not change any calculation. "
         "The workbook prevails.")
+    if adopted_note:
+        st.caption(adopted_note)
+    else:
+        st.caption("No project open: adopted values are those of the Excel model.")
     k = st.columns(6)
     k[0].metric("Parameters", summary["total"])
     k[1].metric("Battery", summary["battery"])
@@ -205,7 +234,7 @@ with closing(sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)) as
         if not grupo:
             continue
         st.markdown(f"#### {bloco} — {BLOCK_TITLE.get(bloco, '')}")
-        st.markdown(_table_html(grupo, dec), unsafe_allow_html=True)
+        st.markdown(_table_html(grupo, dec, adopted_title), unsafe_allow_html=True)
 
     if notes:
         st.subheader("Reading notes")
