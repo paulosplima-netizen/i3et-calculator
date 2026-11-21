@@ -245,3 +245,42 @@ def test_formatting_indicator_converte_para_toneladas():
     assert fm.indicator(4500.0, "kg CO2e/v", f)[1] == "t CO₂e/v"
     assert fm.indicator(1500.0, "kg", f)[1] == "t"
     assert fm.indicator(None, "kW", f) == ("", "kW")
+
+
+# --------------------------------------------------------------------------
+# Painel de parametros (T48)
+# --------------------------------------------------------------------------
+def test_t48_abre_e_mostra_os_120_parametros(projeto):  # noqa: F811
+    at = _abrir("T48_Parameter_review", projeto)
+    assert not at.exception, at.exception
+    valores = {m.label: m.value for m in at.metric}
+    assert valores["Parameters"] == "120"
+    assert (valores["Keep"], valores["Adjust"], valores["Verify"]) == ("106", "9", "5")
+    assert len(at.dataframe[0].value) == 120
+
+
+def test_t48_filtro_por_recomendacao(projeto):  # noqa: F811
+    at = _abrir("T48_Parameter_review", projeto)
+    at.multiselect[1].set_value(["adjust"]).run()
+    assert not at.exception, at.exception
+    assert len(at.dataframe[0].value) == 9
+
+
+def test_t48_nao_altera_o_projeto(projeto):  # noqa: F811
+    import sqlite3
+    conn = sqlite3.connect(projeto[0])
+    antes = conn.execute("SELECT COUNT(*) FROM D08_ControlParamValue").fetchone()[0]
+    conn.close()
+    at = _abrir("T48_Parameter_review", projeto)
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    assert conn.execute("SELECT COUNT(*) FROM D08_ControlParamValue").fetchone()[0] == antes
+    conn.close()
+
+
+def test_t04_aceita_o_parametro_vindo_da_t48(projeto):  # noqa: F811
+    at = _abrir("T04_Selected_parameters", projeto)
+    at.session_state["t04_prefill"] = "X37"
+    at.run()
+    assert not at.exception, at.exception
+    assert at.session_state["t04_term"] == "X37"

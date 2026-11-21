@@ -1093,6 +1093,33 @@ CREATE TABLE IF NOT EXISTS P63_RecipeBodyChassisMass (
   BodyShareOfMassAdj REAL NOT NULL CHECK (BodyShareOfMassAdj BETWEEN 0 AND 1),
   SourceNote         TEXT
 );
+
+CREATE TABLE IF NOT EXISTS P64_ParamRevision (
+  IDRV           INTEGER PRIMARY KEY,
+  IDCP           TEXT NOT NULL REFERENCES P30_ControlParam(IDCP),
+  ReviewDate     TEXT NOT NULL,
+  Action         TEXT NOT NULL CHECK (Action IN ('keep','adjust','verify')),
+  Field          TEXT CHECK (Field IS NULL OR Field IN ('min','mf','max')),
+  SuggestedValue REAL,
+  FromValue      REAL,
+  LinkedAlerts   INTEGER,
+  Rationale      TEXT NOT NULL,
+  Caveat         TEXT,
+  Alert          TEXT,
+  Tag            TEXT CHECK (Tag IS NULL OR Tag IN ('bat','ice')),
+  Spotlight      INTEGER NOT NULL DEFAULT 0 CHECK (Spotlight IN (0,1)),
+  Accepted       INTEGER NOT NULL DEFAULT 0 CHECK (Accepted IN (0,1)),
+  AcceptedDate   TEXT,
+  UNIQUE (IDCP, ReviewDate)
+);
+
+CREATE TABLE IF NOT EXISTS P65_ParamRevisionSource (
+  IDRV      INTEGER NOT NULL REFERENCES P64_ParamRevision(IDRV),
+  Seq       INTEGER NOT NULL,
+  Reference TEXT NOT NULL,
+  Year      TEXT,
+  PRIMARY KEY (IDRV, Seq)
+);
 """
 
 DDL_USER_011 = """
@@ -1300,7 +1327,13 @@ CREATE TABLE IF NOT EXISTS C35_VehicleLifeStage (
 #: Tabelas de parametros do B1, pais primeiro.
 PARAM_TABLES_011 = ["P31_MaintenanceItem", "P31b_MaintenancePartShare",
                     "P32_CorrectiveMaintenance", "P61_BRRouteFactor",
-                    "P62_BRRouteShare", "P63_RecipeBodyChassisMass"]
+                    "P62_BRRouteShare", "P63_RecipeBodyChassisMass",
+                    "P64_ParamRevision", "P65_ParamRevisionSource"]
+
+#: Tabelas de parametros que so informam (revisao periodica dos parametros): nao entram
+#: no calculo e por isso ficam fora do ParamBaseHash. Uma revisao nova nao muda a
+#: identidade da base nem invalida rodadas congeladas.
+EDITORIAL_TABLES = ("P64_ParamRevision", "P65_ParamRevisionSource")
 
 #: Tabelas do usuario do B1, pais primeiro.
 USER_TABLES_011 = ["D10_MaintenanceScenario", "D10_Item", "D13_UserRecipe",
@@ -1433,7 +1466,7 @@ def param_base_hash(conn: sqlite3.Connection) -> str:
     presentes = table_names(conn)
     h = hashlib.sha256()
     for tabela in PARAM_TABLES + PARAM_TABLES_010 + PARAM_TABLES_011:
-        if tabela not in presentes:
+        if tabela not in presentes or tabela in EDITORIAL_TABLES:
             continue
         h.update(tabela.encode("utf-8"))
         chave = [r[1] for r in sorted(conn.execute(f"PRAGMA table_info({tabela})"),

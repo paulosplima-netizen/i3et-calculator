@@ -40,7 +40,10 @@ with flow.connect(ctx.path) as conn:
         "ORDER BY Section, Cell").fetchall()
 
     t1, t2, t3 = st.columns([3, 1.5, 2])
-    term = t1.text_input("Search parameter", placeholder="id, name or unit").strip().lower()
+    if "t04_prefill" in st.session_state:       # vindo da T48 (Parameter review)
+        st.session_state["t04_term"] = st.session_state.pop("t04_prefill")
+    term = t1.text_input("Search parameter", placeholder="id, name or unit",
+                         key="t04_term").strip().lower()
     only_changed = t2.checkbox("Changed only")
     n_over = sum(1 for e in eff.values() if e.source == "User")
     if t3.button("Restore this depth", disabled=not (ctx.can_edit and n_over)):

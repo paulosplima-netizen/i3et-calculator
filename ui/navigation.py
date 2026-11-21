@@ -34,13 +34,14 @@ SCREENS = {
     "T07": ("pages/T07_Equations_and_glossary.py", "Equations & glossary", "📖"),
     "T08": ("pages/T08_Export.py", "Export", "📤"),
     "T47": ("pages/T47_Display_format.py", "Display format", "🔢"),
+    "T48": ("pages/T48_Parameter_review.py", "Parameter review", "🔍"),
 }
 
 MENUS = {
     "Home": ["T01", "T02", "T03"],
     "Analysis Parameters Setup": ["T04", "T10", "T11", "T16", "T17", "T38", "T41"],
     "Results": ["T05", "T06", "T18"],
-    "Auxiliary Data": ["T09", "T12", "T13", "T14", "T15", "T46"],
+    "Auxiliary Data": ["T09", "T12", "T13", "T14", "T15", "T46", "T48"],
     "Help and export": ["T07", "T08", "T47"],
 }
 

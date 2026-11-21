@@ -1,0 +1,121 @@
+﻿IDRV;IDCP;ReviewDate;Action;Field;SuggestedValue;FromValue;LinkedAlerts;Rationale;Caveat;Alert;Tag;Spotlight;Accepted;AcceptedDate
+1;X19;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+2;X20;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+3;X21;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+4;X22;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+5;X23;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+6;X24;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+7;X25;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+8;X26;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+9;X27;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+10;X28;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+11;X29;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+12;X30;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+13;X31;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+14;X32;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+15;X33;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+16;X35;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;1;0;
+17;X36;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;0;0;
+18;X37;2026-08-03;adjust;max;0.33;0.312;1;The production Chery 1.5 TDGI reports 44.5% peak thermal efficiency. Converting peak to cycle-average in a hybrid with load point shifting (~72–75% of peak), the plausible ceiling for the compact HEV rises from 31.2% to ~33%.;Press/manufacturer source, neither peer-reviewed nor measured on a homologated cycle. Peak is not cycle-average.;;ice;1;1;2026-08-04
+19;X38;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;0;0;
+20;X39;2026-08-03;adjust;max;0.3465;0.3432;1;Follows from the new ceiling of #18, keeping the already adopted HEV→PHEV load point shifting factor of 1.05 (0.330 × 1.05).;"Derived adjustment; only meaningful if #18 is accepted.";;ice;1;1;2026-08-04
+21;X40;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;1;0;
+22;X41;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;0;0;
+23;X42;2026-08-03;adjust;max;0.34;0.3125;0;Geely BHE/i-HEV at 48.41% and Chery at 48% (prototype) / 44.5% (production), both peak values. Applying the same peak-to-cycle-average conversion, the 31.25% maximum is outdated.;"Manufacturer announcements and trade press; one of the figures (48.5%) differs across sources. Peak is not cycle-average.";;ice;1;1;2026-08-04
+24;X43;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;0;0;
+25;X44;2026-08-03;adjust;max;0.374;0.359375;0;Follows from the new ceiling of #23, keeping the already adopted HEV→PHEV load point shifting factor of 1.10 (0.340 × 1.10).;"Derived adjustment; only meaningful if #23 is accepted.";;ice;1;1;2026-08-04
+26;X45;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;1;0;
+27;X46;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;0;0;
+28;X47;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;1;0;
+29;X48;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;0;0;
+30;X49;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;1;0;
+31;X50;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;0;0;
+32;X51;2026-08-03;adjust;mf;0.41;0.4;2;The third-generation Nissan e-POWER (~42%) and the Aramco DHE (41%) run at a fixed best-efficiency point, where the peak value approaches the effective average. The most frequent value of 40.0% can rise to 41.0%.;Trade press and manufacturer material. The 45% maximum remains adequate.;;ice;1;1;2026-08-04
+33;X52;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;ice;0;0;
+34;X53;2026-08-03;adjust;mf;0.8;0.75;7;Telematics from 22,700 vehicles indicate average degradation of 2.3%/year and ~82% state of health after 8 years, against the adopted lifetime-average usable capacity factor of 0.75.;Fleet analysis (Geotab), not peer-reviewed. This factor is where annual degradation and degradation after 200,000 km are embedded — there is no explicit parameter for either.;;bat;1;1;2026-08-04
+35;X54;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+36;X55;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;1;0;
+37;X56;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;1;0;
+38;X57;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;1;0;
+39;X58;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+40;X59;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+41;X60;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+42;X61;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+43;X62;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+44;X63;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+45;X64;2026-08-03;verify;;;;;In the workbook, the most frequent (0.390) and maximum (0.072) values appear to be swapped, and the adopted value is zero. Check the source sheet.;Data inconsistency, not arising from new literature. No suggested value — the fix belongs in the workbook.;most frequent value outside the min–max range | adopted value outside the min–max range;;0;0;
+46;X65;2026-08-03;verify;;;;;Adopted value is zero, outside the 0.022–0.960 range. Check whether the electric vehicle auxiliary systems were intentionally switched off in the current run.;Data inconsistency, not arising from new literature. No suggested value — the fix belongs in the workbook.;adopted value outside the min–max range;;0;0;
+47;X66;2026-08-03;adjust;max;0.238;0.21328;4;A 125 kWh CATL pack at ~625 kg (≈5.0 kg/kWh, cell at 350 Wh/kg) already approaches the adopted best case of 4.69 kg/kWh. Raising the maximum from 0.2133 to 0.238 kWh/kg corresponds to 4.20 kg/kWh at pack level.;Manufacturer announcement (CATL Tech Day 2026), without independent verification. Recalculate #48 (reciprocal) afterwards.;;bat;0;1;2026-08-04
+48;X67;2026-08-03;verify;max;4.2;4.688672168042011;4;Reciprocal of #47 — recalculate automatically if the adjustment to #47 is accepted (1 / 0.238 = 4.20 kg/kWh).;Do not edit directly: this is a derived cell.;inverted range (min > max) — reciprocal parameter or pending review;bat;1;1;2026-08-04
+49;X68;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+50;X69;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+51;X70;2026-08-03;keep;;;;;No relevant developments identified in this review.;;inverted range (min > max) — reciprocal parameter or pending review;bat;0;0;
+52;X71;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+53;X72;2026-08-03;keep;;;;;No relevant developments identified in this review.;;inverted range (min > max) — reciprocal parameter or pending review;bat;0;0;
+54;X74;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+55;X75;2026-08-03;adjust;mf;240;200;6;The Stanford / Nature Energy study indicates degradation up to 38% slower in real-world use (service life up to ~300,000 km) and Geotab telematics show 82% SoH after 8 years. The most frequent value of 200,000 km sits at the floor of what field evidence suggests.;"The Stanford study is peer-reviewed; the Geotab figure is a fleet analysis by the telematics provider. Changing battery lifespan alters the functional unit — check consistency with Vehicle Lifespan (#54).";;bat;1;0;
+56;X76;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+57;X77;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+58;X79;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+59;X80;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+60;X81;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+61;X83;2026-08-03;adjust;min;4.3;5.684136844946099;5;Cells produced with renewable electricity reach 10–25 kg CO2e/kWh, against the adopted minimum of 44.1 kg CO2e/kWh. Taking 25 kg CO2e/kWh as the floor and a density of 5.816 kg/kWh, the mass-based minimum falls from 5.68 to ~4.30 kg CO2e/kg.;Sector review (electrive, Aug 2025) consolidating several sources. This is the parameter with the greatest potential to shift the comparison in favour of BEVs in the Brazilian clean-grid context.;;bat;0;1;2026-08-04
+62;X84;2026-08-03;verify;min;25.0;44.08016165138503;5;Reciprocal of #61 — recalculate if the adjustment to #61 is accepted (floor of 25 kg CO2e/kWh).;Do not edit directly: this is a derived cell.;;bat;1;1;2026-08-04
+63;X85;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+64;X86;2026-08-03;verify;min;4.56;5.854660950294482;5;The PHEV battery carbon intensity derives from #61 through factor #63 (1.06). Recalculate if #61 is accepted.;Do not edit directly: this is a derived cell.;;bat;0;1;2026-08-04
+65;X87;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+66;X88;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+67;X89;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+68;X90;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+69;X91;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+70;X92;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+71;X93;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+72;X94;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+73;X95;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+74;X96;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+75;X97;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+76;X98;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+77;X99;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+78;X100;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+79;X101;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+80;X102;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+81;X103;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+82;X104;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+83;X106;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+84;X107;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+85;X108;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+86;X109;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+87;X110;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;bat;0;0;
+88;X111;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+89;X112;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+90;X113;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+91;X114;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+92;X115;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+93;X116;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+94;X117;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+95;X118;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+96;X119;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+97;X120;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+98;X121;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+99;X122;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+100;X123;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+101;X124;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+102;X125;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+103;X126;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+104;X127;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+105;X128;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+106;X130;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+107;X131;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+108;X132;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+109;X133;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+110;X134;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+111;X135;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+112;X136;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+113;X137;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+114;X138;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+115;X139;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+116;X140;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+117;X141;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+118;X142;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+119;X143;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;
+120;X144;2026-08-03;keep;;;;;No relevant developments identified in this review.;;;;0;0;

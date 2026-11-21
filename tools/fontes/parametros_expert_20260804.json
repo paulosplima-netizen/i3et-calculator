@@ -1,0 +1,4632 @@
+{
+ "origem": "artefato i3et-parametros-expert (Cowork), atualizado em 2026-08-04; dados da planilha LCA_LV_i3ET_20260724a.xlsx",
+ "review_date": "2026-08-03",
+ "accepted": {
+  "18": {
+   "field": "max",
+   "to": 0.33,
+   "date": "Aug 4, 2026"
+  },
+  "20": {
+   "field": "max",
+   "to": 0.3465,
+   "date": "Aug 4, 2026"
+  },
+  "23": {
+   "field": "max",
+   "to": 0.34,
+   "date": "Aug 4, 2026"
+  },
+  "25": {
+   "field": "max",
+   "to": 0.374,
+   "date": "Aug 4, 2026"
+  },
+  "32": {
+   "field": "mf",
+   "to": 0.41,
+   "date": "Aug 4, 2026"
+  },
+  "34": {
+   "field": "mf",
+   "to": 0.8,
+   "date": "Aug 4, 2026"
+  },
+  "47": {
+   "field": "max",
+   "to": 0.238,
+   "date": "Aug 4, 2026"
+  },
+  "48": {
+   "field": "max",
+   "to": 4.2,
+   "date": "Aug 4, 2026"
+  },
+  "62": {
+   "field": "min",
+   "to": 25,
+   "date": "Aug 4, 2026"
+  },
+  "64": {
+   "field": "min",
+   "to": 4.56,
+   "date": "Aug 4, 2026"
+  },
+  "61": {
+   "field": "min",
+   "to": 4.3,
+   "date": "Aug 4, 2026"
+  }
+ },
+ "data": [
+  {
+   "n": 1,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Fuel considered in Graphs",
+   "unit": "list",
+   "unit_note": "Ethanol E100, Gasoline E30, Diesel B15, Gas VMB B0",
+   "val": "Ethanol E100",
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": "Ethanol E100",
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 2,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Gasoline C (blended) Anhydrous Ethanol content",
+   "unit": "% vol",
+   "unit_note": "% vol/vol",
+   "val": 0.3,
+   "min": 0,
+   "mf": 0.3,
+   "max": 0.32,
+   "sources": [
+    {
+     "ref": "Presidência da República (Brasil)",
+     "year": "2024"
+    },
+    {
+     "ref": "CNPE / MME",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.3,
+    "max": 0.32,
+    "val": 0.3,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 3,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Diesel B Biodiesel content",
+   "unit": "% vol",
+   "unit_note": "% vol/vol",
+   "val": 0.15,
+   "min": 0,
+   "mf": 0.14,
+   "max": 0.2,
+   "sources": [
+    {
+     "ref": "Presidência da República (Brasil)",
+     "year": "2024"
+    },
+    {
+     "ref": "CNPE / MME",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.14,
+    "max": 0.2,
+    "val": 0.15,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 4,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Vehicular Methane Blend (VMB) CBM content",
+   "unit": "% vol",
+   "unit_note": "% vol/vol",
+   "val": 0,
+   "min": 0,
+   "mf": 0,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "Presidência da República (Brasil)",
+     "year": "2024"
+    },
+    {
+     "ref": "CNPE / MME",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 1,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 5,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "BEV Electric Range Autonomy (BEV AER)",
+   "unit": "km",
+   "unit_note": "km",
+   "val": 400,
+   "min": 200,
+   "mf": 400,
+   "max": 500,
+   "sources": [
+    {
+     "ref": "Madani et al.",
+     "year": "2025"
+    },
+    {
+     "ref": "Paffumi, E.; De Gennaro, M.; Martini, G.",
+     "year": "2018"
+    },
+    {
+     "ref": "Paffumi et al.",
+     "year": "2024"
+    },
+    {
+     "ref": "Branco, G.M. et al.",
+     "year": "—"
+    },
+    {
+     "ref": "Mandev, A.",
+     "year": "2023"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 200,
+    "mf": 400,
+    "max": 500,
+    "val": 400,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 6,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "PHEV Electric Range Autonomy (PHEV AER)",
+   "unit": "km",
+   "unit_note": "km",
+   "val": 100,
+   "min": 50,
+   "mf": 100,
+   "max": 150,
+   "sources": [
+    {
+     "ref": "Madani et al.",
+     "year": "2025"
+    },
+    {
+     "ref": "Paffumi et al.",
+     "year": "2018"
+    },
+    {
+     "ref": "Paffumi et al.",
+     "year": "2024"
+    },
+    {
+     "ref": "Branco, G.M. et al.",
+     "year": "2014"
+    },
+    {
+     "ref": "Mandev, A.",
+     "year": "2023"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 50,
+    "mf": 100,
+    "max": 150,
+    "val": 100,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 7,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Average daily distance below PHEV AER",
+   "unit": "km",
+   "unit_note": "km",
+   "val": 28.64512954374197,
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "SAE International",
+     "year": "2010"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": 28.64512954374197,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 8,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Average daily distance above PHEV AER",
+   "unit": "km",
+   "unit_note": "km",
+   "val": 164.48183152807115,
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "SAE International",
+     "year": "2010"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": 164.48183152807115,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 9,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Daily Distance CDF",
+   "unit": "list",
+   "unit_note": "NBR_16567; SAE_J2841_EPA_USA; WLTP_EU;",
+   "val": "SAE_J2841_EPA_USA",
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "SAE International",
+     "year": "2010"
+    },
+    {
+     "ref": "ABNT",
+     "year": "2016"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": "SAE_J2841_EPA_USA",
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 10,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Days below AER",
+   "unit": "% days/year",
+   "unit_note": "days/year",
+   "val": 0.9227468456500001,
+   "min": 0,
+   "mf": 0.9671232876712329,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "SAE International",
+     "year": "2010"
+    },
+    {
+     "ref": "ABNT",
+     "year": "2016"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.9671232876712329,
+    "max": 1,
+    "val": 0.9227468456500001,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 11,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Battery recharging failure factor (BRF)",
+   "unit": "% days",
+   "unit_note": "% of days",
+   "val": 0.15,
+   "min": 0.05,
+   "mf": 0.15,
+   "max": 0.5,
+   "sources": [
+    {
+     "ref": "Mandev, A.",
+     "year": "2023"
+    },
+    {
+     "ref": "Plötz, P. et al. (ICCT/Fraunhofer ISI)",
+     "year": "2020"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.05,
+    "mf": 0.15,
+    "max": 0.5,
+    "val": 0.15,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 12,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Utility Factor",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.7418159050858829,
+   "min": 0.25,
+   "mf": 0.7612917847025495,
+   "max": 0.85,
+   "sources": [
+    {
+     "ref": "Hamza et al.",
+     "year": "2023"
+    },
+    {
+     "ref": "Plötz, P. et al. (ICCT/Fraunhofer ISI)",
+     "year": "2020"
+    },
+    {
+     "ref": "Paffumi et al.",
+     "year": "2018"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.25,
+    "mf": 0.7612917847025495,
+    "max": 0.85,
+    "val": 0.7418159050858829,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 13,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Test Cycle",
+   "unit": "list",
+   "unit_note": "NBR EPA NEDC WLTC",
+   "val": "NBR",
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "ABNT",
+     "year": "2021"
+    },
+    {
+     "ref": "ABNT",
+     "year": "2017"
+    },
+    {
+     "ref": "US EPA",
+     "year": "2026"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": "NBR",
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 14,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Average speed (incl. stops)",
+   "unit": "km/h",
+   "unit_note": "km/h",
+   "val": 53.622618083717526,
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "US EPA",
+     "year": "2026"
+    },
+    {
+     "ref": "ABNT",
+     "year": "2021"
+    },
+    {
+     "ref": "ABNT",
+     "year": "2017"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": 53.622618083717526,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 15,
+   "block": "UPP - Usage Preferences Profile",
+   "group": "UPP",
+   "name": "Maximum speed",
+   "unit": "km/h",
+   "unit_note": "km/h",
+   "val": 96.4,
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "US EPA",
+     "year": "2026"
+    },
+    {
+     "ref": "ABNT",
+     "year": "2021"
+    },
+    {
+     "ref": "ABNT",
+     "year": "2017"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": 96.4,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 16,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE Compact - ICEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.24,
+   "min": 0.22,
+   "mf": 0.24,
+   "max": 0.26,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    },
+    {
+     "ref": "Bosch, Dietsche, Reif +250 authors by Wiley",
+     "year": "2022"
+    },
+    {
+     "ref": "Naunheimer, Harald / Bertsche, Bernd / Ryborz, Joachim / Novak, Wolfgang",
+     "year": "2011"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.22,
+    "mf": 0.24,
+    "max": 0.26,
+    "val": 0.24,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 17,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE Compact - LPS - Load Point Shifting ICEV->HEV",
+   "unit": "–",
+   "unit_note": "",
+   "val": 1.15,
+   "min": 1.1,
+   "mf": 1.15,
+   "max": 1.2,
+   "sources": [
+    {
+     "ref": "Ehsani, M.; Gao, Y.; Longo, S.; Ebrahimi, K.",
+     "year": "2018"
+    },
+    {
+     "ref": "Barthel et al.",
+     "year": "2014"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.1,
+    "mf": 1.15,
+    "max": 1.2,
+    "val": 1.15,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 18,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE Compact - HEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.27599999999999997,
+   "min": 0.24200000000000002,
+   "mf": 0.27599999999999997,
+   "max": 0.312,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.24200000000000002,
+    "mf": 0.27599999999999997,
+    "max": 0.312,
+    "val": 0.27599999999999997,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "max",
+    "to": 0.33,
+    "why": "The production Chery 1.5 TDGI reports 44.5% peak thermal efficiency. Converting peak to cycle-average in a hybrid with load point shifting (~72–75% of peak), the plausible ceiling for the compact HEV rises from 31.2% to ~33%.",
+    "cav": "Press/manufacturer source, neither peer-reviewed nor measured on a homologated cycle. Peak is not cycle-average.",
+    "a": 1,
+    "from": 0.312
+   }
+  },
+  {
+   "n": 19,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE Compact - LPS - Load Point Shifting HEV->PHEV",
+   "unit": "–",
+   "unit_note": "",
+   "val": 1.05,
+   "min": 1,
+   "mf": 1.05,
+   "max": 1.1,
+   "sources": [
+    {
+     "ref": "Ehsani, M.; Gao, Y.; Longo, S.; Ebrahimi, K.",
+     "year": "2018"
+    },
+    {
+     "ref": "Barthel et al.",
+     "year": "2014"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1,
+    "mf": 1.05,
+    "max": 1.1,
+    "val": 1.05,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 20,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE Compact - PHEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.2898,
+   "min": 0.24200000000000002,
+   "mf": 0.2898,
+   "max": 0.3432,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.24200000000000002,
+    "mf": 0.2898,
+    "max": 0.3432,
+    "val": 0.2898,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "max",
+    "to": 0.3465,
+    "why": "Follows from the new ceiling of #18, keeping the already adopted HEV→PHEV load point shifting factor of 1.05 (0.330 × 1.05).",
+    "cav": "Derived adjustment; only meaningful if #18 is accepted.",
+    "a": 1,
+    "from": 0.3432
+   }
+  },
+  {
+   "n": 21,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE ICEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.22,
+   "min": 0.2,
+   "mf": 0.22,
+   "max": 0.25,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    },
+    {
+     "ref": "Bosch, Dietsche, Reif +250 authors by Wiley",
+     "year": "2022"
+    },
+    {
+     "ref": "Naunheimer, Harald / Bertsche, Bernd / Ryborz, Joachim / Novak, Wolfgang",
+     "year": "2011"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.2,
+    "mf": 0.22,
+    "max": 0.25,
+    "val": 0.22,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 22,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE LPS - Load Point Shifting ICEV->HEV",
+   "unit": "–",
+   "unit_note": "",
+   "val": 1.2,
+   "min": 1.15,
+   "mf": 1.2,
+   "max": 1.25,
+   "sources": [
+    {
+     "ref": "Ehsani, M.; Gao, Y.; Longo, S.; Ebrahimi, K.",
+     "year": "2018"
+    },
+    {
+     "ref": "Barthel et al.",
+     "year": "2014"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.15,
+    "mf": 1.2,
+    "max": 1.25,
+    "val": 1.2,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 23,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE HEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.264,
+   "min": 0.22999999999999998,
+   "mf": 0.264,
+   "max": 0.3125,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.22999999999999998,
+    "mf": 0.264,
+    "max": 0.3125,
+    "val": 0.264,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "max",
+    "to": 0.34,
+    "why": "Geely BHE/i-HEV at 48.41% and Chery at 48% (prototype) / 44.5% (production), both peak values. Applying the same peak-to-cycle-average conversion, the 31.25% maximum is outdated.",
+    "cav": "Manufacturer announcements and trade press; one of the figures (48.5%) differs across sources. Peak is not cycle-average.",
+    "a": 0,
+    "from": 0.3125
+   }
+  },
+  {
+   "n": 24,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE LPS - Load Point Shifting HEV->PHEV",
+   "unit": "–",
+   "unit_note": "",
+   "val": 1.1,
+   "min": 1,
+   "mf": 1.1,
+   "max": 1.15,
+   "sources": [
+    {
+     "ref": "Ehsani, M.; Gao, Y.; Longo, S.; Ebrahimi, K.",
+     "year": "2018"
+    },
+    {
+     "ref": "Barthel et al.",
+     "year": "2014"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1,
+    "mf": 1.1,
+    "max": 1.15,
+    "val": 1.1,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 25,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "GE PHEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.29040000000000005,
+   "min": 0.22999999999999998,
+   "mf": 0.29040000000000005,
+   "max": 0.359375,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.22999999999999998,
+    "mf": 0.29040000000000005,
+    "max": 0.359375,
+    "val": 0.29040000000000005,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "max",
+    "to": 0.374,
+    "why": "Follows from the new ceiling of #23, keeping the already adopted HEV→PHEV load point shifting factor of 1.10 (0.340 × 1.10).",
+    "cav": "Derived adjustment; only meaningful if #23 is accepted.",
+    "a": 0,
+    "from": 0.359375
+   }
+  },
+  {
+   "n": 26,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Diesel - ICEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.29,
+   "min": 0.28,
+   "mf": 0.32,
+   "max": 0.35,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    },
+    {
+     "ref": "Bosch, Dietsche, Reif +250 authors by Wiley",
+     "year": "2022"
+    },
+    {
+     "ref": "Naunheimer, Harald / Bertsche, Bernd / Ryborz, Joachim / Novak, Wolfgang",
+     "year": "2011"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.28,
+    "mf": 0.32,
+    "max": 0.35,
+    "val": 0.29,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 27,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Diesel - LPS - Load Point Shifting ICEV->HEV",
+   "unit": "–",
+   "unit_note": "",
+   "val": 1.1,
+   "min": 1.08,
+   "mf": 1.1,
+   "max": 1.12,
+   "sources": [
+    {
+     "ref": "Ehsani, M.; Gao, Y.; Longo, S.; Ebrahimi, K.",
+     "year": "2018"
+    },
+    {
+     "ref": "Barthel et al.",
+     "year": "2014"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.08,
+    "mf": 1.1,
+    "max": 1.12,
+    "val": 1.1,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 28,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Diesel - Diesel - HEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.319,
+   "min": 0.30240000000000006,
+   "mf": 0.35200000000000004,
+   "max": 0.392,
+   "sources": [
+    {
+     "ref": "Ehsani, M.; Gao, Y.; Longo, S.; Ebrahimi, K.",
+     "year": "2018"
+    },
+    {
+     "ref": "Barthel et al.",
+     "year": "2014"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.30240000000000006,
+    "mf": 0.35200000000000004,
+    "max": 0.392,
+    "val": 0.319,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 29,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Diesel - LPS - Load Point Shifting HEV->PHEV",
+   "unit": "–",
+   "unit_note": "",
+   "val": 1.05,
+   "min": 1.02,
+   "mf": 1.05,
+   "max": 1.08,
+   "sources": [
+    {
+     "ref": "Ehsani, M.; Gao, Y.; Longo, S.; Ebrahimi, K.",
+     "year": "2018"
+    },
+    {
+     "ref": "Barthel et al.",
+     "year": "2014"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.02,
+    "mf": 1.05,
+    "max": 1.08,
+    "val": 1.05,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 30,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Diesel - PHEV engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.33495,
+   "min": 0.30844800000000006,
+   "mf": 0.36960000000000004,
+   "max": 0.42336000000000007,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.30844800000000006,
+    "mf": 0.36960000000000004,
+    "max": 0.42336000000000007,
+    "val": 0.33495,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 31,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "CV Mechanical Transmission Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.95,
+   "min": 0.92,
+   "mf": 0.95,
+   "max": 0.96,
+   "sources": [
+    {
+     "ref": "Naunheimer, Harald / Bertsche, Bernd / Ryborz, Joachim / Novak, Wolfgang",
+     "year": "2011"
+    },
+    {
+     "ref": "Bosch, Dietsche, Reif +250 authors by Wiley",
+     "year": "2022"
+    },
+    {
+     "ref": "Albatayneh, A. et al.",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.92,
+    "mf": 0.95,
+    "max": 0.96,
+    "val": 0.95,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 32,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Range Extender Combustion Engine Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.4,
+   "min": 0.32,
+   "mf": 0.4,
+   "max": 0.45,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.32,
+    "mf": 0.4,
+    "max": 0.45,
+    "val": 0.4,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "mf",
+    "to": 0.41,
+    "why": "The third-generation Nissan e-POWER (~42%) and the Aramco DHE (41%) run at a fixed best-efficiency point, where the peak value approaches the effective average. The most frequent value of 40.0% can rise to 41.0%.",
+    "cav": "Trade press and manufacturer material. The 45% maximum remains adequate.",
+    "a": 2,
+    "from": 0.4
+   }
+  },
+  {
+   "n": 33,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Generator & Rectification Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.88,
+   "min": 0.83,
+   "mf": 0.88,
+   "max": 0.94,
+   "sources": [
+    {
+     "ref": "Albatayneh, A. et al.",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "ice"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.83,
+    "mf": 0.88,
+    "max": 0.94,
+    "val": 0.88,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 34,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "BEV lifetime-average Usable Battery Capacity factor",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.75,
+   "min": 0.6,
+   "mf": 0.75,
+   "max": 0.85,
+   "sources": [
+    {
+     "ref": "Geotab Inc.",
+     "year": "2024"
+    },
+    {
+     "ref": "OSTI.GOV USA",
+     "year": "2023"
+    },
+    {
+     "ref": "Yao et al.",
+     "year": "2022"
+    },
+    {
+     "ref": "National Laboratory of the Rockies, Gasper, P",
+     "year": "2022"
+    },
+    {
+     "ref": "Madani et al.",
+     "year": "2025"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.6,
+    "mf": 0.75,
+    "max": 0.85,
+    "val": 0.75,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "mf",
+    "to": 0.8,
+    "why": "Telematics from 22,700 vehicles indicate average degradation of 2.3%/year and ~82% state of health after 8 years, against the adopted lifetime-average usable capacity factor of 0.75.",
+    "cav": "Fleet analysis (Geotab), not peer-reviewed. This factor is where annual degradation and degradation after 200,000 km are embedded — there is no explicit parameter for either.",
+    "a": 7,
+    "from": 0.75
+   }
+  },
+  {
+   "n": 35,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "PHEV lifetime-average Usable Battery Capacity factor",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.6,
+   "min": 0.55,
+   "mf": 0.68,
+   "max": 0.8,
+   "sources": [
+    {
+     "ref": "Geotab Inc.",
+     "year": "2024"
+    },
+    {
+     "ref": "OSTI.GOV USA",
+     "year": "2023"
+    },
+    {
+     "ref": "Yao et al.",
+     "year": "2022"
+    },
+    {
+     "ref": "National Laboratory of the Rockies, Gasper, P",
+     "year": "2022"
+    },
+    {
+     "ref": "Madani et al.",
+     "year": "2025"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.55,
+    "mf": 0.68,
+    "max": 0.8,
+    "val": 0.6,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 36,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "AC Plug-in Charging Efficiency, including on-board charger (OBC)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.88,
+   "min": 0.82,
+   "mf": 0.88,
+   "max": 0.92,
+   "sources": [
+    {
+     "ref": "Apostolaki-Iosifidou, E.; Woodall, N.; Kempton, W.",
+     "year": "2017"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.82,
+    "mf": 0.88,
+    "max": 0.92,
+    "val": 0.88,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 37,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "DC Plug-in Charging Efficiency, including off-board converter",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.93,
+   "min": 0.9,
+   "mf": 0.93,
+   "max": 0.96,
+   "sources": [
+    {
+     "ref": "Apostolaki-Iosifidou, E.; Woodall, N.; Kempton, W.",
+     "year": "2017"
+    },
+    {
+     "ref": "IEA",
+     "year": "2025"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0.9,
+    "mf": 0.93,
+    "max": 0.96,
+    "val": 0.93,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 38,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Share of Fast Charging (DC) over Total Charging",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.5,
+   "min": 0,
+   "mf": 0.5,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "IEA",
+     "year": "2025"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.5,
+    "max": 1,
+    "val": 0.5,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 39,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Plug-in Charging Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.905,
+   "min": 0.82,
+   "mf": 0.905,
+   "max": 0.96,
+   "sources": [
+    {
+     "ref": "Albatayneh, A. et al.",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.82,
+    "mf": 0.905,
+    "max": 0.96,
+    "val": 0.905,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 40,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Battery Roundtrip Efficiency (RTE)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.92,
+   "min": 0.85,
+   "mf": 0.92,
+   "max": 0.96,
+   "sources": [
+    {
+     "ref": "Albatayneh, A. et al.",
+     "year": "2020"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.85,
+    "mf": 0.92,
+    "max": 0.96,
+    "val": 0.92,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 41,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Traction Power Electronic Efficiency (incl. inverter)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.95,
+   "min": 0.92,
+   "mf": 0.95,
+   "max": 0.97,
+   "sources": [
+    {
+     "ref": "Albatayneh, A. et al.",
+     "year": "2020"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.92,
+    "mf": 0.95,
+    "max": 0.97,
+    "val": 0.95,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 42,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Traction Electric Motor Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.93,
+   "min": 0.88,
+   "mf": 0.93,
+   "max": 0.96,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.88,
+    "mf": 0.93,
+    "max": 0.96,
+    "val": 0.93,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 43,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "EV Mechanical Transmission Efficiency",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.97,
+   "min": 0.95,
+   "mf": 0.97,
+   "max": 0.98,
+   "sources": [
+    {
+     "ref": "Naunheimer, H. et al.",
+     "year": "2011"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.95,
+    "mf": 0.97,
+    "max": 0.98,
+    "val": 0.97,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 44,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Regenerative braking usage",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.88,
+   "min": 0.72,
+   "mf": 0.88,
+   "max": 0.98,
+   "sources": [
+    {
+     "ref": "INMETRO / PBE Veicular",
+     "year": "2026"
+    },
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.72,
+    "mf": 0.88,
+    "max": 0.98,
+    "val": 0.88,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 45,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "CV Auxiliary Systems",
+   "unit": "MJ/km",
+   "unit_note": "MJ/km",
+   "val": 0,
+   "min": 0.072,
+   "mf": 0.39,
+   "max": 0.072,
+   "sources": [
+    {
+     "ref": "Farrington, R.; Rugh, J. (NREL)",
+     "year": "2000"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [
+    "most frequent value outside the min–max range",
+    "adopted value outside the min–max range"
+   ],
+   "base": {
+    "min": 0.072,
+    "mf": 0.39,
+    "max": 0.072,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "verify",
+    "field": null,
+    "why": "In the workbook, the most frequent (0.390) and maximum (0.072) values appear to be swapped, and the adopted value is zero. Check the source sheet.",
+    "cav": "Data inconsistency, not arising from new literature. No suggested value — the fix belongs in the workbook.",
+    "from": null
+   }
+  },
+  {
+   "n": 46,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "EV Auxiliary Systems",
+   "unit": "MJ/km",
+   "unit_note": "MJ/km",
+   "val": 0,
+   "min": 0.022,
+   "mf": 0.117,
+   "max": 0.96,
+   "sources": [
+    {
+     "ref": "Farrington, R.; Rugh, J. (NREL)",
+     "year": "2000"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [
+    "adopted value outside the min–max range"
+   ],
+   "base": {
+    "min": 0.022,
+    "mf": 0.117,
+    "max": 0.96,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "verify",
+    "field": null,
+    "why": "Adopted value is zero, outside the 0.022–0.960 range. Check whether the electric vehicle auxiliary systems were intentionally switched off in the current run.",
+    "cav": "Data inconsistency, not arising from new literature. No suggested value — the fix belongs in the workbook.",
+    "from": null
+   }
+  },
+  {
+   "n": 47,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Energy Battery Density",
+   "unit": "kWh/kg",
+   "unit_note": "kWh/kg",
+   "val": 0.172,
+   "min": 0.12894999999999998,
+   "mf": 0.1719234375,
+   "max": 0.21328,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.12894999999999998,
+    "mf": 0.1719234375,
+    "max": 0.21328,
+    "val": 0.172,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "max",
+    "to": 0.238,
+    "why": "A 125 kWh CATL pack at ~625 kg (≈5.0 kg/kWh, cell at 350 Wh/kg) already approaches the adopted best case of 4.69 kg/kWh. Raising the maximum from 0.2133 to 0.238 kWh/kg corresponds to 4.20 kg/kWh at pack level.",
+    "cav": "Manufacturer announcement (CATL Tech Day 2026), without independent verification. Recalculate #48 (reciprocal) afterwards.",
+    "a": 4,
+    "from": 0.21328
+   }
+  },
+  {
+   "n": 48,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Energy Battery Density (reciprocal)",
+   "unit": "kg/kWh",
+   "unit_note": "kg/kWh",
+   "val": 5.813953488372094,
+   "min": 7.75494377665762,
+   "mf": 5.816542610718797,
+   "max": 4.688672168042011,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": true,
+   "flags": [
+    "inverted range (min > max) — reciprocal parameter or pending review"
+   ],
+   "base": {
+    "min": 7.75494377665762,
+    "mf": 5.816542610718797,
+    "max": 4.688672168042011,
+    "val": 5.813953488372094,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "verify",
+    "field": "max",
+    "to": 4.2,
+    "why": "Reciprocal of #47 — recalculate automatically if the adjustment to #47 is accepted (1 / 0.238 = 4.20 kg/kWh).",
+    "cav": "Do not edit directly: this is a derived cell.",
+    "a": 4,
+    "from": 4.688672168042011
+   }
+  },
+  {
+   "n": 49,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "PHEV/BEV Battery Density factor",
+   "unit": "–",
+   "unit_note": "",
+   "val": 0.97,
+   "min": 0.95,
+   "mf": 0.97,
+   "max": 0.99,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.95,
+    "mf": 0.97,
+    "max": 0.99,
+    "val": 0.97,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 50,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "PHEV Battery Density",
+   "unit": "kWh/kg",
+   "unit_note": "kWh/kg",
+   "val": 0.16684,
+   "min": 0.13034,
+   "mf": 0.16628874999999999,
+   "max": 0.19672,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.13034,
+    "mf": 0.16628874999999999,
+    "max": 0.19672,
+    "val": 0.16684,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 51,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "PHEV Battery Density (reciprocal)",
+   "unit": "kg/kWh",
+   "unit_note": "kg/kWh",
+   "val": 5.993766482857828,
+   "min": 7.672241829062451,
+   "mf": 6.013635919447347,
+   "max": 5.08336722244815,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [
+    "inverted range (min > max) — reciprocal parameter or pending review"
+   ],
+   "base": {
+    "min": 7.672241829062451,
+    "mf": 6.013635919447347,
+    "max": 5.08336722244815,
+    "val": 5.993766482857828,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 52,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Power Battery Density",
+   "unit": "kW/kg",
+   "unit_note": "kW/kg",
+   "val": 2.15,
+   "min": 1.97242,
+   "mf": 2.2036466666666668,
+   "max": 2.33273,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.97242,
+    "mf": 2.2036466666666668,
+    "max": 2.33273,
+    "val": 2.15,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 53,
+   "block": "PET - Powertrain Efficiencies Technology",
+   "group": "PET",
+   "name": "Power Battery Density (reciprocal)",
+   "unit": "kg/kW",
+   "unit_note": "kg/kW",
+   "val": 0.46511627906976744,
+   "min": 0.5069914115654881,
+   "mf": 0.4537932578423038,
+   "max": 0.428682273559306,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [
+    "inverted range (min > max) — reciprocal parameter or pending review"
+   ],
+   "base": {
+    "min": 0.5069914115654881,
+    "mf": 0.4537932578423038,
+    "max": 0.428682273559306,
+    "val": 0.46511627906976744,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 54,
+   "block": "LMP - Lifespan and Maintenance Profile",
+   "group": "LMP",
+   "name": "Vehicle Lifespan",
+   "unit": "10³ km",
+   "unit_note": "103 km",
+   "val": 200,
+   "min": 150,
+   "mf": 200,
+   "max": 300,
+   "sources": [
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    },
+    {
+     "ref": "European Commission; Ricardo; ifeu; E4tech",
+     "year": "2020"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 150,
+    "mf": 200,
+    "max": 300,
+    "val": 200,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 55,
+   "block": "LMP - Lifespan and Maintenance Profile",
+   "group": "LMP",
+   "name": "Battery Lifespan",
+   "unit": "10³ km",
+   "unit_note": "103 km",
+   "val": 200,
+   "min": 100,
+   "mf": 200,
+   "max": 300,
+   "sources": [
+    {
+     "ref": "Geotab Inc.",
+     "year": "2024"
+    },
+    {
+     "ref": "Electrive / Aviloo",
+     "year": "2024"
+    },
+    {
+     "ref": "Yang, F. et al.",
+     "year": "2018"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 100,
+    "mf": 200,
+    "max": 300,
+    "val": 200,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "mf",
+    "to": 240,
+    "why": "The Stanford / Nature Energy study indicates degradation up to 38% slower in real-world use (service life up to ~300,000 km) and Geotab telematics show 82% SoH after 8 years. The most frequent value of 200,000 km sits at the floor of what field evidence suggests.",
+    "cav": "The Stanford study is peer-reviewed; the Geotab figure is a fleet analysis by the telematics provider. Changing battery lifespan alters the functional unit — check consistency with Vehicle Lifespan (#54).",
+    "a": 6,
+    "from": 200
+   }
+  },
+  {
+   "n": 56,
+   "block": "LMP - Lifespan and Maintenance Profile",
+   "group": "LMP",
+   "name": "EoL - Vehicle without Battery",
+   "unit": "kg CO2e/kg",
+   "unit_note": "kg CO2e/kg",
+   "val": 0.2,
+   "min": 0.15,
+   "mf": 0.2,
+   "max": 0.25,
+   "sources": [
+    {
+     "ref": "Poursadegh, F.; Brear, M.J.; Leone, T.G.",
+     "year": "2024"
+    },
+    {
+     "ref": "Malik, F.H. et al.",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.15,
+    "mf": 0.2,
+    "max": 0.25,
+    "val": 0.2,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 57,
+   "block": "LMP - Lifespan and Maintenance Profile",
+   "group": "LMP",
+   "name": "EoL - Vehicle Battery",
+   "unit": "kg CO2e/kWh",
+   "unit_note": "kg CO2e/kWh",
+   "val": 20,
+   "min": 15,
+   "mf": 20,
+   "max": 30,
+   "sources": [
+    {
+     "ref": "Abdelbaky, M. et al.",
+     "year": "2023"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 15,
+    "mf": 20,
+    "max": 30,
+    "val": 20,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 58,
+   "block": "FEF - Fuel Emission Factors",
+   "group": "FEF",
+   "name": "Grid Electricity",
+   "unit": "g CO2e/MJ",
+   "unit_note": "g CO2e/MJ",
+   "val": 25.64,
+   "min": 19.13,
+   "mf": 25.64,
+   "max": 39.26,
+   "sources": [
+    {
+     "ref": "EPE (Prado, T.G.F. et al.)",
+     "year": "2025"
+    },
+    {
+     "ref": "EPE - Empresa de Pesquisa Energética",
+     "year": "2025"
+    },
+    {
+     "ref": "ONS",
+     "year": "2026"
+    },
+    {
+     "ref": "ANEEL - Agência Nacional de Energia Elétrica",
+     "year": "2025"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 19.13,
+    "mf": 25.64,
+    "max": 39.26,
+    "val": 25.64,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 59,
+   "block": "FEF - Fuel Emission Factors",
+   "group": "FEF",
+   "name": "Hydrated Ethanol",
+   "unit": "g CO2e/MJ",
+   "unit_note": "g CO2e/MJ",
+   "val": 22.73,
+   "min": 21.08,
+   "mf": 22.73,
+   "max": 35.73,
+   "sources": [
+    {
+     "ref": "Ramos, N.P. et al. (Embrapa/RenovaBio)",
+     "year": "2024"
+    },
+    {
+     "ref": "Ramos, N.P. et al. (Embrapa/RenovaBio)",
+     "year": "2024"
+    },
+    {
+     "ref": "UNICA",
+     "year": "—"
+    },
+    {
+     "ref": "ANP",
+     "year": ""
+    },
+    {
+     "ref": "Seabra, J.E.A. et al.",
+     "year": "2011"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 21.08,
+    "mf": 22.73,
+    "max": 35.73,
+    "val": 22.73,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 60,
+   "block": "FEF - Fuel Emission Factors",
+   "group": "FEF",
+   "name": "Compressed BioMethane (CBM)",
+   "unit": "g CO2e/MJ",
+   "unit_note": "g CO2e/MJ",
+   "val": 8.35,
+   "min": -20,
+   "mf": 8.35,
+   "max": 50,
+   "sources": [
+    {
+     "ref": "JRC / EUCAR / CONCAWE",
+     "year": "2020"
+    },
+    {
+     "ref": "IEA Bioenergy Task 37",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": -20,
+    "mf": 8.35,
+    "max": 50,
+    "val": 8.35,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 61,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Energy Battery Carbon Intensity",
+   "unit": "kg CO2e/kg",
+   "unit_note": "kg CO2e/kg",
+   "val": 9.6,
+   "min": 5.684136844946099,
+   "mf": 9.595133321426413,
+   "max": 12.553345720820078,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "Abdelbaky, M. et al.",
+     "year": "2023"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 5.684136844946099,
+    "mf": 9.595133321426413,
+    "max": 12.553345720820078,
+    "val": 9.6,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "adjust",
+    "field": "min",
+    "to": 4.3,
+    "why": "Cells produced with renewable electricity reach 10–25 kg CO2e/kWh, against the adopted minimum of 44.1 kg CO2e/kWh. Taking 25 kg CO2e/kWh as the floor and a density of 5.816 kg/kWh, the mass-based minimum falls from 5.68 to ~4.30 kg CO2e/kg.",
+    "cav": "Sector review (electrive, Aug 2025) consolidating several sources. This is the parameter with the greatest potential to shift the comparison in favour of BEVs in the Brazilian clean-grid context.",
+    "a": 5,
+    "from": 5.684136844946099
+   }
+  },
+  {
+   "n": 62,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Energy Battery Carbon Intensity (reciprocal)",
+   "unit": "kg CO2e/kWh",
+   "unit_note": "kg CO2e/kWh",
+   "val": 55.81395348837209,
+   "min": 44.08016165138503,
+   "mf": 55.81050181960452,
+   "max": 58.85852269701837,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "Abdelbaky, M. et al.",
+     "year": "2023"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": true,
+   "flags": [],
+   "base": {
+    "min": 44.08016165138503,
+    "mf": 55.81050181960452,
+    "max": 58.85852269701837,
+    "val": 55.81395348837209,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "verify",
+    "field": "min",
+    "to": 25.0,
+    "why": "Reciprocal of #61 — recalculate if the adjustment to #61 is accepted (floor of 25 kg CO2e/kWh).",
+    "cav": "Do not edit directly: this is a derived cell.",
+    "a": 5,
+    "from": 44.08016165138503
+   }
+  },
+  {
+   "n": 63,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "PHEV/BEV  Battery Carbon Intensity factor",
+   "unit": "–",
+   "unit_note": "",
+   "val": 1.06,
+   "min": 1.03,
+   "mf": 1.06,
+   "max": 1.09,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.03,
+    "mf": 1.06,
+    "max": 1.09,
+    "val": 1.06,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 64,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "PHEV  Battery Carbon Intensity",
+   "unit": "kg CO2e/kg",
+   "unit_note": "kg CO2e/kg",
+   "val": 10.176,
+   "min": 5.854660950294482,
+   "mf": 10.170841320711999,
+   "max": 13.683146835693886,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 5.854660950294482,
+    "mf": 10.170841320711999,
+    "max": 13.683146835693886,
+    "val": 10.176,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "verify",
+    "field": "min",
+    "to": 4.56,
+    "why": "The PHEV battery carbon intensity derives from #61 through factor #63 (1.06). Recalculate if #61 is accepted.",
+    "cav": "Do not edit directly: this is a derived cell.",
+    "a": 5,
+    "from": 5.854660950294482
+   }
+  },
+  {
+   "n": 65,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "PHEV  Battery Carbon Intensity (reciprocal)",
+   "unit": "kg CO2e/kWh",
+   "unit_note": "kg CO2e/kWh",
+   "val": 60.99256772956126,
+   "min": 44.918374637827846,
+   "mf": 61.16373669723297,
+   "max": 69.55646012451142,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 44.918374637827846,
+    "mf": 61.16373669723297,
+    "max": 69.55646012451142,
+    "val": 60.99256772956126,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 66,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Power Battery Carbon Intensity",
+   "unit": "kg CO2e/kg",
+   "unit_note": "kg CO2e/kg",
+   "val": 8,
+   "min": 6.132695583966135,
+   "mf": 7.931656171851312,
+   "max": 10.62017191357313,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 6.132695583966135,
+    "mf": 7.931656171851312,
+    "max": 10.62017191357313,
+    "val": 8,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 67,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Power Battery Carbon Intensity (reciprocal)",
+   "unit": "kg CO2e/kW",
+   "unit_note": "kg CO2e/kW",
+   "val": 3.7209302325581395,
+   "min": 3.109223990816426,
+   "mf": 3.599332094309423,
+   "max": 4.552679441501215,
+   "sources": [
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    },
+    {
+     "ref": "ecoinvent Association",
+     "year": "2022"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 3.109223990816426,
+    "mf": 3.599332094309423,
+    "max": 4.552679441501215,
+    "val": 3.7209302325581395,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 68,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Emission Factors List",
+   "unit": "list",
+   "unit_note": "G22; G23; G24; GLO23; BR23",
+   "val": "BR23",
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2022-2024"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": "BR23",
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 69,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Steel Process losses (only for EF List BR23)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.15,
+   "min": 0,
+   "mf": 0.15,
+   "max": 0.6,
+   "sources": [
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.15,
+    "max": 0.6,
+    "val": 0.15,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 70,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Recycled Steel (BR23 only)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.253,
+   "min": 0.1,
+   "mf": 0.253,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "Instituto Aço Brasil",
+     "year": "annual"
+    },
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.1,
+    "mf": 0.253,
+    "max": 1,
+    "val": 0.253,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 71,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Charcoal Steel (BR23 only)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.08,
+   "min": 0,
+   "mf": 0.08,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "Instituto Aço Brasil",
+     "year": "annual"
+    },
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.08,
+    "max": 1,
+    "val": 0.08,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 72,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Green Steel (BR23 only)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0,
+   "min": 0,
+   "mf": 0,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "worldsteel Association",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 1,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 73,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Imported Steel (within components)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.2,
+   "min": 0,
+   "mf": 0.2,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "Instituto Aço Brasil",
+     "year": "annual"
+    },
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.2,
+    "max": 1,
+    "val": 0.2,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 74,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Steel EF",
+   "unit": "kg CO2e/kg",
+   "unit_note": "kg CO2e/kg",
+   "val": 3.0331802352941177,
+   "min": 2,
+   "mf": 3.25,
+   "max": 4,
+   "sources": [
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    },
+    {
+     "ref": "worldsteel Association",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 2,
+    "mf": 3.25,
+    "max": 4,
+    "val": 3.0331802352941177,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 75,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Aluminum Process losses (only for EF List BR23)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.05,
+   "min": 0,
+   "mf": 0.05,
+   "max": 0.6,
+   "sources": [
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    },
+    {
+     "ref": "IAI – International Aluminium Institute",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.05,
+    "max": 0.6,
+    "val": 0.05,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 76,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Recycled Aluminum (BR23 only)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.418,
+   "min": 0,
+   "mf": 0.418,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "ABAL – Associação Brasileira do Alumínio",
+     "year": "annual"
+    },
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.418,
+    "max": 1,
+    "val": 0.418,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 77,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Prebaked/(Prebaked + Sordeberg) (BR23 only)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.666666666666667,
+   "min": 0,
+   "mf": 0.6666666666666666,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "ABAL – Associação Brasileira do Alumínio",
+     "year": "annual"
+    },
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    },
+    {
+     "ref": "IAI – International Aluminium Institute",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.6666666666666666,
+    "max": 1,
+    "val": 0.666666666666667,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 78,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Green Aluminum (BR23 only)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0,
+   "min": 0,
+   "mf": 0,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "IAI – International Aluminium Institute",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 1,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 79,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Imported Aluminum (within components)",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.3,
+   "min": 0,
+   "mf": 0.3,
+   "max": 1,
+   "sources": [
+    {
+     "ref": "ABAL – Associação Brasileira do Alumínio",
+     "year": "annual"
+    },
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.3,
+    "max": 1,
+    "val": 0.3,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 80,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Stamped Sheet Aluminum EF",
+   "unit": "kg CO2e/kg",
+   "unit_note": "kg CO2e/kg",
+   "val": 8.375058496839161,
+   "min": 4,
+   "mf": 5.891125931806501,
+   "max": 8.5,
+   "sources": [
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    },
+    {
+     "ref": "IAI – International Aluminium Institute",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 4,
+    "mf": 5.891125931806501,
+    "max": 8.5,
+    "val": 8.375058496839161,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 81,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Extruded Aluminum EF",
+   "unit": "kg CO2e/kg",
+   "unit_note": "kg CO2e/kg",
+   "val": 6.057609601900101,
+   "min": 4,
+   "mf": 5.93882518458395,
+   "max": 8.5,
+   "sources": [
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    },
+    {
+     "ref": "IAI – International Aluminium Institute",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 4,
+    "mf": 5.93882518458395,
+    "max": 8.5,
+    "val": 6.057609601900101,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 82,
+   "block": "MEF - Materials Emission Factors",
+   "group": "MEF",
+   "name": "Cast Aluminum EF",
+   "unit": "kg CO2e/kg",
+   "unit_note": "kg CO2e/kg",
+   "val": 8.375058496839161,
+   "min": 4,
+   "mf": 5.351908621096036,
+   "max": 8.5,
+   "sources": [
+    {
+     "ref": "FGV; UNICAMP; MOVER-FUNDEP; MCTI; MDIC",
+     "year": "2026"
+    },
+    {
+     "ref": "IAI – International Aluminium Institute",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 4,
+    "mf": 5.351908621096036,
+    "max": 8.5,
+    "val": 8.375058496839161,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 83,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "BEV Battery unit price per stored energy",
+   "unit": "US$/kWh",
+   "unit_note": "US$/kWh",
+   "val": 187.5,
+   "min": 150,
+   "mf": 187.5,
+   "max": 206.25000000000003,
+   "sources": [
+    {
+     "ref": "ICCT",
+     "year": "2022"
+    },
+    {
+     "ref": "BloombergNEF",
+     "year": "2026"
+    },
+    {
+     "ref": "IEA - International Energy Agency",
+     "year": "2026"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 150,
+    "mf": 187.5,
+    "max": 206.25000000000003,
+    "val": 187.5,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 84,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "PHEV/BEV prices ratio",
+   "unit": "–",
+   "unit_note": "",
+   "val": 1.5,
+   "min": 1.2,
+   "mf": 1.5,
+   "max": 3,
+   "sources": [
+    {
+     "ref": "Mauler, L. et al.",
+     "year": "2021"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.2,
+    "mf": 1.5,
+    "max": 3,
+    "val": 1.5,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 85,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "PHEV Battery unit price per stored energy",
+   "unit": "US$/kWh",
+   "unit_note": "US$/kWh",
+   "val": 281.25,
+   "min": 180,
+   "mf": 281.25,
+   "max": 618.7500000000001,
+   "sources": [
+    {
+     "ref": "Mauler, L. et al.",
+     "year": "2021"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 180,
+    "mf": 281.25,
+    "max": 618.7500000000001,
+    "val": 281.25,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 86,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "HEV/BEV prices ratio",
+   "unit": "–",
+   "unit_note": "",
+   "val": 3,
+   "min": 1.2,
+   "mf": 3,
+   "max": 6,
+   "sources": [
+    {
+     "ref": "Mauler, L. et al.",
+     "year": "2021"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.2,
+    "mf": 3,
+    "max": 6,
+    "val": 3,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 87,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "HEV Battery unit price per stored energy",
+   "unit": "US$/kWh",
+   "unit_note": "US$/kWh",
+   "val": 562.5,
+   "min": 180,
+   "mf": 562.5,
+   "max": 1237.5000000000002,
+   "sources": [
+    {
+     "ref": "Mauler, L. et al.",
+     "year": "2021"
+    },
+    {
+     "ref": "ANL – Argonne National Laboratory",
+     "year": "2026"
+    }
+   ],
+   "tags": [
+    "bat"
+   ],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 180,
+    "mf": 562.5,
+    "max": 1237.5000000000002,
+    "val": 562.5,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 88,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Body + Chassis",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 20.43026537065826,
+   "min": 16.34421229652661,
+   "mf": 20.43026537065826,
+   "max": 22.47329190772409,
+   "sources": [
+    {
+     "ref": "ICCT",
+     "year": "2022"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 16.34421229652661,
+    "mf": 20.43026537065826,
+    "max": 22.47329190772409,
+    "val": 20.43026537065826,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 89,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Powertrain + Transmission",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 27.62500577803796,
+   "min": 22.10000462243037,
+   "mf": 27.62500577803796,
+   "max": 30.387506355841758,
+   "sources": [
+    {
+     "ref": "ICCT",
+     "year": "2022"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 22.10000462243037,
+    "mf": 27.62500577803796,
+    "max": 30.387506355841758,
+    "val": 27.62500577803796,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 90,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Electric Traction + Generator + Controller",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 46.374940313785075,
+   "min": 37.099952251028064,
+   "mf": 46.374940313785075,
+   "max": 51.012434345163584,
+   "sources": [
+    {
+     "ref": "ICCT",
+     "year": "2022"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 37.099952251028064,
+    "mf": 46.374940313785075,
+    "max": 51.012434345163584,
+    "val": 46.374940313785075,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 91,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Compact Hatch Price Factor (Brazil/USA)",
+   "unit": "–",
+   "unit_note": "ICEV-A01",
+   "val": 0.95,
+   "min": 0.8,
+   "mf": 0.8399289127259805,
+   "max": 2,
+   "sources": [
+    {
+     "ref": "FENABRAVE",
+     "year": "2022-2025"
+    },
+    {
+     "ref": "OEM - Original Equipment Manufacturer",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.8,
+    "mf": 0.8399289127259805,
+    "max": 2,
+    "val": 0.95,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 92,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Compact SUV Price Factor (Brazil/USA)",
+   "unit": "–",
+   "unit_note": "ICEV-A11",
+   "val": 1.28,
+   "min": 0.8,
+   "mf": 1.5249484957778272,
+   "max": 2,
+   "sources": [
+    {
+     "ref": "FENABRAVE",
+     "year": "2022-2025"
+    },
+    {
+     "ref": "OEM - Original Equipment Manufacturer",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.8,
+    "mf": 1.5249484957778272,
+    "max": 2,
+    "val": 1.28,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 93,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Midsize Sedan Price Factor (Brazil/USA)",
+   "unit": "–",
+   "unit_note": "ICEV-A21",
+   "val": 1.09,
+   "min": 0.8,
+   "mf": 1.1282749352224761,
+   "max": 2,
+   "sources": [
+    {
+     "ref": "FENABRAVE",
+     "year": "2022-2025"
+    },
+    {
+     "ref": "OEM - Original Equipment Manufacturer",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.8,
+    "mf": 1.1282749352224761,
+    "max": 2,
+    "val": 1.09,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 94,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Large SUV Price Factor (Brazil/USA)",
+   "unit": "–",
+   "unit_note": "ICEV-A31",
+   "val": 1,
+   "min": 0.8,
+   "mf": 1.293239876626942,
+   "max": 2,
+   "sources": [
+    {
+     "ref": "FENABRAVE",
+     "year": "2022-2025"
+    },
+    {
+     "ref": "OEM - Original Equipment Manufacturer",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.8,
+    "mf": 1.293239876626942,
+    "max": 2,
+    "val": 1,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 95,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "PUT Price Factor (Brazil/USA)",
+   "unit": "–",
+   "unit_note": "ICEV-A41",
+   "val": 1.63,
+   "min": 0.8,
+   "mf": 1.6539992124809149,
+   "max": 2,
+   "sources": [
+    {
+     "ref": "FENABRAVE",
+     "year": "2022-2025"
+    },
+    {
+     "ref": "OEM - Original Equipment Manufacturer",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.8,
+    "mf": 1.6539992124809149,
+    "max": 2,
+    "val": 1.63,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 96,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Pickup Price Factor (Brazil/USA)",
+   "unit": "–",
+   "unit_note": "ICEV-A51",
+   "val": 1.1564,
+   "min": 0.8,
+   "mf": 1.1,
+   "max": 2,
+   "sources": [
+    {
+     "ref": "FENABRAVE",
+     "year": "2022-2025"
+    },
+    {
+     "ref": "OEM - Original Equipment Manufacturer",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.8,
+    "mf": 1.1,
+    "max": 2,
+    "val": 1.1564,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 97,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Energy Price",
+   "unit": "US$/MJ",
+   "unit_note": "US$/MJ",
+   "val": 0.035,
+   "min": 0,
+   "mf": 0.035,
+   "max": 0.2,
+   "sources": [
+    {
+     "ref": "ANP",
+     "year": "continuous"
+    },
+    {
+     "ref": "ANEEL - Agência Nacional de Energia Elétrica",
+     "year": "continuous"
+    },
+    {
+     "ref": "Petrobrás",
+     "year": "continuous"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0.035,
+    "max": 0.2,
+    "val": 0.035,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 98,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Global Market Carbon Value",
+   "unit": "US$/t CO2e",
+   "unit_note": "US$/t CO2e",
+   "val": 100,
+   "min": 10,
+   "mf": 100,
+   "max": 200,
+   "sources": [
+    {
+     "ref": "World Bank",
+     "year": "2026"
+    },
+    {
+     "ref": "IPCC",
+     "year": "2022"
+    },
+    {
+     "ref": "Stiglitz, J.E.; Stern, N.",
+     "year": "2017"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 10,
+    "mf": 100,
+    "max": 200,
+    "val": 100,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 99,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Steel",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 0.65,
+   "min": 0.21666666666666667,
+   "mf": 0.65,
+   "max": 1.3,
+   "sources": [
+    {
+     "ref": "LME – London Metal Exchange",
+     "year": "continuous"
+    },
+    {
+     "ref": "USGS",
+     "year": "annual"
+    },
+    {
+     "ref": "Instituto Aço Brasil",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.21666666666666667,
+    "mf": 0.65,
+    "max": 1.3,
+    "val": 0.65,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 100,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "High Strenght Low Alloy Steel",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 0.95,
+   "min": 0.31666666666666665,
+   "mf": 0.95,
+   "max": 1.9,
+   "sources": [
+    {
+     "ref": "LME – London Metal Exchange",
+     "year": "continuous"
+    },
+    {
+     "ref": "USGS",
+     "year": "annual"
+    },
+    {
+     "ref": "Instituto Aço Brasil",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.31666666666666665,
+    "mf": 0.95,
+    "max": 1.9,
+    "val": 0.95,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 101,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Aluminum Sheet (Automotive)",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 3.201836065573769,
+   "min": 1.0666666666666667,
+   "mf": 3.2,
+   "max": 6.4,
+   "sources": [
+    {
+     "ref": "LME – London Metal Exchange",
+     "year": "continuous"
+    },
+    {
+     "ref": "USGS",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.0666666666666667,
+    "mf": 3.2,
+    "max": 6.4,
+    "val": 3.201836065573769,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 102,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Aluminum Extrusion (Automotive)",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 5.803327868852461,
+   "min": 1.9333333333333333,
+   "mf": 5.8,
+   "max": 11.6,
+   "sources": [
+    {
+     "ref": "LME – London Metal Exchange",
+     "year": "continuous"
+    },
+    {
+     "ref": "USGS",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.9333333333333333,
+    "mf": 5.8,
+    "max": 11.6,
+    "val": 5.803327868852461,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 103,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Carbon Fiber-Reinforced Plastic for General Use",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 60,
+   "min": 20,
+   "mf": 60,
+   "max": 120,
+   "sources": [
+    {
+     "ref": "Das, S. (ORNL)",
+     "year": "2011"
+    },
+    {
+     "ref": "US DOE – Vehicle Technologies Office",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 20,
+    "mf": 60,
+    "max": 120,
+    "val": 60,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 104,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Glass Fiber-Reinforced Plastic",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 25,
+   "min": 8.333333333333334,
+   "mf": 25,
+   "max": 50,
+   "sources": [
+    {
+     "ref": "Das, S. (ORNL)",
+     "year": "2011"
+    },
+    {
+     "ref": "US DOE – Vehicle Technologies Office",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 8.333333333333334,
+    "mf": 25,
+    "max": 50,
+    "val": 25,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 105,
+   "block": "AUC - Automotive Unitary Costs",
+   "group": "AUC",
+   "name": "Magnesium",
+   "unit": "US$/kg",
+   "unit_note": "US$/kg",
+   "val": 4.5,
+   "min": 1.5,
+   "mf": 4.5,
+   "max": 9,
+   "sources": [
+    {
+     "ref": "LME – London Metal Exchange",
+     "year": "continuous"
+    },
+    {
+     "ref": "USGS",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 1.5,
+    "mf": 4.5,
+    "max": 9,
+    "val": 4.5,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 106,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "AUC",
+   "name": "Is Lightweighting on?",
+   "unit": "yes or no",
+   "unit_note": "yes or no",
+   "val": "No",
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": "No",
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 107,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "AUC",
+   "name": "Regular Steel replacement (body+chassi)",
+   "unit": "",
+   "unit_note": "",
+   "val": 0.5,
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": 0.5,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 108,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "AUC",
+   "name": "High Strenght Low Alloy Steel BS replacement",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0,
+   "min": 0,
+   "mf": 0,
+   "max": 0.9,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 0.9,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 109,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "AUC",
+   "name": "Aluminum Sheet (Automotive) BS replacement",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.3333333333333333,
+   "min": 0,
+   "mf": 0,
+   "max": 0.6,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 0.6,
+    "val": 0.3333333333333333,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 110,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "AUC",
+   "name": "Aluminum Extrusion (Automotive) BS replacement",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0.16666666666666666,
+   "min": 0,
+   "mf": 0,
+   "max": 0.4,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 0.4,
+    "val": 0.16666666666666666,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 111,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "AUC",
+   "name": "Carbon Fiber-Reinforced Plastic for General Use BS replacement",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0,
+   "min": 0,
+   "mf": 0,
+   "max": 0.2,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 0.2,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 112,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "AUC",
+   "name": "Glass Fiber-Reinforced Plastic BS replacement",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0,
+   "min": 0,
+   "mf": 0,
+   "max": 0.6,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 0.6,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 113,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "AUC",
+   "name": "Magnesium BS replacement",
+   "unit": "%",
+   "unit_note": "%",
+   "val": 0,
+   "min": 0,
+   "mf": 0,
+   "max": 0.3,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0,
+    "mf": 0,
+    "max": 0.3,
+    "val": 0,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 114,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "LWP",
+   "name": "MSR Material Substitution Rate (vs. Mild Steel)",
+   "unit": "kg of material/kg steel",
+   "unit_note": "kg of material/kg steel",
+   "val": null,
+   "min": null,
+   "mf": null,
+   "max": null,
+   "sources": [
+    {
+     "ref": "Author Choice",
+     "year": "—"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": null,
+    "mf": null,
+    "max": null,
+    "val": null,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 115,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "LWP",
+   "name": "High Strenght Low Alloy Steel MSR",
+   "unit": "kg/kg steel",
+   "unit_note": "HSLA Steel (ASTM A572 Gr.50)",
+   "val": 0.9,
+   "min": 0.35,
+   "mf": 0.9,
+   "max": 0.9,
+   "sources": [
+    {
+     "ref": "US DOE – Vehicle Technologies Office",
+     "year": "annual"
+    },
+    {
+     "ref": "DuckerFrontier",
+     "year": "2019"
+    },
+    {
+     "ref": "Ashby, M.F.",
+     "year": "2017"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.35,
+    "mf": 0.9,
+    "max": 0.9,
+    "val": 0.9,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 116,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "LWP",
+   "name": "Aluminum Sheet (Automotive) MSR",
+   "unit": "kg/kg steel",
+   "unit_note": "Aluminium 6061-T6",
+   "val": 0.5,
+   "min": 0.3,
+   "mf": 0.5,
+   "max": 0.55,
+   "sources": [
+    {
+     "ref": "US DOE – Vehicle Technologies Office",
+     "year": "annual"
+    },
+    {
+     "ref": "Ashby, M.F.",
+     "year": "2017"
+    },
+    {
+     "ref": "Siriro, Wiseman",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.3,
+    "mf": 0.5,
+    "max": 0.55,
+    "val": 0.5,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 117,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "LWP",
+   "name": "Aluminum Extrusion (Automotive) MSR",
+   "unit": "kg/kg steel",
+   "unit_note": "Aluminium 7075-T6",
+   "val": 0.3,
+   "min": 0.3,
+   "mf": 0.55,
+   "max": 0.55,
+   "sources": [
+    {
+     "ref": "US DOE – Vehicle Technologies Office",
+     "year": "annual"
+    },
+    {
+     "ref": "Ashby, M.F.",
+     "year": "2017"
+    },
+    {
+     "ref": "Siriro, Wiseman",
+     "year": "2025"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.3,
+    "mf": 0.55,
+    "max": 0.55,
+    "val": 0.3,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 118,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "LWP",
+   "name": "Carbon Fiber-Reinforced Plastic for General Use MSR",
+   "unit": "kg/kg steel",
+   "unit_note": "CFRP – Unidirectional Prepreg (UD, PAN-based)",
+   "val": 0.2,
+   "min": 0.2,
+   "mf": 0.3,
+   "max": 0.3,
+   "sources": [
+    {
+     "ref": "Das, S. (ORNL)",
+     "year": "2011"
+    },
+    {
+     "ref": "ACC - American Chemistry Council",
+     "year": "2020"
+    },
+    {
+     "ref": "US DOE – Vehicle Technologies Office",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.2,
+    "mf": 0.3,
+    "max": 0.3,
+    "val": 0.2,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 119,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "LWP",
+   "name": "Glass Fiber-Reinforced Plastic MSR",
+   "unit": "kg/kg steel",
+   "unit_note": "CFRP – Chopped / Sheet Moulding Compound (SMC)",
+   "val": 0.6,
+   "min": 0.55,
+   "mf": 0.6,
+   "max": 0.6,
+   "sources": [
+    {
+     "ref": "ACC - American Chemistry Council",
+     "year": "2020"
+    },
+    {
+     "ref": "Das, S. (ORNL)",
+     "year": "2011"
+    },
+    {
+     "ref": "US DOE – Vehicle Technologies Office",
+     "year": "annual"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.55,
+    "mf": 0.6,
+    "max": 0.6,
+    "val": 0.6,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  },
+  {
+   "n": 120,
+   "block": "LWP - Lightweighting  Parameters",
+   "group": "LWP",
+   "name": "Magnesium MSR",
+   "unit": "kg/kg steel",
+   "unit_note": "Magnesium AZ31B (Wrought)",
+   "val": 0.4,
+   "min": 0.4,
+   "mf": 0.45,
+   "max": 0.45,
+   "sources": [
+    {
+     "ref": "US DOE – Vehicle Technologies Office",
+     "year": "annual"
+    },
+    {
+     "ref": "Ashby, M.F.",
+     "year": "2017"
+    }
+   ],
+   "tags": [],
+   "spot": false,
+   "flags": [],
+   "base": {
+    "min": 0.4,
+    "mf": 0.45,
+    "max": 0.45,
+    "val": 0.4,
+    "date": "2026-08-03"
+   },
+   "rec": {
+    "act": "keep",
+    "why": "No relevant developments identified in this review."
+   }
+  }
+ ]
+}
