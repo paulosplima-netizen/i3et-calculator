@@ -38,13 +38,20 @@ def reference_db_path() -> str:
 
 def master_password() -> str | None:
     """Senha do usuario master: variavel `I3ET_MASTER_PASSWORD` ou segredo `master_password`.
-    Sem senha configurada, nao ha usuario master e nenhum controle de master aparece."""
+    Sem senha configurada, nao ha usuario master e nenhum controle de master aparece.
+
+    Os segredos so sao consultados se o arquivo existir: o Streamlit mostra um aviso na
+    tela ("No secrets found") quando se le `st.secrets` sem ele."""
     senha = os.environ.get("I3ET_MASTER_PASSWORD")
     if senha:
         return senha
+    arquivos = (os.path.join(os.path.expanduser("~"), ".streamlit", "secrets.toml"),
+                os.path.join(REPO, ".streamlit", "secrets.toml"))
+    if not any(os.path.exists(a) for a in arquivos):
+        return None
     try:
         return st.secrets.get("master_password")
-    except Exception:  # sem arquivo de segredos
+    except Exception:  # arquivo ilegivel ou sem a chave
         return None
 
 
