@@ -68,7 +68,8 @@ def read_only_reason(conn: sqlite3.Connection, *, selected_count: int = 1) -> st
     if selected_count >= 2:
         return "Several projects are selected: all are read-only. Select one to edit it."
     if ident["IsExample"]:
-        return "This is an example project and is read-only. Use Save as to get an editable copy."
+        return ("This is the Excel model (master) and cannot be edited. "
+                "Use Save as to get an editable copy.")
     return None
 
 

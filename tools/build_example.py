@@ -24,7 +24,7 @@ from core import __version__, analysis, project, run  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = os.path.join(REPO, "data", "base_referencia.sqlite")
-NAME = "Compact hatch · workbook example"
+NAME = "Excel Model LCA_LV_i3ET_20261119"
 
 
 def build(destino: str) -> str:

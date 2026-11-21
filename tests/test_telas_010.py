@@ -129,6 +129,7 @@ def test_projeto_de_exemplo_existe_e_e_somente_leitura():
     assert project.identity(conn)["IsExample"] == 1
     assert project.mode(conn) == project.READ
     assert conn.execute("SELECT COUNT(*) FROM D09_Run").fetchone()[0] == 1
+    assert project.identity(conn)["ProjectName"] == "Excel Model LCA_LV_i3ET_20261119"
 
 
 def test_t03_salvar_fator_persiste(projeto, tmp_path):
@@ -159,7 +160,7 @@ def test_t04_salvar_parametro_persiste(projeto, tmp_path):
 def test_t01_copia_o_projeto_master_com_novo_nome():
     exemplo = os.path.join(REPO, "data", "exemplo.sqlite")
     at = AppTest.from_file(os.path.join(REPO, "pages", "T01_Home.py"), default_timeout=120).run()
-    next(b for b in at.button if "example" in b.label).click().run()
+    next(b for b in at.button if "Excel Model" in b.label).click().run()
     campo = next(t for t in at.text_input if t.key == "copy_name")
     campo.input("Minha copia").run()
     next(b for b in at.button if b.label == "Save a copy").click().run()

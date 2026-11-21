@@ -31,6 +31,7 @@ ANALYSES = {   # tipo de analise -> (tela de destino, situacao)
     "Lightweighting": ("T32", "planned: screen T32, module M5"),
 }
 EXAMPLE = os.path.join(state.REPO, "data", "exemplo.sqlite")
+EXAMPLE_NAME = "Excel Model LCA_LV_i3ET_20261119"      # master: nao se edita, so se copia
 
 
 def _label(entry: dict) -> str:
@@ -134,7 +135,7 @@ with left:
                              "Free choice (FC): 1 to 7 market vehicles.")
         sources = {"Empty project": None}
         if os.path.exists(EXAMPLE):
-            sources[EXAMPLE] = "Master · Compact hatch · workbook example"
+            sources[EXAMPLE] = f"Master · {EXAMPLE_NAME}"
         sources.update({e["path"]: _label(e) for e in listed})
         source = st.selectbox("Copy from", list(sources),
                               format_func=lambda k: k if k == "Empty project" else sources[k])
@@ -175,10 +176,10 @@ with left:
             st.rerun()
         except ValueError as e:
             st.error(str(e))
-    if os.path.exists(EXAMPLE) and st.button("Open example project (read-only)"):
+    if os.path.exists(EXAMPLE) and st.button(f"Open {EXAMPLE_NAME} (read-only)"):
         dest = state.new_project("example", persist=False)
         shutil.copyfile(EXAMPLE, dest)
-        _open(dest, "Compact hatch · workbook example")
+        _open(dest, EXAMPLE_NAME)
         st.rerun()
 
     # --- Select Analysis Type ----------------------------------------------
