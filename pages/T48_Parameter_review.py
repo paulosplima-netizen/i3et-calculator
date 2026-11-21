@@ -196,6 +196,37 @@ def _master_access() -> bool:
     return True
 
 
+def _master_panel(rows: list[pr.PanelRow], dec) -> None:
+    """Sugestoes de regua a aceitar e ja aceitas, com os botoes, logo abaixo dos indicadores."""
+    pendentes = [r for r in rows if pr.can_accept(r)]
+    aceitas = [r for r in rows if r.accepted_range]
+    with st.expander(f"Suggestions to accept ({len(pendentes)})", expanded=bool(pendentes)):
+        if not pendentes:
+            st.write("No suggestion is waiting for acceptance.")
+        for r in pendentes:
+            rev = r.revision
+            atual = {"min": r.lo, "mf": r.mf, "max": r.hi}[rev.field]
+            c1, c2 = st.columns([4, 1])
+            c1.markdown(
+                f"**#{rev.panel_no} · {r.idcp} · {r.name}** ({r.unit or '—'}): "
+                f"{pr.FIELD_LABEL[rev.field]} {pr.fmt(atual, r.unit, dec)} → "
+                f"**{pr.fmt(rev.suggested, r.unit, dec)}**")
+            if c2.button("Accept", key=f"accept_{r.idcp}"):
+                with closing(sqlite3.connect(state.reference_db_path())) as w:
+                    pr.accept_range(w, r.idcp, "master")
+                st.rerun()
+        for r in aceitas:
+            campo, _, valor, quando, _ = r.accepted_range
+            c1, c2 = st.columns([4, 1])
+            c1.markdown(f"✓ **#{r.revision.panel_no} · {r.idcp} · {r.name}**: "
+                        f"{pr.FIELD_LABEL[campo]} → {pr.fmt(valor, r.unit, dec)} "
+                        f"(accepted {str(quando)[:10]})")
+            if c2.button("Undo", key=f"undo_{r.idcp}"):
+                with closing(sqlite3.connect(state.reference_db_path())) as w:
+                    pr.revoke_range(w, r.idcp)
+                st.rerun()
+
+
 def _accept_controls(r: pr.PanelRow) -> None:
     """Aceitar / desfazer a sugestao de regua (grava em P69 da base de referencia)."""
     rev = r.revision
@@ -270,6 +301,9 @@ with closing(sqlite3.connect(f"file:{state.reference_db_path()}?mode=ro", uri=Tr
         with st.expander(f"New developments ({len(news)} · baseline {summary['review_date']})"):
             st.markdown("".join(_alert_html(a) for a in news), unsafe_allow_html=True)
 
+    dec = pr.family_decimals(rows)           # casas por familia de unidade, sobre o conjunto todo
+    if is_master:
+        _master_panel(rows, dec)
     f1, f2, f3 = st.columns([3, 2, 3])
     term = f1.text_input("Search", placeholder="#, name, unit, block or source").strip()
     blocks = f2.multiselect("Block", [b for b in pr.BLOCKS if any(r.section == b for r in rows)],
@@ -288,7 +322,6 @@ with closing(sqlite3.connect(f"file:{state.reference_db_path()}?mode=ro", uri=Tr
     shown = [r for r in rows if _shown(r)]
     st.caption(f"{len(shown)} of {len(rows)} shown")
 
-    dec = pr.family_decimals(rows)           # casas por familia de unidade, sobre o conjunto todo
     for bloco in pr.BLOCKS:
         grupo = [r for r in shown if r.section == bloco]
         if not grupo:

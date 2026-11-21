@@ -371,11 +371,11 @@ def test_t48_master_aceita_e_desfaz_a_regua_sem_mexer_no_adotado(monkeypatch, tm
     assert any("Wrong password" in e.value for e in at.error)
     at.text_input(key="master_pwd").set_value("segredo").run()
     assert not at.exception, at.exception
-    at.selectbox(key="review_pick").set_value("X75").run()           # adjust, mf 200 -> 240
+    assert any("Suggestions to accept (1)" in e.label for e in at.expander)
     antes = sqlite3.connect(base).execute(
         "SELECT DefaultValue, MinValue, MostFrequent, MaxValue FROM P30_ControlParam "
         "WHERE IDCP='X75'").fetchone()
-    at.button(key="accept_ruler").click().run()
+    at.button(key="accept_X75").click().run()
     assert not at.exception, at.exception
     conn = sqlite3.connect(base)
     assert conn.execute("SELECT Field, Value FROM P69_ParamRangeAccept WHERE IDCP='X75'"
@@ -383,7 +383,7 @@ def test_t48_master_aceita_e_desfaz_a_regua_sem_mexer_no_adotado(monkeypatch, tm
     assert conn.execute("SELECT DefaultValue, MinValue, MostFrequent, MaxValue "
                         "FROM P30_ControlParam WHERE IDCP='X75'").fetchone() == antes
     assert "accepted by master" in _html(at)
-    at.button(key="undo_accept").click().run()
+    at.button(key="undo_X75").click().run()
     assert sqlite3.connect(base).execute("SELECT COUNT(*) FROM P69_ParamRangeAccept"
                                          ).fetchone()[0] == 0
 
