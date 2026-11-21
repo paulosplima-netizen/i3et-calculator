@@ -9,11 +9,13 @@ New screen: it replaces the "I3et Parametros Expert" artifact and has no revised
 
 from __future__ import annotations
 
+import sqlite3
+
 import pandas as pd
 import streamlit as st
 
 from core import param_review as pr
-from ui import flow, navigation
+from ui import flow, navigation, state
 
 ctx = flow.begin("Parameter review", edit=False)
 ACTION_LABEL = {"keep": "Keep", "adjust": "Adjust", "verify": "Verify"}
@@ -35,13 +37,15 @@ with flow.connect(ctx.path) as conn:
         st.stop()
     profile = conn.execute("SELECT ParamProfile FROM D06_Analysis WHERE IDA = ?",
                            (ida,)).fetchone()[0]
+    # A revisao e dado de referencia: vem da base de referencia, nao do projeto.
+    review = sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)
     try:
-        rows = pr.panel_rows(conn, ida, profile)
-    except Exception:  # projeto de versao anterior, sem P64/P65
+        rows = pr.panel_rows(conn, ida, profile, review)
+        pr_history = lambda idcp: pr.history(review, idcp)  # noqa: E731
+    except sqlite3.Error:
         rows = []
     if not rows:
-        st.info("No parameter review is loaded in this project. Reopen it with the current "
-                "version or create a new project to get the reference review.")
+        st.info("The reference base has no parameter review loaded.")
         st.stop()
 
     summary = pr.summary(rows)
@@ -118,7 +122,7 @@ with flow.connect(ctx.path) as conn:
         st.markdown("**Sources**")
         for ref, year in rev.sources:
             st.write(f"- {ref}" + (f" ({year})" if year else ""))
-        past = pr.history(conn, r.idcp)[1:]
+        past = pr_history(r.idcp)[1:]
         if past:
             st.markdown("**Earlier reviews**")
             for h in past:

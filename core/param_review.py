@@ -147,9 +147,15 @@ def _note(module: str | None) -> str | None:
 #   Le      : P30, valor efetivo (D08 da analise e do perfil) e a revisao vigente.
 #   Devolve : uma PanelRow por parametro revisado, na ordem do arquivo de revisao.
 # --------------------------------------------------------------------------
-def panel_rows(conn: sqlite3.Connection, ida: int, profile: str) -> list[PanelRow]:
+def panel_rows(conn: sqlite3.Connection, ida: int, profile: str,
+               review: sqlite3.Connection | None = None) -> list[PanelRow]:
+    """`review`: conexao de onde vem a revisao (P64, P65); por padrao, a do projeto.
+
+    A revisao e dado de referencia: a tela a le da base de referencia, para que projetos
+    criados antes da tabela existir (ou com uma revisao antiga) mostrem a revisao atual.
+    """
     eff = cp.effective_values(conn, ida, profile)
-    latest = latest_by_param(conn)
+    latest = latest_by_param(review or conn)
     meta = {r[0]: r for r in conn.execute(
         "SELECT IDCP, Section, Level, DsCP, utCP, MinValue, MostFrequent, MaxValue, "
         "UsedByModule FROM P30_ControlParam")}

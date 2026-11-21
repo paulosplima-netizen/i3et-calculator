@@ -284,3 +284,17 @@ def test_t04_aceita_o_parametro_vindo_da_t48(projeto):  # noqa: F811
     at.run()
     assert not at.exception, at.exception
     assert at.session_state["t04_term"] == "X37"
+
+
+def test_t48_mostra_a_revisao_mesmo_em_projeto_sem_p64(projeto):  # noqa: F811
+    """Projeto criado antes das tabelas P64/P65 (21/11/2026): a revisao vem da base."""
+    import sqlite3
+    conn = sqlite3.connect(projeto[0])
+    conn.execute("PRAGMA foreign_keys = OFF")
+    conn.execute("DROP TABLE P65_ParamRevisionSource")
+    conn.execute("DROP TABLE P64_ParamRevision")
+    conn.commit()
+    conn.close()
+    at = _abrir("T48_Parameter_review", projeto)
+    assert not at.exception, at.exception
+    assert {m.label: m.value for m in at.metric}["Parameters"] == "120"
