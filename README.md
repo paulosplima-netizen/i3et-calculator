@@ -135,7 +135,7 @@ tested, not assumed.
 
 Lima, P. S. P. (2026). *i3ET Calculator: Light Vehicle Cradle-to-Gate Carbon
 Footprint* (version 0.11.0) [Software]. Zenodo.
-https://doi.org/10.5281/zenodo.24339392
+https://doi.org/10.5281/zenodo.24416267
 
 Cite the version you used: each release on GitHub is archived by Zenodo with its
 own DOI, so a result can always be traced to the exact code that produced it.
