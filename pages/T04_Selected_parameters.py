@@ -9,9 +9,7 @@ from ui import flow, navigation
 
 ctx = flow.begin("Selected Parameters", edit=True)
 LEVELS = {"Basic": ("B",), "Expert": ("B", "E"), "Expanded": ("B", "E", "X")}
-#: Parametros do painel que a T03 define (modo, combustivel, norma, curva, lista de fatores).
-CONFIG_LINKED = {"Fuel considered in Graphs", "Test Cycle", "Daily Distance CDF",
-                 "Emission Factors List"}
+CONFIG_LINKED = cp.CONFIG_LINKED      # parametros que a T03 define
 
 
 def _inconsistent(lo, mf, hi) -> bool:
@@ -46,8 +44,10 @@ with flow.connect(ctx.path) as conn:
                          key="t04_term").strip().lower()
     only_changed = t2.checkbox("Changed only")
     n_over = sum(1 for e in eff.values() if e.source == "User")
-    if t3.button("Restore this depth", disabled=not (ctx.can_edit and n_over)):
-        cp.restore_profile(conn, ida, profile)
+    if t3.button("Restore all changes", disabled=not (ctx.can_edit and n_over),
+                 help="Depths are linked: this returns every parameter of the analysis to "
+                      "the workbook value."):
+        cp.restore_all(conn, ida)
         st.rerun()
 
     def _shown(r):

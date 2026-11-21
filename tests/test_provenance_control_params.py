@@ -58,7 +58,7 @@ def test_valor_efetivo_padrao_e_igual_nos_tres_perfis(conn):
     assert vals[0] == vals[1] == vals[2]          # BasicValue nao e usado
 
 
-def test_alteracao_vale_so_no_perfil_e_na_analise(conn):
+def test_alteracao_vale_nos_tres_perfis_e_so_na_analise(conn):
     idcp = conn.execute("SELECT IDCP FROM P30_ControlParam WHERE IsCalculated = 0 "
                         "AND DefaultValue IS NOT NULL AND MinValue IS NOT NULL "
                         "AND MaxValue IS NOT NULL AND MinValue <= MaxValue LIMIT 1").fetchone()[0]
@@ -74,11 +74,18 @@ def test_alteracao_vale_so_no_perfil_e_na_analise(conn):
     assert fora is True
     e = cp.effective_values(conn, 1, "Expert")[idcp]
     assert e.source == "User" and e.out_of_range
-    assert cp.effective_values(conn, 1, "Basic")[idcp].source == "Default"
+    for perfil in cp.PROFILES:                      # perfis interligados (21/11/2026)
+        assert cp.effective_values(conn, 1, perfil)[idcp].source == "User"
     assert cp.effective_values(conn, 2, "Expert")[idcp].source == "Default"
-    assert cp.restore(conn, 1, idcp, "Expert") is True
-    assert cp.effective_values(conn, 1, "Expert")[idcp].source == "Default"
+    pv = cp.edit_preview(conn, 1, idcp, "Basic", value=hi + 1.0)
+    assert pv.out_of_range and not pv.changed and pv.current_source == "User"
+    assert cp.restore(conn, 1, idcp, "Basic") is True      # apaga nos tres
+    for perfil in cp.PROFILES:
+        assert cp.effective_values(conn, 1, perfil)[idcp].source == "Default"
     assert cp.restore(conn, 1, idcp, "Expert") is False
+    cp.set_value(conn, 1, idcp, "Expert", value=hi + 1.0, source="teste")
+    assert cp.restore_all(conn, 1) == 1
+    assert cp.effective_values(conn, 1, "Expanded")[idcp].source == "Default"
 
 
 def test_recusas(conn):

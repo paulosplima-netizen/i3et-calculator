@@ -1,12 +1,14 @@
 """T48 · Parameter review — the expert-block parameters with the periodic literature review.
 
-Query only. Ranges, recommendations, sources, alerts and notes come from the reference base
+Query by default. Ranges, recommendations, sources, alerts and notes come from the reference base
 (P30, P64–P68). The "Adopted in …" column follows the open project: its values are the
 workbook catalogue (the Excel model) overlaid with what the user changed in that project's
 analysis (D08); edited values are marked and show the workbook value struck through. With no
-project open, it shows the Excel model itself. Nothing is editable here and a suggested value
-never reaches the calculation — to change a value of an analysis, open Selected Parameters
-(T04). The workbook prevails and the reference base is immutable.
+project open, it shows the Excel model itself. Editing the adopted values is off by default;
+the "Enable editing" switch (only for an editable project with one analysis selected) writes to
+D08 through the same core functions as Selected Parameters (T04), in the three depths at once
+(Basic, Expert and Expanded are linked), after showing exactly what will change. A suggested
+value never reaches the calculation. The workbook prevails and the reference base is immutable.
 New screen: it replaces the "I3et Parametros Expert" artifact and has no revised prototype.
 """
 
@@ -19,6 +21,7 @@ from contextlib import closing
 
 import streamlit as st
 
+from core import control_params as cp
 from core import param_review as pr
 from core import project as project_core
 from ui import flow, navigation, state
@@ -247,9 +250,74 @@ def _accept_controls(r: pr.PanelRow) -> None:
             st.rerun()
 
 
+def _edit_panel(r: pr.PanelRow, ctx, reason: str | None) -> None:
+    """Edicao do valor adotado do projeto selecionado (desligada por padrao)."""
+    st.subheader("Adopted value")
+    on = st.toggle("Enable editing of the adopted values", key="t48_edit_on",
+                   value=False, disabled=ctx is None,
+                   help="Off by default. When on, changes go to this analysis in the three "
+                        "depths at once and also appear in Selected Parameters.")
+    if ctx is None:
+        st.caption(reason or "Editing is not available.")
+        return
+    if not on:
+        st.caption("Editing is off: the adopted values are shown, not changed.")
+        return
+    path, ida, prof, nome = ctx
+    with closing(sqlite3.connect(f"file:{path}?mode=ro", uri=True)) as pc:
+        row = pc.execute("SELECT IsCalculated, DefaultText FROM P30_ControlParam "
+                         "WHERE IDCP = ?", (r.idcp,)).fetchone()
+        cur = cp.effective_values(pc, ida, prof).get(r.idcp)
+    if row is None or cur is None:
+        st.warning("This parameter is not in the project catalogue.")
+        return
+    if row[0]:
+        st.info("This parameter is calculated and takes no user value.")
+        return
+    if r.name in cp.CONFIG_LINKED:
+        st.info("This parameter is set in the analysis configuration (T03), not here.")
+        return
+    is_text = cur.value is None and cur.text is not None
+    if is_text:
+        novo = st.text_input("New value", cur.text, key=f"t48_v_{r.idcp}")
+        kw = {"text": novo}
+    else:
+        novo = st.number_input("New value", value=float(cur.value or 0.0), format="%g",
+                               key=f"t48_v_{r.idcp}")
+        kw = {"value": float(novo)}
+    fonte = st.text_input("Source of the value (required)", key=f"t48_s_{r.idcp}")
+    with closing(sqlite3.connect(f"file:{path}?mode=ro", uri=True)) as pc:
+        pv = cp.edit_preview(pc, ida, r.idcp, prof, **kw)
+    unit = f" {pv.unit}" if pv.unit else ""
+    atual = pv.current_value if pv.current_value is not None else pv.current_text
+    novo_v = pv.new_value if pv.new_value is not None else pv.new_text
+    cat = pv.catalog_value if pv.catalog_value is not None else pv.catalog_text
+    st.markdown(
+        f"**What will change**  \nProject: {nome} · analysis A{ida}  \n"
+        f"Parameter: {pv.idcp} · {pv.name}  \n"
+        f"Value: {atual}{unit} ({pv.current_source}) → **{novo_v}{unit}**  \n"
+        f"Catalogue (workbook) value: {cat}{unit}  \n"
+        f"Depths affected: {', '.join(pv.profiles)} (linked)  \n"
+        "Runs already frozen are not changed.")
+    if pv.out_of_range:
+        st.warning(f"The new value is outside the range {pv.lo} – {pv.hi}: it will be "
+                   "saved and flagged.")
+    c1, c2 = st.columns(2)
+    if c1.button("Apply change", key="t48_apply", disabled=not (pv.changed and fonte.strip())):
+        with flow.connect(path) as w:
+            cp.set_value(w, ida, r.idcp, prof, source=fonte, **kw)
+        st.rerun()
+    if c2.button("Restore catalogue value", key="t48_restore",
+                 disabled=cur.source != "User"):
+        with flow.connect(path) as w:
+            cp.restore(w, ida, r.idcp, prof)
+        st.rerun()
+
+
 # Consulta independente de projeto: tudo vem da base de referencia (P30, P64–P68).
 with closing(sqlite3.connect(f"file:{state.reference_db_path()}?mode=ro", uri=True)) as conn:
     adopted_title, adopted_note, overrides = f"Adopted in {MASTER_NAME}", None, None
+    edit_ctx, edit_reason = None, "No project is open."
     ppath = state.project_path()
     if ppath and flow.selected_count() == 1:
         try:
@@ -263,8 +331,15 @@ with closing(sqlite3.connect(f"file:{state.reference_db_path()}?mode=ro", uri=Tr
                     adopted_title = f"Adopted in {ident['ProjectName']}"
                     adopted_note = (f"Adopted values: project {ident['ProjectName']} · analysis "
                                     f"A{ida} · depth {prof} · {len(overrides)} edited.")
+                    if project_core.mode(pconn, selected_count=1) == project_core.EDIT:
+                        edit_ctx, edit_reason = (ppath, ida, prof, ident["ProjectName"]), None
+                    else:
+                        edit_reason = ("This project is read-only (the Excel model is the "
+                                       "master); use Save as to get an editable copy.")
         except sqlite3.Error:
             overrides = None
+    elif ppath:
+        edit_reason = "Select exactly one project to edit its parameters."
     try:
         rows = pr.panel_rows(conn, overrides=overrides)
     except sqlite3.Error:
@@ -358,3 +433,4 @@ with closing(sqlite3.connect(f"file:{state.reference_db_path()}?mode=ro", uri=Tr
                    "Selected Parameters to edit it.")
     if st.button("Open in Selected Parameters", key="open_t04"):
         _open_t04(r.idcp)
+    _edit_panel(r, edit_ctx, edit_reason)

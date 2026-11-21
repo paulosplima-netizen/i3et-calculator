@@ -201,7 +201,7 @@ Em FC, os parâmetros vêm do catálogo (`Manufacturer`) e o cálculo de massa e
 
 **Valor efetivo** de um parâmetro numa análise:
 
-1. o valor em `D08` para o perfil ativo, se existir;
+1. o valor em `D08` para o perfil ativo, se existir (os três perfis são interligados: alterar em um altera nos três; ver D08);
 2. senão, `P30.DefaultValue`, que é o mesmo nos três perfis (decisão de 17/11; `P30.BasicValue` fica gravado como na planilha e não é usado).
 
 Valor fora da faixa gera aviso e não bloqueia. Parâmetro calculado não tem campo de entrada. Parâmetro cujo módulo ainda não existe é gravado e congelado, e a tela diz *Recorded — not used until M3* (ou o módulo correspondente).
@@ -341,7 +341,7 @@ Salvar grava `D06` e `D07` e cria os veículos. Mostra, por caso, o `SizingOrigi
 
 ### T04 · Selected Parameters
 
-Os parâmetros de `P30` em três profundidades (Basic, Expert, Expanded), por seção. Cada linha: nome, unidade, valor efetivo, faixa (mínimo, mais frequente, máximo), fonte, módulo que usa. Aviso de fora da faixa. *Restore default* apaga a linha de `D08`. As escolhas da T03 aparecem em leitura. Bloqueada quando há mais de um projeto selecionado.
+Os parâmetros de `P30` em três profundidades (Basic, Expert, Expanded), por seção. Cada linha: nome, unidade, valor efetivo, faixa (mínimo, mais frequente, máximo), fonte, módulo que usa. Aviso de fora da faixa. *Restore default* apaga a linha de `D08` (nos três perfis); *Restore all changes* devolve a análise inteira aos valores da planilha. As escolhas da T03 aparecem em leitura. Bloqueada quando há mais de um projeto selecionado.
 
 ### T10 · Vehicle parameters e T11 · Default parameters
 

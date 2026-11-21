@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import os
+import sqlite3
+
 import pytest
 
 pytest.importorskip("streamlit", reason="interface nao instalada neste ambiente")
-from tests.test_telas_010 import _abrir, projeto  # noqa: E402,F401
+from tests.test_telas_010 import REPO, _abrir, projeto  # noqa: E402,F401
 
 
 def test_t18_vida_do_veiculo_abre_e_soma_os_estagios(projeto):  # noqa: F811
@@ -396,3 +399,57 @@ def test_t48_colunas_alinhadas_entre_blocos_e_numeros_centralizados():
     assert len(colgroups) >= 7 and len(set(colgroups)) == 1
     assert html.count("table-layout:fixed") == len(colgroups)
     assert "text-align:center" in html
+
+
+def _t48_idcp_editavel():
+    import sqlite3 as _s
+
+    from core import control_params as cp
+    from core import param_review as pr
+    with _s.connect(os.path.join(REPO, "data", "base_referencia.sqlite")) as c:
+        calc = {i for (i,) in c.execute("SELECT IDCP FROM P30_ControlParam WHERE IsCalculated=1")}
+        return next(r.idcp for r in pr.panel_rows(c)
+                    if r.idcp not in calc and r.name not in cp.CONFIG_LINKED
+                    and r.default is not None)
+
+
+def test_t48_edicao_desligada_por_padrao_e_sem_projeto(projeto):  # noqa: F811
+    at = _abrir("T48_Parameter_review")
+    assert at.toggle(key="t48_edit_on").disabled
+    at = _abrir("T48_Parameter_review", projeto)
+    assert not at.toggle(key="t48_edit_on").value
+    assert not at.toggle(key="t48_edit_on").disabled
+    assert not [b for b in at.button if b.key == "t48_apply"]
+
+
+def test_t48_aplica_nos_tres_perfis_e_a_t04_enxerga(projeto):  # noqa: F811
+    from core import control_params as cp
+    idcp = _t48_idcp_editavel()
+    at = _abrir("T48_Parameter_review", projeto)
+    at.selectbox(key="review_pick").set_value(idcp).run()
+    at.toggle(key="t48_edit_on").set_value(True).run()
+    assert not at.exception, at.exception
+    novo = at.number_input(key=f"t48_v_{idcp}")
+    novo.set_value(novo.value + 1.0).run()
+    apply = next(b for b in at.button if b.key == "t48_apply")
+    assert apply.disabled                       # fonte obrigatoria
+    at.text_input(key=f"t48_s_{idcp}").set_value("teste").run()
+    next(b for b in at.button if b.key == "t48_apply").click().run()
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(projeto[0])
+    try:
+        ida = conn.execute("SELECT MAX(IDA) FROM D06_Analysis").fetchone()[0]
+        n = conn.execute("SELECT COUNT(*) FROM D08_ControlParamValue WHERE IDA=? AND IDCP=?",
+                         (ida, idcp)).fetchone()[0]
+        assert n == 3
+        for perfil in cp.PROFILES:
+            assert cp.effective_values(conn, ida, perfil)[idcp].source == "User"
+        cp.restore_all(conn, ida)
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def test_t48_master_somente_leitura_bloqueia_edicao():
+    at = _abrir("T48_Parameter_review", (os.path.join(REPO, "data", "exemplo.sqlite"), 1))
+    assert at.toggle(key="t48_edit_on").disabled

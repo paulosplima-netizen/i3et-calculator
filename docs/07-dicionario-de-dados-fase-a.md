@@ -401,6 +401,8 @@ O banco exige `IDVC` e `IDMVRef` preenchidos em `EC` e nulos em `FC`.
 
 Exatamente um entre `Value` e `ValueText` é preenchido. Só existe linha para o que difere da base.
 
+**Perfis interligados (21/11/2026).** Basic, Expert e Expanded compartilham o valor alterado: `core.control_params.set_value` grava a mesma linha nos três perfis e `restore` apaga nos três (`restore_all` apaga todas as alterações da análise). Projetos antigos com valores diferentes por perfil não são migrados: a leitura continua usando o perfil da análise e a próxima edição de cada parâmetro os iguala.
+
 ### D12 — `D12_CombinedPowerOverride` (ajuste dos fatores por caso)
 
 | Coluna | Tipo | Chave | Obr. | Descrição |

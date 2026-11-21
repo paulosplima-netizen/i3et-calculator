@@ -154,7 +154,8 @@ def test_t04_salvar_parametro_persiste(projeto, tmp_path):
     next(b for b in at.button if b.label == "Save").click().run()
     assert not at.exception, at.exception
     conn = sqlite3.connect(copia)
-    assert conn.execute("SELECT COUNT(*) FROM D08_ControlParamValue").fetchone()[0] == 1
+    # perfis interligados: uma alteracao = uma linha por perfil
+    assert conn.execute("SELECT COUNT(*) FROM D08_ControlParamValue").fetchone()[0] == 3
 
 
 def test_t01_copia_o_projeto_master_com_novo_nome():
