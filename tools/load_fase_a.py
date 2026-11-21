@@ -87,11 +87,13 @@ def load_additions(conn) -> dict[str, int]:
 # --------------------------------------------------------------------------
 def load_new_tables(conn) -> dict[str, int]:
     """Tabelas da 0.10 (CSV em fase_a) e do B1 (0.11; CSV em fase_b)."""
-    for tabela in reversed(schema.PARAM_TABLES_010 + schema.PARAM_TABLES_011):
+    for tabela in reversed(schema.PARAM_TABLES_010 + schema.PARAM_TABLES_011
+                           + schema.PARAM_TABLES_012):
         conn.execute(f"DELETE FROM {tabela}")
     feito = {}
     for tabela, pasta in ([(t, CSV_DIR) for t in schema.PARAM_TABLES_010]
-                          + [(t, CSV_DIR_B) for t in schema.PARAM_TABLES_011]):
+                          + [(t, CSV_DIR_B) for t in schema.PARAM_TABLES_011
+                                            + schema.PARAM_TABLES_012]):
         feito[tabela] = 0
         if not os.path.isdir(pasta):
             continue
@@ -156,7 +158,7 @@ def reset_010(conn) -> list[str]:
             raise SystemExit(f"{tabela} tem linhas: esta nao e uma base de referencia")
     conn.execute("PRAGMA foreign_keys = OFF")
     conn.execute("DROP VIEW IF EXISTS R46_RunComparison")
-    b1 = [t for t in reversed(schema.TABLES_011) if t in presentes]
+    b1 = [t for t in reversed(schema.TABLES_011 + schema.TABLES_012) if t in presentes]
     for tabela in b1:
         conn.execute(f"DROP TABLE {tabela}")
     soltas = [t for t in reversed(schema.ANALYSIS_TABLES + schema.PARAM_TABLES_010)

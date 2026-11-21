@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Bloco B2 (imports and reference vehicles; in progress)
+
+Added (21/11/2026)
+- Schema 0.12, block S15: `P48_MarketSalesEdition`, `P47_MarketSales` (FENABRAVE licensing by
+  model), `P60_FleetLicensingTotal` (ANFAVEA), `P70_ReferenceSegment`; editorial tables (outside
+  `ParamBaseHash`), not copied to project files. Loaded by `tools/load_b2.py` from
+  `data/csv/fase_b`, built by `tools/import_fenabrave.py`.
+- `core/market_data.py`: name normalisation, FENABRAVE bulletin and PBEV table readers,
+  catalogue matching (exact, split by powertrain, differs, none), weighted reference vehicles
+  (C33: reproduces the 60 averaged values of the Excel model and the 82.9% coverage), PBEV
+  edition comparison.
+- T39 PBEV import, T40 FENABRAVE import, T42 Weighted references (Auxiliary Data; master user
+  only; compare and show, they do not write). Decisions pending: `docs/11`, section 5.
+
 ## 0.11.0 - Bloco B1 (M1 and M2 complete)
 
 Changed (21/11/2026)

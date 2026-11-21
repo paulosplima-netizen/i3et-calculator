@@ -496,6 +496,7 @@ def create_schema(conn: sqlite3.Connection, *, with_calc: bool = True) -> None:
         # Os blocos S5 a S7 dependem de M01, que so existe com as tabelas C e M.
         apply_010(conn)
         apply_011(conn)
+        apply_012(conn)
     conn.commit()
 
 
@@ -994,6 +995,7 @@ def migrate(conn: sqlite3.Connection, *, project_name: str | None = None,
     for tabela in sem_marca:
         feito.append(f"{tabela}: coluna IsCalculable")
     feito.extend(apply_011(conn))
+    feito.extend(apply_012(conn))
 
     if project_name is not None:
         if conn.execute("SELECT COUNT(*) FROM M03_Project").fetchone()[0] == 0:
@@ -1380,7 +1382,11 @@ PARAM_TABLES_011 = ["P31_MaintenanceItem", "P31b_MaintenancePartShare",
 #: identidade da base nem invalida rodadas congeladas.
 EDITORIAL_TABLES = ("P64_ParamRevision", "P65_ParamRevisionSource",
                     "P66_ParamAlert", "P67_ParamAlertParam", "P68_ParamReviewNote",
-                    "P69_ParamRangeAccept")
+                    "P69_ParamRangeAccept",
+                    # B2: dados de mercado importados (so a tela do master e a referencia
+                    # ponderada os leem; ver docs/11).
+                    "P48_MarketSalesEdition", "P47_MarketSales", "P60_FleetLicensingTotal",
+                    "P70_ReferenceSegment")
 
 #: Tabelas do usuario do B1, pais primeiro.
 USER_TABLES_011 = ["D10_MaintenanceScenario", "D10_Item", "D13_UserRecipe",
@@ -1395,6 +1401,81 @@ CALC_TABLES_011 = ["C15_Replacement", "C16_EndOfLife", "C34_MassValidation",
 
 #: Tudo o que a 0.11 cria.
 TABLES_011 = PARAM_TABLES_011 + USER_TABLES_011 + CALC_TABLES_011
+
+# ==========================================================================
+# SCHEMA 0.12 -- Bloco B2: importacoes e veiculos de referencia
+# ==========================================================================
+# Documento de referencia: docs/11-dicionario-de-dados-b2.md.
+# Bloco S15: P47 licenciamentos por modelo (FENABRAVE), P48 edicoes, P60 totais de
+# licenciamento (ANFAVEA), P70 segmentos que compoem cada veiculo de referencia.
+# As edicoes do PBEV continuam em P36, P28 e P55 (Fase A).
+# --------------------------------------------------------------------------
+DDL_PARAMS_012 = """
+CREATE TABLE IF NOT EXISTS P48_MarketSalesEdition (
+  IDMSE        TEXT PRIMARY KEY,
+  SourceName   TEXT NOT NULL CHECK (SourceName IN ('FENABRAVE')),
+  PeriodKind   TEXT NOT NULL CHECK (PeriodKind IN ('YTD','Month','Range')),
+  PeriodStart  TEXT,
+  PeriodEnd    TEXT NOT NULL,
+  EditionRef   TEXT,
+  SourceMSE    TEXT NOT NULL,
+  PublishedAt  DATE,
+  ImportedAt   TEXT,
+  RecordCount  INTEGER,
+  IsAdopted    INTEGER NOT NULL DEFAULT 0 CHECK (IsAdopted IN (0,1)),
+  NotesMSE     TEXT
+);
+
+CREATE TABLE IF NOT EXISTS P47_MarketSales (
+  IDMS               INTEGER PRIMARY KEY,
+  IDMSE              TEXT NOT NULL REFERENCES P48_MarketSalesEdition(IDMSE),
+  SalesClass         TEXT NOT NULL CHECK (SalesClass IN ('V','CL')),
+  Ranking            INTEGER,
+  Brand              TEXT NOT NULL,
+  Model              TEXT NOT NULL,
+  MatchKey           TEXT NOT NULL,
+  UnitsSource        INTEGER NOT NULL CHECK (UnitsSource >= 0),
+  UnitsAdopted       INTEGER NOT NULL CHECK (UnitsAdopted >= 0),
+  IDMV               INTEGER REFERENCES P26_MarketVehicle(IDMV),
+  AdjustmentNote     TEXT,
+  SheetRow           INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS P60_FleetLicensingTotal (
+  IDFL         INTEGER PRIMARY KEY,
+  SourceName   TEXT NOT NULL CHECK (SourceName IN ('ANFAVEA')),
+  RefYear      INTEGER NOT NULL,
+  VehicleClass TEXT NOT NULL CHECK (VehicleClass IN ('LightVehicles','Automobiles',
+                                    'LightCommercials','Trucks','Buses')),
+  Units        INTEGER NOT NULL CHECK (Units >= 0),
+  SourceFL     TEXT NOT NULL,
+  NotesFL      TEXT
+);
+
+CREATE TABLE IF NOT EXISTS P70_ReferenceSegment (
+  IDRS      INTEGER PRIMARY KEY,
+  IDVC      TEXT REFERENCES P29_VehicleCategory(IDVC),
+  IDVDT     TEXT NOT NULL,
+  IDVS      TEXT NOT NULL,
+  FuelGroup TEXT NOT NULL CHECK (FuelGroup IN ('EG','D','X')),
+  IDVPT     TEXT NOT NULL DEFAULT 'ICEV',
+  SheetRow  INTEGER,
+  NotesRS   TEXT
+);
+"""
+
+#: Tabelas de parametros do B2, pais primeiro.
+PARAM_TABLES_012 = ["P48_MarketSalesEdition", "P47_MarketSales", "P60_FleetLicensingTotal",
+                    "P70_ReferenceSegment"]
+TABLES_012 = PARAM_TABLES_012
+
+
+def apply_012(conn: sqlite3.Connection) -> list[str]:
+    """S15 -- cria as tabelas do B2. Nao altera dados; pode ser repetido."""
+    antes = table_names(conn)
+    conn.executescript(DDL_PARAMS_012)
+    return [f"criada {n}" for n in TABLES_012 if n not in antes]
+
 
 _ORIGIN = "CHECK (Origin IN ('Typed','Published','Own'))"
 _EFV_SOURCE = [("SourceDocTitle", "TEXT"), ("SourceInstitution", "TEXT"),
@@ -1512,7 +1593,7 @@ def param_base_hash(conn: sqlite3.Connection) -> str:
 
     presentes = table_names(conn)
     h = hashlib.sha256()
-    for tabela in PARAM_TABLES + PARAM_TABLES_010 + PARAM_TABLES_011:
+    for tabela in PARAM_TABLES + PARAM_TABLES_010 + PARAM_TABLES_011 + PARAM_TABLES_012:
         if tabela not in presentes or tabela in EDITORIAL_TABLES:
             continue
         h.update(tabela.encode("utf-8"))
