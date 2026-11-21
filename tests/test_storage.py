@@ -57,3 +57,19 @@ def test_home_lista_os_projetos_salvos(tmp_path, monkeypatch):
     next(b for b in at.button if b.label == "Open saved project").click().run()
     assert not at.exception, at.exception
     assert at.session_state["project_path"] == dest
+
+
+def test_o_mesmo_arquivo_carregado_tem_a_mesma_marca():
+    """Regressao de 21/11/2026: o seletor mantem o arquivo apos o rerun; a Home so abre
+    um arquivo se a marca for nova (senao grava uma copia por recarga)."""
+    pytest.importorskip("streamlit")
+    from ui import state
+
+    class Arq:
+        def __init__(self, nome, tamanho, fid=None):
+            self.name, self.size, self.file_id = nome, tamanho, fid
+
+    a = Arq("p.sqlite", 10, "x1")
+    assert state.upload_token(a) == state.upload_token(Arq("p.sqlite", 10, "x1"))
+    assert state.upload_token(a) != state.upload_token(Arq("p.sqlite", 10, "x2"))
+    assert state.upload_token(a) != state.upload_token(Arq("q.sqlite", 10, "x1"))

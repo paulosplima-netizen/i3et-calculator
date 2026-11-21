@@ -166,8 +166,11 @@ with left:
         else:
             st.caption("No saved project yet. Projects you create are saved here.")
     up = st.file_uploader("…or open an existing project (.sqlite)", type=["sqlite", "db"])
-    if up is not None:
+    # O seletor mantem o arquivo depois do st.rerun(): sem esta marca, cada recarga gravaria
+    # uma copia nova na pasta de projetos (laco de 21/11/2026, 117 copias em 1 minuto).
+    if up is not None and st.session_state.get("upload_done") != state.upload_token(up):
         try:
+            st.session_state["upload_done"] = state.upload_token(up)
             _open(state.open_uploaded(up), os.path.splitext(up.name)[0])
             st.rerun()
         except ValueError as e:

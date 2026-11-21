@@ -64,6 +64,11 @@ def open_uploaded(arquivo, name: str | None = None) -> str:
     return destino
 
 
+def upload_token(arquivo) -> tuple:
+    """Identifica um arquivo carregado: o mesmo arquivo nao pode ser aberto duas vezes."""
+    return (getattr(arquivo, "file_id", None), arquivo.name, arquivo.size)
+
+
 def close_project() -> None:
     for chave in (PROJECT_KEY, NAME_KEY):
         st.session_state.pop(chave, None)
