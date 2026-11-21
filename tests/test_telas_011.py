@@ -345,3 +345,54 @@ def test_t48_sem_projeto_o_titulo_e_o_do_modelo_excel():
     at = _abrir("T48_Parameter_review")
     assert "Adopted in Excel Model LCA_LV_i3ET_20261119" in _html(at)
     assert "edited in this project" not in _html(at)
+
+
+def test_t48_sem_senha_configurada_nao_ha_controle_de_master(monkeypatch):
+    monkeypatch.delenv("I3ET_MASTER_PASSWORD", raising=False)
+    at = _abrir("T48_Parameter_review")
+    assert not at.exception, at.exception
+    assert not any("Master" in e.label for e in at.expander)
+    assert not any(b.key == "accept_ruler" for b in at.button)
+
+
+def test_t48_master_aceita_e_desfaz_a_regua_sem_mexer_no_adotado(monkeypatch, tmp_path):
+    import shutil
+    import sqlite3
+
+    from ui import state
+    base = str(tmp_path / "base.sqlite")
+    shutil.copyfile(state.REFERENCE_DB, base)
+    monkeypatch.setenv("I3ET_REFERENCE_DB", base)
+    monkeypatch.setenv("I3ET_MASTER_PASSWORD", "segredo")
+    at = _abrir("T48_Parameter_review")
+    assert not at.exception, at.exception
+    assert not any(b.key == "accept_ruler" for b in at.button)       # ainda sem acesso
+    at.text_input(key="master_pwd").set_value("errada").run()
+    assert any("Wrong password" in e.value for e in at.error)
+    at.text_input(key="master_pwd").set_value("segredo").run()
+    assert not at.exception, at.exception
+    at.selectbox(key="review_pick").set_value("X75").run()           # adjust, mf 200 -> 240
+    antes = sqlite3.connect(base).execute(
+        "SELECT DefaultValue, MinValue, MostFrequent, MaxValue FROM P30_ControlParam "
+        "WHERE IDCP='X75'").fetchone()
+    at.button(key="accept_ruler").click().run()
+    assert not at.exception, at.exception
+    conn = sqlite3.connect(base)
+    assert conn.execute("SELECT Field, Value FROM P69_ParamRangeAccept WHERE IDCP='X75'"
+                        ).fetchone() == ("mf", 240.0)
+    assert conn.execute("SELECT DefaultValue, MinValue, MostFrequent, MaxValue "
+                        "FROM P30_ControlParam WHERE IDCP='X75'").fetchone() == antes
+    assert "accepted by master" in _html(at)
+    at.button(key="undo_accept").click().run()
+    assert sqlite3.connect(base).execute("SELECT COUNT(*) FROM P69_ParamRangeAccept"
+                                         ).fetchone()[0] == 0
+
+
+def test_t48_colunas_alinhadas_entre_blocos_e_numeros_centralizados():
+    import re
+    at = _abrir("T48_Parameter_review")
+    html = _html(at)
+    colgroups = re.findall(r"<colgroup>.*?</colgroup>", html)
+    assert len(colgroups) >= 7 and len(set(colgroups)) == 1
+    assert html.count("table-layout:fixed") == len(colgroups)
+    assert "text-align:center" in html

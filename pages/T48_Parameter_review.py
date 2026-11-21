@@ -60,6 +60,15 @@ def _cell(now, base, unit, dec) -> str:
     return _e(atual)
 
 
+def _ruler(r: pr.PanelRow, campo: str, now, base, dec) -> str:
+    """Min / mais frequente / max: com sugestao aceita, mostra o valor da planilha riscado."""
+    if r.accepted_range and r.accepted_range[0] == campo:
+        _, original, valor, _, _ = r.accepted_range
+        return (f"<s style='color:#9ca3af'>{_e(pr.fmt(original, r.unit, dec))}</s> "
+                f"<b>{_e(pr.fmt(valor, r.unit, dec))}</b>")
+    return _cell(now, base, r.unit, dec)
+
+
 def _bar(r: pr.PanelRow) -> str:
     if r.lo is None or r.hi is None or r.value is None or r.hi <= r.lo:
         return ""
@@ -93,6 +102,9 @@ def _recommendation(r: pr.PanelRow, dec) -> str:
     if rev.accepted:
         out.append("<div style='font-size:12px;color:#1e6b34'>✓ accepted"
                    f" · saved on {_e(rev.accepted_date)}</div>")
+    elif r.accepted_range:
+        out.append("<div style='font-size:12px;color:#1e6b34'>✓ accepted by master"
+                   f" · {_e(str(r.accepted_range[3])[:10])}</div>")
     return "".join(out)
 
 
@@ -112,26 +124,34 @@ def _row_html(r: pr.PanelRow, dec) -> str:
     nota = f"<div style='font-size:11px;color:#6b7280'>{_e(r.note)}</div>" if r.note else ""
     avisos = "".join(f"<div style='font-size:11px;color:#c0392b'>⚠ {_e(f)}</div>"
                      for f in r.flags)
-    td = "style='padding:6px 8px;border-top:1px solid #e5e7eb;vertical-align:top"
+    td = ("style='padding:6px 8px;border-top:1px solid #e5e7eb;vertical-align:top;"
+          "overflow-wrap:anywhere")
     return (
         f"<tr><td {td};color:#6b7280'>{rev.panel_no}</td>"
         f"<td {td}'><b>{_e(r.name)}</b>{tag}<div style='font-size:11px;color:#6b7280'>"
         f"{_e(r.unit or '(no unit)')} · {_e(r.idcp)}</div>{nota}{avisos}</td>"
-        f"<td {td};text-align:right'>{_cell(r.lo, rev.baseline_min, r.unit, dec)}</td>"
-        f"<td {td};text-align:right'>{_cell(r.mf, rev.baseline_mf, r.unit, dec)}</td>"
-        f"<td {td};text-align:right'>{_cell(r.hi, rev.baseline_max, r.unit, dec)}</td>"
-        f"<td {td};text-align:right'>{cel_val}{_bar(r)}</td>"
+        f"<td {td};text-align:center'>{_ruler(r, 'min', r.lo, rev.baseline_min, dec)}</td>"
+        f"<td {td};text-align:center'>{_ruler(r, 'mf', r.mf, rev.baseline_mf, dec)}</td>"
+        f"<td {td};text-align:center'>{_ruler(r, 'max', r.hi, rev.baseline_max, dec)}</td>"
+        f"<td {td};text-align:center'>{cel_val}{_bar(r)}</td>"
         f"<td {td};min-width:260px'>{_recommendation(r, dec)}</td>"
         f"<td {td};font-size:11px;color:#4b5563'>{fontes}</td></tr>")
 
 
+WIDTHS = ("4%", "22%", "9%", "9%", "9%", "12%", "27%", "8%")   # iguais em todos os blocos
+CENTERED = {2, 3, 4, 5}                                          # Min., Most freq., Max., Adopted
+
+
 def _table_html(grupo: list[pr.PanelRow], dec, adopted_title: str) -> str:
-    th = "style='text-align:left;padding:6px 8px;font-size:12px;color:#4b5563'"
-    head = ("<tr>" + "".join(f"<th {th}>{c}</th>" for c in (
-        "#", "Parameter", "Min.", "Most freq.", "Max.", _e(adopted_title), "Recommendation",
-        "Sources")) + "</tr>")
+    nomes = ("#", "Parameter", "Min.", "Most freq.", "Max.", _e(adopted_title),
+             "Recommendation", "Sources")
+    cols = "".join(f"<col style='width:{w}'>" for w in WIDTHS)
+    head = "<tr>" + "".join(
+        f"<th style='text-align:{'center' if i in CENTERED else 'left'};padding:6px 8px;"
+        f"font-size:12px;color:#4b5563'>{n}</th>" for i, n in enumerate(nomes)) + "</tr>"
     return ("<div style='overflow-x:auto'><table style='border-collapse:collapse;width:100%;"
-            f"font-size:13px'>{head}{''.join(_row_html(r, dec) for r in grupo)}</table></div>")
+            f"table-layout:fixed;font-size:13px'><colgroup>{cols}</colgroup>{head}"
+            f"{''.join(_row_html(r, dec) for r in grupo)}</table></div>")
 
 
 def _alert_html(a: pr.Alert) -> str:
@@ -157,8 +177,47 @@ def _alert_html(a: pr.Alert) -> str:
     return "".join(partes)
 
 
+def _master_access() -> bool:
+    """Acesso do usuario master (so existe se houver senha configurada)."""
+    esperada = state.master_password()
+    if not esperada:
+        return False
+    if not st.session_state.get("master_ok"):
+        with st.expander("Master access"):
+            senha = st.text_input("Master password", type="password", key="master_pwd")
+            if senha and pr.verify_master(senha, esperada):
+                st.session_state["master_ok"] = True
+                st.rerun()
+            elif senha:
+                st.error("Wrong password.")
+        return False
+    st.caption("Master mode: you can accept or undo the suggested ruler (min, most "
+               "frequent, max). The adopted value is never changed.")
+    return True
+
+
+def _accept_controls(r: pr.PanelRow) -> None:
+    """Aceitar / desfazer a sugestao de regua (grava em P69 da base de referencia)."""
+    rev = r.revision
+    if r.accepted_range:
+        st.write(f"Ruler accepted by master: {pr.FIELD_LABEL[r.accepted_range[0]]} → "
+                 f"{pr.fmt(r.accepted_range[2], r.unit, pr.family_decimals([r]))}.")
+        if st.button("Undo acceptance", key="undo_accept"):
+            with closing(sqlite3.connect(state.reference_db_path())) as w:
+                pr.revoke_range(w, r.idcp)
+            st.rerun()
+    elif pr.can_accept(r):
+        st.write(f"Suggested {pr.FIELD_LABEL[rev.field]}: "
+                 f"{pr.fmt(rev.suggested, r.unit, pr.family_decimals([r]))} "
+                 "(changes only the ruler shown here, not the adopted value).")
+        if st.button("Accept suggested ruler", key="accept_ruler"):
+            with closing(sqlite3.connect(state.reference_db_path())) as w:
+                pr.accept_range(w, r.idcp, "master")
+            st.rerun()
+
+
 # Consulta independente de projeto: tudo vem da base de referencia (P30, P64–P68).
-with closing(sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)) as conn:
+with closing(sqlite3.connect(f"file:{state.reference_db_path()}?mode=ro", uri=True)) as conn:
     adopted_title, adopted_note, overrides = f"Adopted in {MASTER_NAME}", None, None
     ppath = state.project_path()
     if ppath and flow.selected_count() == 1:
@@ -198,6 +257,7 @@ with closing(sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)) as
         st.caption(adopted_note)
     else:
         st.caption("No project open: adopted values are those of the Excel model.")
+    is_master = _master_access()
     k = st.columns(6)
     k[0].metric("Parameters", summary["total"])
     k[1].metric("Battery", summary["battery"])
@@ -258,6 +318,8 @@ with closing(sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)) as
         st.markdown("**Earlier reviews**")
         for h in past:
             st.write(f"- {h.review_date}: {ACTION_LABEL[h.action]}")
+    if is_master:
+        _accept_controls(r)
     if r.level == "X":
         st.caption("This is an Expanded-depth parameter: set the depth to Expanded in "
                    "Selected Parameters to edit it.")

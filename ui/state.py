@@ -31,6 +31,23 @@ PROJECT_KEY = "project_path"
 NAME_KEY = "project_name"
 
 
+def reference_db_path() -> str:
+    """Base de referencia; `I3ET_REFERENCE_DB` a substitui (testes e implantacoes)."""
+    return os.environ.get("I3ET_REFERENCE_DB") or REFERENCE_DB
+
+
+def master_password() -> str | None:
+    """Senha do usuario master: variavel `I3ET_MASTER_PASSWORD` ou segredo `master_password`.
+    Sem senha configurada, nao ha usuario master e nenhum controle de master aparece."""
+    senha = os.environ.get("I3ET_MASTER_PASSWORD")
+    if senha:
+        return senha
+    try:
+        return st.secrets.get("master_password")
+    except Exception:  # sem arquivo de segredos
+        return None
+
+
 def reference_exists() -> bool:
     return os.path.exists(REFERENCE_DB)
 

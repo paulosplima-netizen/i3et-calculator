@@ -14,14 +14,17 @@ Blocos:
     PR5  alertas de novos desenvolvimentos e notas (P66, P67, P68)
     PR6  formatacao de numeros por familia de unidade
     PR7  busca
+    PR8  aceite da sugestao de regua pelo usuario master (P69)
 
 Este modulo nao importa streamlit.
 """
 
 from __future__ import annotations
 
+import hmac
 import math
 import sqlite3
+from datetime import datetime
 from dataclasses import dataclass
 
 from core import control_params as cp
@@ -99,6 +102,9 @@ class PanelRow:
     revision: Revision
     flags: tuple[str, ...]
     default: float | None = None   # valor do catalogo (planilha)
+    # Sugestao aceita pelo master: (campo, valor da planilha, valor aceito, data, quem).
+    # Nesse caso lo/mf/hi ja trazem o valor aceito no campo.
+    accepted_range: tuple | None = None
 
 
 _REV_SQL = (
@@ -209,6 +215,7 @@ def panel_rows(conn: sqlite3.Connection, ida: int | None = None, profile: str | 
             if idcp in eff:
                 eff[idcp] = cp.Effective(idcp, v, t, "User", False)
     latest = latest_by_param(review or conn)
+    acc = accepted_ranges(review or conn)
     meta = {r[0]: r for r in conn.execute(
         "SELECT IDCP, Section, Level, DsCP, utCP, MinValue, MostFrequent, MaxValue, "
         "UsedByModule FROM P30_ControlParam")}
@@ -216,9 +223,18 @@ def panel_rows(conn: sqlite3.Connection, ida: int | None = None, profile: str | 
     for idcp, rev in sorted(latest.items(), key=lambda kv: (kv[1].panel_no, kv[1].idrv)):
         _, section, level, name, unit, lo, mf, hi, module = meta[idcp]
         e = eff[idcp]
+        accepted = None
+        a = acc.get(idcp)
+        if a and a[0] == rev.idrv:
+            _, campo, valor, quando, quem = a
+            original = {"min": lo, "mf": mf, "max": hi}[campo]
+            accepted = (campo, original, valor, quando, quem)
+            lo, mf, hi = (valor if campo == "min" else lo, valor if campo == "mf" else mf,
+                          valor if campo == "max" else hi)
         rows.append(PanelRow(idcp, section, level, name, unit, lo, mf, hi, e.value, e.text,
                              e.source, module, _note(module), rev,
-                             consistency_flags(lo, mf, hi, e.value), base[idcp].value))
+                             consistency_flags(lo, mf, hi, e.value), base[idcp].value,
+                             accepted))
     return rows
 
 
@@ -344,3 +360,53 @@ def matches(row: PanelRow, term: str) -> bool:
         elif p not in texto and p != str(row.revision.panel_no):
             return False
     return True
+
+
+# --------------------------------------------------------------------------
+# BLOCO PR8 -- aceite da sugestao de regua (somente usuario master)
+#   Aceitar muda so a regua (minimo, mais frequente ou maximo) mostrada no painel, para
+#   o campo e o valor da sugestao da revisao vigente. Nunca altera o valor adotado, P30
+#   nem o calculo. Desfazer apaga a linha de P69. As conexoes recebidas precisam ser de
+#   escrita; o painel as abre so quando o master age.
+# --------------------------------------------------------------------------
+def accepted_ranges(conn: sqlite3.Connection) -> dict[str, tuple]:
+    """{IDCP: (IDRV, campo, valor, data, quem)}; vazio se a tabela nao existe."""
+    try:
+        return {idcp: (idrv, campo, valor, quando, quem) for idrv, idcp, campo, valor, quando,
+                quem in conn.execute("SELECT IDRV, IDCP, Field, Value, AcceptedAt, AcceptedBy "
+                                     "FROM P69_ParamRangeAccept")}
+    except sqlite3.OperationalError:
+        return {}
+
+
+def can_accept(row: PanelRow) -> bool:
+    """Ha sugestao com campo e valor, ainda nao incorporada nem aceita."""
+    rev = row.revision
+    return (rev.field is not None and rev.suggested is not None and not rev.accepted
+            and row.accepted_range is None)
+
+
+def accept_range(conn: sqlite3.Connection, idcp: str, by: str) -> None:
+    rev = latest_by_param(conn).get(idcp)
+    if rev is None or rev.field is None or rev.suggested is None:
+        raise ValueError("this parameter has no suggested value to accept")
+    if rev.accepted:
+        raise ValueError("this suggestion is already incorporated in the workbook")
+    conn.execute("INSERT OR REPLACE INTO P69_ParamRangeAccept "
+                 "(IDRV, IDCP, Field, Value, AcceptedAt, AcceptedBy) VALUES (?,?,?,?,?,?)",
+                 (rev.idrv, idcp, rev.field, rev.suggested,
+                  datetime.now().isoformat(timespec="seconds"), by or "master"))
+    conn.commit()
+
+
+def revoke_range(conn: sqlite3.Connection, idcp: str) -> None:
+    conn.execute("DELETE FROM P69_ParamRangeAccept WHERE IDCP = ?", (idcp,))
+    conn.commit()
+
+
+def verify_master(candidate: str | None, expected: str | None) -> bool:
+    """Compara a senha informada com a configurada (tempo constante). Sem senha
+    configurada, ninguem e master."""
+    if not expected or not candidate:
+        return False
+    return hmac.compare_digest(candidate.encode("utf-8"), expected.encode("utf-8"))

@@ -200,3 +200,24 @@ def test_valor_da_data_base_para_riscado():
     rows = pr.panel_rows(_base())
     assert all(r.revision.panel_no > 0 for r in rows)
     assert any(r.revision.baseline_value is not None for r in rows)
+
+
+def test_verify_master_e_aceite_recusado():
+    assert pr.verify_master("abc", "abc") and not pr.verify_master("abd", "abc")
+    assert not pr.verify_master("abc", None) and not pr.verify_master(None, "abc")
+    c = _base_rw()
+    with __import__("pytest").raises(ValueError):
+        pr.accept_range(c, "X37", "m")            # ja incorporada na planilha
+    with __import__("pytest").raises(ValueError):
+        pr.accept_range(c, "X20", "m")            # sem valor sugerido
+
+
+def _base_rw():
+    import shutil
+    import sqlite3
+    import tempfile
+
+    from ui import state
+    d = tempfile.mkdtemp()
+    shutil.copyfile(state.REFERENCE_DB, d + "/b.sqlite")
+    return sqlite3.connect(d + "/b.sqlite")

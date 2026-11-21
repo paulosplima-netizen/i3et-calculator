@@ -1146,6 +1146,16 @@ CREATE TABLE IF NOT EXISTS P67_ParamAlertParam (
   PRIMARY KEY (IDAL, IDCP)
 );
 
+CREATE TABLE IF NOT EXISTS P69_ParamRangeAccept (
+  IDRV       INTEGER PRIMARY KEY REFERENCES P64_ParamRevision(IDRV),
+  IDCP       TEXT NOT NULL REFERENCES P30_ControlParam(IDCP),
+  Field      TEXT NOT NULL CHECK (Field IN ('min','mf','max')),
+  Value      REAL NOT NULL,
+  AcceptedAt TEXT NOT NULL,
+  AcceptedBy TEXT NOT NULL,
+  UNIQUE (IDCP, Field)
+);
+
 CREATE TABLE IF NOT EXISTS P68_ParamReviewNote (
   ReviewDate TEXT NOT NULL,
   Kind       TEXT NOT NULL CHECK (Kind IN ('note','history')),
@@ -1362,13 +1372,15 @@ PARAM_TABLES_011 = ["P31_MaintenanceItem", "P31b_MaintenancePartShare",
                     "P32_CorrectiveMaintenance", "P61_BRRouteFactor",
                     "P62_BRRouteShare", "P63_RecipeBodyChassisMass",
                     "P64_ParamRevision", "P65_ParamRevisionSource",
-                    "P66_ParamAlert", "P67_ParamAlertParam", "P68_ParamReviewNote"]
+                    "P66_ParamAlert", "P67_ParamAlertParam", "P68_ParamReviewNote",
+                    "P69_ParamRangeAccept"]
 
 #: Tabelas de parametros que so informam (revisao periodica dos parametros): nao entram
 #: no calculo e por isso ficam fora do ParamBaseHash. Uma revisao nova nao muda a
 #: identidade da base nem invalida rodadas congeladas.
 EDITORIAL_TABLES = ("P64_ParamRevision", "P65_ParamRevisionSource",
-                    "P66_ParamAlert", "P67_ParamAlertParam", "P68_ParamReviewNote")
+                    "P66_ParamAlert", "P67_ParamAlertParam", "P68_ParamReviewNote",
+                    "P69_ParamRangeAccept")
 
 #: Tabelas do usuario do B1, pais primeiro.
 USER_TABLES_011 = ["D10_MaintenanceScenario", "D10_Item", "D13_UserRecipe",
