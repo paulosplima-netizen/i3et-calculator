@@ -147,14 +147,22 @@ def _note(module: str | None) -> str | None:
 #   Le      : P30, valor efetivo (D08 da analise e do perfil) e a revisao vigente.
 #   Devolve : uma PanelRow por parametro revisado, na ordem do arquivo de revisao.
 # --------------------------------------------------------------------------
-def panel_rows(conn: sqlite3.Connection, ida: int, profile: str,
+def panel_rows(conn: sqlite3.Connection, ida: int | None = None, profile: str | None = None,
                review: sqlite3.Connection | None = None) -> list[PanelRow]:
-    """`review`: conexao de onde vem a revisao (P64, P65); por padrao, a do projeto.
+    """Linhas do painel.
 
-    A revisao e dado de referencia: a tela a le da base de referencia, para que projetos
-    criados antes da tabela existir (ou com uma revisao antiga) mostrem a revisao atual.
+    Sem `ida` (padrao), o valor mostrado e o adotado no catalogo (P30.DefaultValue): e a
+    consulta independente de projeto, como o artefato original. Com `ida` e `profile`, o
+    valor e o efetivo da analise (D08). `review`: conexao de onde vem a revisao (P64,
+    P65); por padrao, a de `conn`.
     """
-    eff = cp.effective_values(conn, ida, profile)
+    if ida is None:
+        eff = {idcp: cp.Effective(idcp, dv, dt, "Default", cp.is_out_of_range(dv, lo, hi))
+               for idcp, dv, dt, lo, hi in conn.execute(
+                   "SELECT IDCP, DefaultValue, DefaultText, MinValue, MaxValue "
+                   "FROM P30_ControlParam")}
+    else:
+        eff = cp.effective_values(conn, ida, profile)
     latest = latest_by_param(review or conn)
     meta = {r[0]: r for r in conn.execute(
         "SELECT IDCP, Section, Level, DsCP, utCP, MinValue, MostFrequent, MaxValue, "

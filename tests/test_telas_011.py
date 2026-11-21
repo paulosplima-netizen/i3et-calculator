@@ -286,15 +286,18 @@ def test_t04_aceita_o_parametro_vindo_da_t48(projeto):  # noqa: F811
     assert at.session_state["t04_term"] == "X37"
 
 
-def test_t48_mostra_a_revisao_mesmo_em_projeto_sem_p64(projeto):  # noqa: F811
-    """Projeto criado antes das tabelas P64/P65 (21/11/2026): a revisao vem da base."""
-    import sqlite3
-    conn = sqlite3.connect(projeto[0])
-    conn.execute("PRAGMA foreign_keys = OFF")
-    conn.execute("DROP TABLE P65_ParamRevisionSource")
-    conn.execute("DROP TABLE P64_ParamRevision")
-    conn.commit()
-    conn.close()
-    at = _abrir("T48_Parameter_review", projeto)
+def test_t48_abre_sem_projeto_e_sem_analise():
+    """Consulta independente de projeto (como o artefato original): vem da base."""
+    at = _abrir("T48_Parameter_review")
     assert not at.exception, at.exception
-    assert {m.label: m.value for m in at.metric}["Parameters"] == "120"
+    valores = {m.label: m.value for m in at.metric}
+    assert valores["Parameters"] == "120"
+    assert (valores["Keep"], valores["Adjust"], valores["Verify"]) == ("106", "9", "5")
+    assert len(at.dataframe[0].value) == 120
+
+
+def test_t48_valor_adotado_e_o_do_catalogo():
+    at = _abrir("T48_Parameter_review")
+    tabela = at.dataframe[0].value
+    linha = tabela[tabela["ID"] == "X23"].iloc[0]
+    assert linha["Value"] == "400" and linha["Minimum"] == "200" and linha["Maximum"] == "500"

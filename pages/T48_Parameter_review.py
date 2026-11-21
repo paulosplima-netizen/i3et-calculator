@@ -1,15 +1,17 @@
 """T48 · Parameter review — the expert-block parameters with the periodic literature review.
 
-Query only. Ranges and values come from the catalog (P30) and from the analysis
-(D08); the review (P64, P65) adds the recommendation, the sources and the alerts. A
+Query only, independent of any project: ranges and adopted values come from the reference
+base (P30); the review (P64, P65) adds the recommendation, the sources and the alerts. A
 suggested value never reaches the calculation: to apply one, open Selected Parameters
-(T04). The workbook prevails and the reference base is immutable.
+(T04), which works on the values of your analysis. The workbook prevails and the
+reference base is immutable.
 New screen: it replaces the "I3et Parametros Expert" artifact and has no revised prototype.
 """
 
 from __future__ import annotations
 
 import sqlite3
+from contextlib import closing
 
 import pandas as pd
 import streamlit as st
@@ -17,7 +19,7 @@ import streamlit as st
 from core import param_review as pr
 from ui import flow, navigation, state
 
-ctx = flow.begin("Parameter review", edit=False)
+flow.begin("Parameter review", needs_project=False)
 ACTION_LABEL = {"keep": "Keep", "adjust": "Adjust", "verify": "Verify"}
 TAG_LABEL = {"bat": "Battery", "ice": "Combustion engine"}
 
@@ -31,17 +33,10 @@ def _open_t04(idcp: str) -> None:
     st.switch_page(navigation.SCREENS["T04"][0])
 
 
-with flow.connect(ctx.path) as conn:
-    ida = flow.pick_analysis(conn)
-    if ida is None:
-        st.stop()
-    profile = conn.execute("SELECT ParamProfile FROM D06_Analysis WHERE IDA = ?",
-                           (ida,)).fetchone()[0]
-    # A revisao e dado de referencia: vem da base de referencia, nao do projeto.
-    review = sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)
+# Consulta independente de projeto: tudo vem da base de referencia (P30, P64, P65).
+with closing(sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)) as conn:
     try:
-        rows = pr.panel_rows(conn, ida, profile, review)
-        pr_history = lambda idcp: pr.history(review, idcp)  # noqa: E731
+        rows = pr.panel_rows(conn)
     except sqlite3.Error:
         rows = []
     if not rows:
@@ -50,8 +45,8 @@ with flow.connect(ctx.path) as conn:
 
     summary = pr.summary(rows)
     st.caption(
-        f"Review of {summary['review_date']} · values and ranges are those of the catalog "
-        "and of your analysis; suggestions do not change any calculation. "
+        f"Review of {summary['review_date']} · adopted values and ranges are those of the "
+        "reference base; suggestions do not change any calculation. "
         "The workbook prevails.")
     m = st.columns(5)
     m[0].metric("Parameters", summary["total"])
@@ -122,12 +117,12 @@ with flow.connect(ctx.path) as conn:
         st.markdown("**Sources**")
         for ref, year in rev.sources:
             st.write(f"- {ref}" + (f" ({year})" if year else ""))
-        past = pr_history(r.idcp)[1:]
+        past = pr.history(conn, r.idcp)[1:]
         if past:
             st.markdown("**Earlier reviews**")
             for h in past:
                 st.write(f"- {h.review_date}: {ACTION_LABEL[h.action]}")
-    if r.level == "X" and profile != "Expanded":
+    if r.level == "X":
         st.caption("This is an Expanded-depth parameter: set the depth to Expanded in "
                    "Selected Parameters to edit it.")
     if st.button("Open in Selected Parameters", key="open_t04"):
