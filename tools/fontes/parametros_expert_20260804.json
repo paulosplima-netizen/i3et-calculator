@@ -4628,5 +4628,119 @@
     "why": "No relevant developments identified in this review."
    }
   }
+ ],
+ "alerts": [
+  {
+   "sev": "high",
+   "title": "Geely BHE / i-HEV reaches 48.41% peak thermal efficiency",
+   "meta": "GE HEV / PHEV engine Efficiency (#23, #25) · DieselNet, Apr 2026",
+   "reported": "48.41%",
+   "adopted": "MF 26.4% · max 31.25% (gasoline HEV)",
+   "body": "Above the maximum of the adopted range. If confirmed on a homologated cycle, it favours HEV/PHEV and SPHEV over BEV on a cradle-to-grave basis.",
+   "url": "https://dieselnet.com/news/2026/04geely.php",
+   "params": [
+    23,
+    25
+   ]
+  },
+  {
+   "sev": "high",
+   "title": "Chery: 48% prototype (26:1, Miller cycle) and 44.5% in the production 1.5 TDGI",
+   "meta": "GE HEV engine Efficiency (#23) and GE Compact (#18) · Auto Motor und Sport, Nov 2025",
+   "reported": "48% prototype / 44.5% production",
+   "adopted": "MF 27.6% · max 31.2% (compact HEV)",
+   "body": "The production figure (44.5%) already exceeds the adopted maximum, suggesting the PET range for HEVs may be conservative.",
+   "url": "https://www.auto-motor-und-sport.de/tech-zukunft/china-motor-mit-effizienz-rekord-neuer-vierzylinder-mit-extrem-hoher-verdichtung/",
+   "params": [
+    18,
+    23
+   ]
+  },
+  {
+   "sev": "medium",
+   "title": "Nissan e-POWER third generation: 1.5 turbo generator engine at ~42%",
+   "meta": "Range Extender Combustion Engine Efficiency (#32) · InsideEVs Brasil",
+   "reported": "~42%",
+   "adopted": "MF 40.0% · range 32–45%",
+   "body": "Within the range, above the most frequent value. Reinforces SPHEV/SHEV as a transition option.",
+   "url": "https://insideevs.uol.com.br/news/754853/nissan-epower-hibrido-nova-geracao/",
+   "params": [
+    32
+   ]
+  },
+  {
+   "sev": "medium",
+   "title": "Aramco Dedicated Hybrid Engine (DHE): 41% in a hybrid-dedicated engine",
+   "meta": "Range Extender Combustion Engine Efficiency (#32) · Aramco Americas, 2026",
+   "reported": "41–42%",
+   "adopted": "MF 40.0% · range 32–45%",
+   "body": "Within the range. Relevant for emerging markets with biofuels — the Brazilian case.",
+   "url": "https://americas.aramco.com/en/news-media/news/2026/when-efficiency-meets-exciting",
+   "params": [
+    32
+   ]
+  },
+  {
+   "sev": "high",
+   "title": "CATL condensed-matter cell at 350 Wh/kg — a 125 kWh pack weighing ~625 kg (≈5.0 kg/kWh)",
+   "meta": "Energy Battery Density reciprocal (#48) · Zecar, CATL Tech Day 2026",
+   "reported": "≈2.86 kg/kWh at cell level · ≈5.0 kg/kWh at pack level",
+   "adopted": "MF 5.82 kg/kWh · best case 4.69 kg/kWh",
+   "body": "The announced pack-level figure already approaches the adopted best case. It lowers BEV mass, pulling down both manufacturing and energy use — favours BEV.",
+   "url": "https://zecar.com/reviews/catl-launches-world-s-fast-charging-ev-battery",
+   "params": [
+    48
+   ]
+  },
+  {
+   "sev": "high",
+   "title": "Battery manufacturing: 50–100 kg CO2e/kWh typical, 10–25 with renewable electricity",
+   "meta": "Energy Battery Carbon Intensity reciprocal (#62) · electrive, Aug 2025",
+   "reported": "10–25 (renewable) · ~20 expected",
+   "adopted": "MF 55.8 · min 44.1 kg CO2e/kWh",
+   "body": "The adopted minimum (44.1) sits far above what cells produced on a clean grid already achieve. Given the Brazilian low-carbon electricity mix, this is the parameter with the greatest potential to shift the result in favour of BEVs.",
+   "url": "https://www.electrive.com/2025/08/17/how-much-co2-does-battery-production-really-emit/",
+   "params": [
+    62
+   ]
+  },
+  {
+   "sev": "medium",
+   "title": "Stanford / Nature Energy: degradation up to 38% slower in real-world use; service life up to ~300,000 km",
+   "meta": "Battery Lifespan (#55) and Usable Battery Capacity factor (#34) · Gadget Review (on the Stanford / Nature Energy study)",
+   "reported": "+38% service life vs. laboratory cycling",
+   "adopted": "battery lifespan MF 200 · max 300 thousand km",
+   "body": "Pushes battery lifespan towards the top of the range, diluting manufacturing emissions per km — favours BEV and PHEV.",
+   "url": "https://www.gadgetreview.com/300000-kilometers-and-still-going-the-engineering-secret-extending-ev-battery-life",
+   "params": [
+    34,
+    55
+   ]
+  },
+  {
+   "sev": "medium",
+   "title": "Geotab (22,700 vehicles): average degradation of 2.3%/year, ~82% SoH after 8 years",
+   "meta": "BEV lifetime-average Usable Battery Capacity factor (#34) · New Atlas / Geotab 2025",
+   "reported": "2.3%/year · 82% SoH after 8 years",
+   "adopted": "usable capacity factor MF 0.75 · range 0.60–0.85",
+   "body": "Suggests 0.75 is conservative for recent fleets. The i3ET has no explicit annual-degradation parameter — it is embedded in this factor.",
+   "url": "https://newatlas.com/automotive/ev-study-car-batteries-longevity/",
+   "params": [
+    34
+   ]
+  }
+ ],
+ "notes": [
+  "There is no explicit **annual capacity degradation (%/year)** parameter in the expert block. It is embedded in the lifetime-average usable capacity factor (#34 BEV, #35 PHEV). Tracking %/year directly would require creating the row.",
+  "There is no explicit **degradation after 200,000 km** parameter. The proxy is the combination of Vehicle Lifespan (#54), Battery Lifespan (#55) and factor #34.",
+  "Charging losses are split into **AC/slow (#36)** and **DC/fast (#37)**, weighted by the share of fast charging (#38) in the combined value (#39).",
+  "Reciprocal parameters (#48, #51, #53, #62, #65, #67) have min > max by construction — the minimum of the denominator becomes the maximum of the reciprocal. They are flagged as inverted ranges, not errors.",
+  "Parameters 106–113 appear under the LWP block but carry the group label \"AUC\" in the workbook — a labelling mismatch to be fixed at source."
+ ],
+ "history": [
+  {
+   "date": "2026-08-03",
+   "text": "Aug 3, 2026 — initial version. 120 parameters extracted from `LCA_LV_i3ET_20260724a.xlsx`. The alert baseline was built from the press review carried out for the paper (efficiencies of hybrid-dedicated engines and battery evolution). Recommendation column filled in: 14 parameters with a proposed adjustment or check, 106 recommended to keep."
+  }
  ]
 }

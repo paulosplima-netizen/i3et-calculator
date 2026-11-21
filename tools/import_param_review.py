@@ -1,17 +1,19 @@
-"""Fixtures do Painel de parametros: revisoes por parametro (P64) e suas fontes (P65).
+"""Fixtures do Painel de parametros: revisoes (P64), fontes (P65), alertas (P66, P67), notas (P68).
 
 Painel de parametros e revisao periodica (entre B1 e B2). Le o arquivo de revisao
-(JSON extraido do artefato "I3et Parametros Expert", ou o arquivo gerado pela
-revisao mensal no mesmo formato), liga cada parametro ao seu IDCP em P30 e grava
-os CSV em data/csv/fase_b.
+(JSON extraido do artefato "I3et Parametros Expert", ou o arquivo gerado pela revisao
+mensal no mesmo formato), liga cada parametro ao seu IDCP em P30 e grava os CSV em
+data/csv/fase_b.
 
-Os valores e as faixas NAO sao copiados: o painel os le de P30. Aqui entram so o
-conteudo editorial (recomendacao, justificativa, ressalva, alerta, fontes, aceite).
+Os valores e as faixas atuais NAO sao copiados: o painel os le de P30. Aqui entram so o
+conteudo editorial (recomendacao, justificativa, ressalva, alerta, fontes, aceite), a
+data-base de cada valor (para mostrar o valor riscado), os alertas de novos
+desenvolvimentos e as notas.
 
 Blocos:
     PR1  leitura do arquivo de revisao
     PR2  ligacao parametro -> IDCP (nome e secao; excecoes listadas)
-    PR3  montagem das linhas de P64 e P65
+    PR3  montagem das linhas de P64, P65, P66, P67 e P68
     PR4  gravacao dos CSV (data/csv/fase_b)
 
 Uso:
@@ -35,10 +37,15 @@ DEFAULT_SOURCE = os.path.join(REPO, "tools", "fontes", "parametros_expert_202608
 #: Parametros cujo nome no artefato difere do P30 (ou e ambiguo): numero no artefato -> IDCP.
 EXCEPTIONS = {14: "X32", 15: "X33", 72: "X94", 78: "X100", 97: "X120"}
 
-COLS_P64 = ["IDRV", "IDCP", "ReviewDate", "Action", "Field", "SuggestedValue",
+COLS_P64 = ["IDRV", "IDCP", "ReviewDate", "PanelNo", "Action", "Field", "SuggestedValue",
             "FromValue", "LinkedAlerts", "Rationale", "Caveat", "Alert", "Tag",
-            "Spotlight", "Accepted", "AcceptedDate"]
+            "Spotlight", "Accepted", "AcceptedDate", "BaselineDate", "BaselineMin",
+            "BaselineMf", "BaselineMax", "BaselineValue", "BaselineText"]
 COLS_P65 = ["IDRV", "Seq", "Reference", "Year"]
+COLS_P66 = ["IDAL", "ReviewDate", "Severity", "Title", "Context", "Reported", "Adopted",
+            "Body", "Url"]
+COLS_P67 = ["IDAL", "IDCP"]
+COLS_P68 = ["ReviewDate", "Kind", "Seq", "Body"]
 
 
 def _norm(texto: str) -> str:
@@ -83,27 +90,47 @@ def _date_us(texto: str) -> str:
     return f"{m.group(3)}-{meses[m.group(1)]:02d}-{int(m.group(2)):02d}"
 
 
+def _num_or_text(v) -> tuple[float | None, str | None]:
+    if v is None:
+        return None, None
+    if isinstance(v, (int, float)):
+        return v, None
+    return None, str(v)
+
+
 # --------------------------------------------------------------------------
-# BLOCO PR3 -- linhas de P64 e P65
+# BLOCO PR3 -- linhas das tabelas
 # --------------------------------------------------------------------------
-def build(origem: dict) -> tuple[list[list], list[list]]:
+def build(origem: dict):
     data = origem["data"]
     aceites = origem.get("accepted", {})
     ligacao = link_to_p30(data)
+    data_rev = origem["review_date"]
     p64, p65 = [], []
     for idrv, p in enumerate(sorted(data, key=lambda x: x["n"]), 1):
-        rec = p["rec"]
+        rec, base = p["rec"], p["base"]
         ac = aceites.get(str(p["n"]))
+        bval, btxt = _num_or_text(base.get("val"))
         p64.append([
-            idrv, ligacao[p["n"]], origem["review_date"], rec["act"], rec.get("field"),
+            idrv, ligacao[p["n"]], data_rev, p["n"], rec["act"], rec.get("field"),
             rec.get("to"), rec.get("from"), rec.get("a"), rec.get("why"), rec.get("cav"),
             " | ".join(p["flags"]) or None, (p["tags"] or [None])[0],
             int(bool(p["spot"])), int(ac is not None),
-            _date_us(ac["date"]) if ac else None])
+            _date_us(ac["date"]) if ac else None,
+            base.get("date"), base.get("min"), base.get("mf"), base.get("max"), bval, btxt])
         for seq, s in enumerate(p["sources"], 1):
             ano = s.get("year")
             p65.append([idrv, seq, s["ref"], None if ano in (None, "—", "") else ano])
-    return p64, p65
+    n2idcp = ligacao
+    p66, p67 = [], []
+    for idal, a in enumerate(origem.get("alerts", []), 1):
+        p66.append([idal, data_rev, a["sev"], a["title"], a.get("meta"), a.get("reported"),
+                    a.get("adopted"), a.get("body"), a.get("url")])
+        for n in a.get("params", []):
+            p67.append([idal, n2idcp[n]])
+    p68 = [[data_rev, "note", i, t] for i, t in enumerate(origem.get("notes", []), 1)]
+    p68 += [[h["date"], "history", i, h["text"]] for i, h in enumerate(origem.get("history", []), 1)]
+    return p64, p65, p66, p67, p68
 
 
 # --------------------------------------------------------------------------
@@ -123,9 +150,12 @@ def main(argv: list[str]) -> int:
     caminho = argv[1] if len(argv) > 1 else DEFAULT_SOURCE
     with open(caminho, encoding="utf-8") as fh:
         origem = json.load(fh)
-    p64, p65 = build(origem)
+    p64, p65, p66, p67, p68 = build(origem)
     _write("P64_ParamRevision", COLS_P64, p64)
     _write("P65_ParamRevisionSource", COLS_P65, p65)
+    _write("P66_ParamAlert", COLS_P66, p66)
+    _write("P67_ParamAlertParam", COLS_P67, p67)
+    _write("P68_ParamReviewNote", COLS_P68, p68)
     return 0
 
 

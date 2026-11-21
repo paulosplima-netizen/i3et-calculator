@@ -1,0 +1,7 @@
+﻿ReviewDate;Kind;Seq;Body
+2026-08-03;note;1;There is no explicit **annual capacity degradation (%/year)** parameter in the expert block. It is embedded in the lifetime-average usable capacity factor (#34 BEV, #35 PHEV). Tracking %/year directly would require creating the row.
+2026-08-03;note;2;There is no explicit **degradation after 200,000 km** parameter. The proxy is the combination of Vehicle Lifespan (#54), Battery Lifespan (#55) and factor #34.
+2026-08-03;note;3;Charging losses are split into **AC/slow (#36)** and **DC/fast (#37)**, weighted by the share of fast charging (#38) in the combined value (#39).
+2026-08-03;note;4;Reciprocal parameters (#48, #51, #53, #62, #65, #67) have min > max by construction — the minimum of the denominator becomes the maximum of the reciprocal. They are flagged as inverted ranges, not errors.
+2026-08-03;note;5;"Parameters 106–113 appear under the LWP block but carry the group label ""AUC"" in the workbook — a labelling mismatch to be fixed at source."
+2026-08-03;history;1;Aug 3, 2026 — initial version. 120 parameters extracted from `LCA_LV_i3ET_20260724a.xlsx`. The alert baseline was built from the press review carried out for the paper (efficiencies of hybrid-dedicated engines and battery evolution). Recommendation column filled in: 14 parameters with a proposed adjustment or check, 106 recommended to keep.

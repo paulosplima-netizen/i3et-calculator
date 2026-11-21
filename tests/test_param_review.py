@@ -121,8 +121,8 @@ def test_valor_efetivo_segue_o_usuario(mem):
 def test_revisao_nova_vira_vigente_e_a_antiga_vira_historico(mem):
     cur = mem.execute("SELECT MAX(IDRV) FROM P64_ParamRevision").fetchone()[0]
     mem.execute(
-        "INSERT INTO P64_ParamRevision (IDRV, IDCP, ReviewDate, Action, Rationale) "
-        "VALUES (?, 'X23', '2026-12-07', 'verify', 'nova revisao')", (cur + 1,))
+        "INSERT INTO P64_ParamRevision (IDRV, IDCP, ReviewDate, PanelNo, Action, Rationale) "
+        "VALUES (?, 'X23', '2026-12-07', 23, 'verify', 'nova revisao')", (cur + 1,))
     mem.execute("INSERT INTO P65_ParamRevisionSource VALUES (?, 1, 'Fonte nova', '2026')",
                 (cur + 1,))
     vigente = pr.latest_by_param(mem)["X23"]
@@ -149,6 +149,54 @@ def test_revisao_nao_muda_o_hash_da_base_de_calculo(mem):
     from core import schema
     antes = schema.param_base_hash(mem)
     cur = mem.execute("SELECT MAX(IDRV) FROM P64_ParamRevision").fetchone()[0]
-    mem.execute("INSERT INTO P64_ParamRevision (IDRV, IDCP, ReviewDate, Action, Rationale) "
-                "VALUES (?, 'X37', '2026-12-07', 'keep', 'x')", (cur + 1,))
+    mem.execute("INSERT INTO P64_ParamRevision (IDRV, IDCP, ReviewDate, PanelNo, Action, "
+                "Rationale) "
+                "VALUES (?, 'X37', '2026-12-07', 37, 'keep', 'x')", (cur + 1,))
     assert schema.param_base_hash(mem) == antes
+
+
+# --------------------------------------------------------------------------
+# Paridade com o artefato: alertas, notas, formatacao e busca
+# --------------------------------------------------------------------------
+def _base():
+    import sqlite3
+
+    from ui import state
+    return sqlite3.connect(f"file:{state.REFERENCE_DB}?mode=ro", uri=True)
+
+
+def test_alertas_de_novos_desenvolvimentos_vem_da_base():
+    c = _base()
+    a = pr.alerts(c)
+    assert len(a) == 8
+    assert [x.severity for x in a][:4] == ["high"] * 4
+    assert (23, 25) in [x.panel_nos for x in a]
+    assert len(pr.review_texts(c, "note")) == 5
+    assert len(pr.review_texts(c, "history")) == 1
+
+
+def test_formatacao_por_familia_e_percentual():
+    rows = pr.panel_rows(_base())
+    dec = pr.family_decimals(rows)
+    pct = next(r for r in rows if r.unit and "%" in r.unit)
+    assert pr.fmt(0.264, pct.unit, dec) == "26.4%"
+    assert pr.fmt(None, "kg", dec) == "—"
+    assert pr.fmt(1234.5, "(no unit)", {"(no unit)": 1}) == "1,234.5"
+
+
+def test_busca_por_numero_exato_e_por_bloco():
+    rows = pr.panel_rows(_base())
+    assert [r.revision.panel_no for r in rows if pr.matches(r, "#23")] == [23]
+    assert sum(pr.matches(r, "Fuel Emission") for r in rows) == sum(
+        r.section == "FEF" for r in rows)
+
+
+def test_kpis_do_cabecalho():
+    s = pr.summary(pr.panel_rows(_base()))
+    assert (s["battery"], s["ice"], s["sources"], s["adjustments"]) == (28, 18, 68, 14)
+
+
+def test_valor_da_data_base_para_riscado():
+    rows = pr.panel_rows(_base())
+    assert all(r.revision.panel_no > 0 for r in rows)
+    assert any(r.revision.baseline_value is not None for r in rows)

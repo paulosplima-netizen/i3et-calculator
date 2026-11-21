@@ -60,7 +60,7 @@ def test_banco_vazio_tem_todas_as_tabelas_da_011(novo):
     nomes = schema.table_names(novo)
     for tabela in schema.TABLES_011:
         assert tabela in nomes, tabela
-    assert len(schema.TABLES_011) == 24
+    assert len(schema.TABLES_011) == 27
     assert novo.execute("PRAGMA foreign_key_check").fetchall() == []
 
 

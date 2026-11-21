@@ -250,20 +250,33 @@ def test_formatting_indicator_converte_para_toneladas():
 # --------------------------------------------------------------------------
 # Painel de parametros (T48)
 # --------------------------------------------------------------------------
+def _html(at) -> str:
+    return " ".join(m.value for m in at.markdown)
+
+
 def test_t48_abre_e_mostra_os_120_parametros(projeto):  # noqa: F811
     at = _abrir("T48_Parameter_review", projeto)
     assert not at.exception, at.exception
     valores = {m.label: m.value for m in at.metric}
     assert valores["Parameters"] == "120"
-    assert (valores["Keep"], valores["Adjust"], valores["Verify"]) == ("106", "9", "5")
-    assert len(at.dataframe[0].value) == 120
+    assert (valores["Battery"], valores["Combustion engines"]) == ("28", "18")
+    assert (valores["Distinct sources"], valores["Alerts"], valores["Adjustments"]) == (
+        "68", "8", "14")
+    assert _html(at).count("<tr><td") == 120
 
 
 def test_t48_filtro_por_recomendacao(projeto):  # noqa: F811
     at = _abrir("T48_Parameter_review", projeto)
-    at.multiselect[1].set_value(["adjust"]).run()
+    at.radio(key="review_filter").set_value("With recommendation").run()
     assert not at.exception, at.exception
-    assert len(at.dataframe[0].value) == 9
+    assert _html(at).count("<tr><td") == 14
+
+
+def test_t48_busca_por_numero_e_por_fonte(projeto):  # noqa: F811
+    at = _abrir("T48_Parameter_review", projeto)
+    at.text_input[0].set_value("#23").run()
+    assert not at.exception, at.exception
+    assert _html(at).count("<tr><td") == 1
 
 
 def test_t48_nao_altera_o_projeto(projeto):  # noqa: F811
@@ -291,13 +304,15 @@ def test_t48_abre_sem_projeto_e_sem_analise():
     at = _abrir("T48_Parameter_review")
     assert not at.exception, at.exception
     valores = {m.label: m.value for m in at.metric}
-    assert valores["Parameters"] == "120"
-    assert (valores["Keep"], valores["Adjust"], valores["Verify"]) == ("106", "9", "5")
-    assert len(at.dataframe[0].value) == 120
+    assert valores["Parameters"] == "120" and valores["Alerts"] == "8"
+    assert _html(at).count("<tr><td") == 120
+    assert any("New developments" in e.label for e in at.expander)
 
 
 def test_t48_valor_adotado_e_o_do_catalogo():
     at = _abrir("T48_Parameter_review")
-    tabela = at.dataframe[0].value
-    linha = tabela[tabela["ID"] == "X23"].iloc[0]
-    assert linha["Value"] == "400" and linha["Minimum"] == "200" and linha["Maximum"] == "500"
+    html = _html(at)
+    assert "Adopted" in html and "Reading notes" in " ".join(s.value for s in at.subheader)
+    assert "400" in html
+
+
