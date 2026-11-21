@@ -4,12 +4,10 @@ from __future__ import annotations
 
 import os
 import shutil
-import tempfile
-
 import streamlit as st
 
 from core import __version__, project
-from ui import blocks, flow, navigation, state, theme
+from ui import blocks, flow, navigation, state, storage, theme
 
 flow.begin("Home", needs_project=False, show_title=False)
 theme.inject()
@@ -115,8 +113,7 @@ with left:
             if not copy_name.strip():
                 st.error("Enter a name for the copy.")
             else:
-                dest = os.path.join(tempfile.mkdtemp(prefix="i3et_"),
-                                    state._slug(copy_name) + ".sqlite")
+                dest = storage.new_path(copy_name)
                 with flow.connect(opened) as conn:
                     project.save_as(conn, dest, copy_name.strip())
                 _open(dest, copy_name.strip())
@@ -124,7 +121,9 @@ with left:
         if st.button("Close project"):
             state.close_project()
             st.rerun()
-        st.caption("Sessions in the cloud are temporary. Download the project to keep your work.")
+        st.caption("Your project is saved in the projects folder." if storage.root()
+                   else "Sessions in the cloud are temporary. Download the project to keep "
+                        "your work.")
 
     # --- Project Configuration: criar, copiar, abrir -----------------------
     st.markdown("**Create project / Save as**")
@@ -148,12 +147,24 @@ with left:
             if source == "Empty project":
                 _open(state.new_project(name.strip()), name.strip())
             else:
-                dest = os.path.join(tempfile.mkdtemp(prefix="i3et_"), state._slug(name) + ".sqlite")
+                dest = storage.new_path(name)
                 with flow.connect(source) as conn:
                     project.save_as(conn, dest, name.strip())
                 _open(dest, name.strip())
             st.rerun()
 
+    saved = storage.list_projects()
+    if storage.root():
+        st.markdown("**Saved projects**")
+        st.caption(f"Folder: `{storage.root()}` · kept between sessions.")
+        if saved:
+            pick = st.selectbox("Open a saved project", saved, format_func=storage.label,
+                                key="saved_pick")
+            if st.button("Open saved project"):
+                _open(pick["path"], pick["name"])
+                st.rerun()
+        else:
+            st.caption("No saved project yet. Projects you create are saved here.")
     up = st.file_uploader("…or open an existing project (.sqlite)", type=["sqlite", "db"])
     if up is not None:
         try:
@@ -162,7 +173,7 @@ with left:
         except ValueError as e:
             st.error(str(e))
     if os.path.exists(EXAMPLE) and st.button("Open example project (read-only)"):
-        dest = state.new_project("example")
+        dest = state.new_project("example", persist=False)
         shutil.copyfile(EXAMPLE, dest)
         _open(dest, "Compact hatch · workbook example")
         st.rerun()

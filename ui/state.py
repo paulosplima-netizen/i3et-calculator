@@ -16,13 +16,13 @@ import datetime as dt
 import os
 import shutil
 import sqlite3
-import tempfile
 
 import pandas as pd
 import streamlit as st
 
 from core import calc, loader, report, validate
 from core.log import Log
+from ui import storage
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REFERENCE_DB = os.path.join(REPO, "data", "base_referencia.sqlite")
@@ -43,9 +43,12 @@ def project_name() -> str:
     return st.session_state.get(NAME_KEY) or "sem nome"
 
 
-def new_project(name: str) -> str:
-    """A fresh copy of the reference base, which the user then edits."""
-    destino = os.path.join(tempfile.mkdtemp(prefix="i3et_"), f"{_slug(name)}.sqlite")
+def new_project(name: str, *, persist: bool = True) -> str:
+    """A fresh copy of the reference base, which the user then edits.
+
+    With a projects folder configured (ui/storage.py) the file lives there and survives a
+    restart; `persist=False` (the read-only example) always uses a temporary folder."""
+    destino = storage.new_path(name, persist=persist)
     shutil.copyfile(REFERENCE_DB, destino)
     _remember(destino, name)
     return destino
@@ -53,7 +56,7 @@ def new_project(name: str) -> str:
 
 def open_uploaded(arquivo, name: str | None = None) -> str:
     """Take an uploaded `.sqlite` and make it this session's project."""
-    destino = os.path.join(tempfile.mkdtemp(prefix="i3et_"), arquivo.name)
+    destino = storage.new_path(os.path.splitext(arquivo.name)[0], filename=arquivo.name)
     with open(destino, "wb") as fh:
         fh.write(arquivo.getbuffer())
     _check_openable(destino)

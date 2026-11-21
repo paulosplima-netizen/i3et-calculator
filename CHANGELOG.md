@@ -2,6 +2,11 @@
 
 ## 0.11.0 - Bloco B1 (M1 and M2 complete)
 
+Changed (21/11/2026)
+- Projects are saved in a fixed folder (`ui/storage.py`: `I3ET_PROJECTS_DIR` or `local_settings.json`),
+  listed on Home ("Saved projects") and kept after a restart; without a folder the old temporary
+  mode stays (cloud). The storage module is the single door for the future server storage.
+
 Changed (20/11/2026)
 - T08 Export: new "Prepare Excel, CSV and report" for a frozen run (tables R00-R15 recalculated
   from the snapshot, validated), following the T47 display format; JSON stays full precision.

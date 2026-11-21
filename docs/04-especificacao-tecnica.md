@@ -821,3 +821,25 @@ A arquitetura do §1 não muda nas Fases A e B. A Fase C acrescenta um banco ext
 ---
 
 *Documento gerado em 19/09/2026 — versão `a`. Revisto em 16 e 17/11/2026 (cabeçalho, §1.3, §2, §4.4.2, §7 e §10).*
+
+## 11. Onde os projetos ficam gravados (21/11/2026) e o caminho para a nuvem
+
+**Problema.** Até 20/11 cada projeto era gravado numa pasta temporária (`i3et_…`, na pasta TEMP do sistema) e a lista de projetos abertos vivia só na sessão do navegador. Ao reiniciar o Streamlit ou fechar a aba, o projeto sumia da Home, embora o arquivo continuasse no disco.
+
+**Solução local (implementada).** `ui/storage.py` é a única porta de entrada para gravar e listar projetos. A pasta é escolhida, nesta ordem, por: (1) a variável de ambiente `I3ET_PROJECTS_DIR` (vazia = modo temporário); (2) a chave `projects_dir` de `local_settings.json`, na raiz do repositório e fora do git; (3) nenhuma, que mantém o comportamento antigo (pasta temporária e download pelo usuário), próprio de uma publicação na nuvem. Com pasta configurada, a Home mostra "Saved projects" (nome, identificador, data), abre com um clique, e todo projeto novo, cópia ou enviado vai para a pasta, sem sobrescrever (nome livre com sufixo `_2`). O exemplo somente leitura continua temporário. No computador do autor a pasta é `Documentação\Projetos`.
+
+**Cuidado com a pasta sincronizada.** Se a pasta de projetos estiver dentro do OneDrive, o OneDrive pode travar ou duplicar o arquivo `.sqlite` enquanto o aplicativo o grava (o mesmo risco da §2.2, menor porque são poucos arquivos). Boa prática: fechar o projeto (botão "Close project") antes de a sincronização rodar, ou usar uma pasta fora do OneDrive e copiar para ele o que for para arquivar (`I3ET_PROJECTS_DIR` ou `local_settings.json`).
+
+**Caminho para a nuvem (Fase C: login e senha).** A troca é uma segunda implementação do mesmo contrato de `ui/storage.py` (`root`, `list_projects`, `new_path`), sem mexer nas telas nem no núcleo:
+
+| Aspecto | Local (hoje) | Nuvem (Fase C) |
+|---|---|---|
+| Quem é o dono | Uma pessoa, na própria máquina | Conta autenticada (OpenID Connect, item "Contas · Login por provedor externo" do Monday) |
+| Onde grava | Pasta fixa de `.sqlite` | Servidor: um arquivo por projeto e por usuário (ou banco externo), com o `ProjectID` neutro já existente |
+| Lista da Home | Arquivos da pasta | Projetos do usuário, mais os master públicos em leitura |
+| Compartilhar | Copiar o arquivo | Link e papéis (leitura, edição), com os projetos master somente leitura |
+| Concorrência | Um aplicativo por arquivo | Trava por projeto ao editar; rodada congelada nunca é alterada |
+| Backup | Pasta do usuário | Cópias do servidor, mais "Download project" como saída de emergência |
+| Não muda | Núcleo de cálculo, esquema SQLite, congelamento e hashes, exportações | idem |
+
+Pontos a decidir na Fase C: provedor de login; um `.sqlite` por projeto no servidor ou um banco externo; quotas e limpeza de projetos antigos; política de projetos master; migração de projetos locais (importar pelo upload que já existe).

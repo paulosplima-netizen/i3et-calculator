@@ -24,6 +24,12 @@ FIXTURE = os.path.join(REPO, "tests", "fixtures", "i3et_reference.json")
 FROZEN = os.path.join(REPO, "tests", "fixtures", "regressao_bp.json")
 
 
+@pytest.fixture(autouse=True)
+def _projetos_temporarios(monkeypatch):
+    """Os testes nunca gravam na pasta de projetos do usuario (local_settings.json)."""
+    monkeypatch.setenv("I3ET_PROJECTS_DIR", "")
+
+
 @pytest.fixture(scope="session")
 def base():
     return loader.load_sqlite(DB)

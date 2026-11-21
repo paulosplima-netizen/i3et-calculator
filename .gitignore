@@ -231,3 +231,6 @@ relatorio.pdf
 # Saidas geradas: reproduziveis por tools/export_results.py
 saidas/
 relatorio_preview.html
+
+local_settings.json
+projetos/
