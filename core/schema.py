@@ -1386,7 +1386,7 @@ EDITORIAL_TABLES = ("P64_ParamRevision", "P65_ParamRevisionSource",
                     # B2: dados de mercado importados (so a tela do master e a referencia
                     # ponderada os leem; ver docs/11).
                     "P48_MarketSalesEdition", "P47_MarketSales", "P60_FleetLicensingTotal",
-                    "P70_ReferenceSegment")
+                    "P70_ReferenceSegment", "P71_FleetEstimate")
 
 #: Tabelas do usuario do B1, pais primeiro.
 USER_TABLES_011 = ["D10_MaintenanceScenario", "D10_Item", "D13_UserRecipe",
@@ -1438,18 +1438,38 @@ CREATE TABLE IF NOT EXISTS P47_MarketSales (
   UnitsAdopted       INTEGER NOT NULL CHECK (UnitsAdopted >= 0),
   IDMV               INTEGER REFERENCES P26_MarketVehicle(IDMV),
   AdjustmentNote     TEXT,
-  SheetRow           INTEGER
+  SheetRow           INTEGER,
+  UnitsReported      INTEGER,
+  UnitsPrevious      INTEGER,
+  UnitsPBEV          INTEGER,
+  SplitMethod        TEXT,
+  SplitBasis         TEXT
 );
 
 CREATE TABLE IF NOT EXISTS P60_FleetLicensingTotal (
-  IDFL         INTEGER PRIMARY KEY,
-  SourceName   TEXT NOT NULL CHECK (SourceName IN ('ANFAVEA')),
-  RefYear      INTEGER NOT NULL,
-  VehicleClass TEXT NOT NULL CHECK (VehicleClass IN ('LightVehicles','Automobiles',
-                                    'LightCommercials','Trucks','Buses')),
-  Units        INTEGER NOT NULL CHECK (Units >= 0),
-  SourceFL     TEXT NOT NULL,
-  NotesFL      TEXT
+  IDFL          INTEGER PRIMARY KEY,
+  SourceName    TEXT NOT NULL CHECK (SourceName IN ('ANFAVEA','FENABRAVE')),
+  SourceEdition TEXT NOT NULL,
+  RefYear       INTEGER NOT NULL,
+  VehicleClass  TEXT NOT NULL CHECK (VehicleClass IN ('LightVehicles','Automobiles',
+                                     'LightCommercials','Trucks','Buses','Total')),
+  Units         INTEGER NOT NULL CHECK (Units >= 0),
+  IsAdopted     INTEGER NOT NULL DEFAULT 0 CHECK (IsAdopted IN (0,1)),
+  SourceFL      TEXT NOT NULL,
+  NotesFL       TEXT
+);
+
+CREATE TABLE IF NOT EXISTS P71_FleetEstimate (
+  IDFE          INTEGER PRIMARY KEY,
+  SourceName    TEXT NOT NULL CHECK (SourceName IN ('ANFAVEA')),
+  SourceEdition TEXT NOT NULL,
+  RefYear       INTEGER NOT NULL,
+  VehicleClass  TEXT NOT NULL CHECK (VehicleClass IN ('Automobiles','LightCommercials',
+                                     'Trucks','Buses','Total')),
+  Units         INTEGER NOT NULL CHECK (Units >= 0),
+  IsAdopted     INTEGER NOT NULL DEFAULT 0 CHECK (IsAdopted IN (0,1)),
+  SourceFE      TEXT NOT NULL,
+  NotesFE       TEXT
 );
 
 CREATE TABLE IF NOT EXISTS P70_ReferenceSegment (
@@ -1466,15 +1486,38 @@ CREATE TABLE IF NOT EXISTS P70_ReferenceSegment (
 
 #: Tabelas de parametros do B2, pais primeiro.
 PARAM_TABLES_012 = ["P48_MarketSalesEdition", "P47_MarketSales", "P60_FleetLicensingTotal",
-                    "P70_ReferenceSegment"]
+                    "P70_ReferenceSegment", "P71_FleetEstimate"]
 TABLES_012 = PARAM_TABLES_012
 
 
+#: S16: colunas de divisao por motorizacao em P47 (decisao 9, 22/11/2026).
+COLUMNS_012B = [("P47_MarketSales", "UnitsReported", "INTEGER"),
+                ("P47_MarketSales", "UnitsPrevious", "INTEGER"),
+                ("P47_MarketSales", "UnitsPBEV", "INTEGER"),
+                ("P47_MarketSales", "SplitMethod", "TEXT"),
+                ("P47_MarketSales", "SplitBasis", "TEXT")]
+
+
 def apply_012(conn: sqlite3.Connection) -> list[str]:
-    """S15 -- cria as tabelas do B2. Nao altera dados; pode ser repetido."""
+    """S15/S16 -- cria as tabelas do B2 e acrescenta as colunas da divisao por motorizacao.
+
+    Nao altera os dados dos parametros; pode ser repetido. A P60 da primeira versao do B2
+    (sem SourceEdition) e recriada: e tabela editorial recarregada por tools/load_b2.py.
+    """
     antes = table_names(conn)
+    msgs: list[str] = []
+    if "P60_FleetLicensingTotal" in antes:
+        cols = {r[1] for r in conn.execute("PRAGMA table_info(P60_FleetLicensingTotal)")}
+        if "SourceEdition" not in cols:
+            conn.execute("DROP TABLE P60_FleetLicensingTotal")
+            msgs.append("recriada P60_FleetLicensingTotal")
     conn.executescript(DDL_PARAMS_012)
-    return [f"criada {n}" for n in TABLES_012 if n not in antes]
+    for tabela, coluna, decl in COLUMNS_012B:
+        cols = {r[1] for r in conn.execute(f"PRAGMA table_info({tabela})")}
+        if coluna not in cols:
+            conn.execute(f"ALTER TABLE {tabela} ADD COLUMN {coluna} {decl}")
+            msgs.append(f"coluna {tabela}.{coluna}")
+    return msgs + [f"criada {n}" for n in TABLES_012 if n not in antes]
 
 
 _ORIGIN = "CHECK (Origin IN ('Typed','Published','Own'))"

@@ -136,9 +136,134 @@ def test_c33_responde_as_unidades(conn):
     assert md.reference_params(conn, "A0", dobra)[2] != base[2]
 
 
-def test_cobertura_contra_o_total_da_anfavea(conn):
-    total = conn.execute("SELECT Units FROM P60_FleetLicensingTotal WHERE RefYear = 2025"
+def test_cobertura_contra_o_total_da_fenabrave(conn):
+    """O total de mercado do modelo e o da FENABRAVE (Reference Vehicles!R20), nao o 50+50."""
+    total = conn.execute("SELECT Units FROM P60_FleetLicensingTotal WHERE SourceName = "
+                         "'FENABRAVE' AND RefYear = 2025 AND VehicleClass = 'LightVehicles'"
                          ).fetchone()[0]
+    assert total == 2549462
     cob = md.segment_coverage(conn, total)
-    assert total == 2424281
-    assert cob["share"] == pytest.approx(0.82866, abs=1e-4)      # Market Vehicles L226
+    assert cob["units"] == 2008914                   # Reference Vehicles!K16
+    assert cob["share"] == pytest.approx(2008914 / 2549462)
+    rank = conn.execute("SELECT SUM(UnitsAdopted) FROM P47_MarketSales").fetchone()[0]
+    assert rank == 2424281                           # soma dos rankings 50+50 (R18)
+
+
+# ---------------------------------------------------------------- B2b (22/11/2026)
+ANUARIO = """
+ 2.2.1 Emplacamento de autoveículos - 2016–2025
+   ANO   AUTOMÓVEIS COMERCIAIS LEVES CAMINHÕES ÔNIBUS TOTAL
+   2024  1.948.681   538.940   124.848   22.435   2.634.904
+   2025  1.997.264   554.937   113.479   23.954   2.689.634
+   2026  1.000.000   1.000.000   1.000   1.000   9.999
+ FONTE / SOURCE: Anfavea
+"""
+
+
+def test_anfavea_le_a_tabela_e_descarta_linha_que_nao_fecha():
+    t = md.parse_anfavea_table(ANUARIO, "2.2.1 Emplacamento")
+    assert sorted(t) == [2024, 2025]                  # 2026: soma != total
+    assert t[2025] == (1997264, 554937, 113479, 23954, 2689634)
+
+
+def test_anfavea_tolera_arredondamento_da_fonte():
+    txt = "1.11 Estimativa\n 2016  37.389.791  5.332.763  2.014.850  385.311  45.122.716\n"
+    assert md.parse_anfavea_table(txt, "1.11 Estimativa")[2016][4] == 45122716
+
+
+def test_p60_guarda_a_edicao_e_vale_a_mais_recente(conn):
+    adotado = dict(((a, c), (ed, u)) for ed, a, c, u in conn.execute(
+        "SELECT SourceEdition, RefYear, VehicleClass, Units FROM P60_FleetLicensingTotal "
+        "WHERE SourceName = 'ANFAVEA' AND IsAdopted = 1"))
+    assert adotado[(2025, "Automobiles")] == ("Anuario ANFAVEA 2026", 1997264)
+    assert adotado[(2024, "LightCommercials")][0] == "Anuario ANFAVEA 2026"
+    assert adotado[(1957, "Automobiles")] == ("Anuario ANFAVEA 2025", 9478)
+    # a mesma serie existe nas duas edicoes e so uma esta adotada
+    n = conn.execute("SELECT COUNT(*) FROM P60_FleetLicensingTotal WHERE SourceName='ANFAVEA' "
+                     "AND RefYear = 2024 AND VehicleClass = 'Total'").fetchone()[0]
+    assert n == 2
+    for _ano, _cls in [(2024, "Total")]:
+        assert conn.execute("SELECT SUM(IsAdopted) FROM P60_FleetLicensingTotal WHERE "
+                            "SourceName='ANFAVEA' AND RefYear=2024 AND VehicleClass='Total'"
+                            ).fetchone()[0] == 1
+
+
+def test_p71_frota_estimada_revisada_entre_edicoes(conn):
+    v = dict(((ed, a), u) for ed, a, u in conn.execute(
+        "SELECT SourceEdition, RefYear, Units FROM P71_FleetEstimate WHERE VehicleClass = "
+        "'Automobiles' AND RefYear = 2016"))
+    assert v[("Anuario ANFAVEA 2025", 2016)] == 37279361
+    assert v[("Anuario ANFAVEA 2026", 2016)] == 37389791
+    adotado = conn.execute("SELECT Units FROM P71_FleetEstimate WHERE RefYear = 2016 AND "
+                           "VehicleClass = 'Automobiles' AND IsAdopted = 1").fetchone()[0]
+    assert adotado == 37389791
+
+
+def test_pivot_design_x_motorizacao_reproduz_a_planilha(conn):
+    piv = md.design_powertrain_pivot(conn, "FEN2025")
+    assert sum(piv.values()) == 2424281
+    assert piv[("HATCH C", "BEV")] == 47675 and piv[("SUV ML", "PHEV")] == 69843
+    assert piv[("Other", "ICEV")] == 93768
+    assert sum(u for (_g, p), u in piv.items() if p == "ICEV") == 2213897
+
+
+def test_largest_remainder_fecha_o_total():
+    assert md.largest_remainder(10, [1, 1, 1]) == [4, 3, 3]
+    assert sum(md.largest_remainder(61227, [60577, 650])) == 61227
+    assert md.largest_remainder(5, [0, 0]) == [0, 0]
+
+
+def _linhas_hrv():
+    return [md.SalesRow("V", 9, "HONDA", "HR-V", 61227)]
+
+
+def test_divisao_usa_a_edicao_anterior_e_fecha_com_o_informativo(conn):
+    linhas = _linhas_hrv()
+    res = md.match_to_catalog(conn, linhas)
+    sp = md.split_candidates(conn, res, linhas, "FEN2025")
+    assert sorted(x.powertrain for x in sp) == ["HEV", "ICEV"]
+    assert {x.method for x in sp} == {"Previous"}
+    assert sum(x.units for x in sp) == 61227 and md.validate_split(sp) == []
+    icev = next(x for x in sp if x.powertrain == "ICEV")
+    assert icev.units == 60577 and icev.pbev is not None      # candidatas visiveis ao master
+
+
+def test_divisao_sem_edicao_anterior_cai_no_pbev(conn):
+    linhas = _linhas_hrv()
+    sp = md.split_candidates(conn, md.match_to_catalog(conn, linhas), linhas, None)
+    assert {x.method for x in sp} <= {"PBEV", "Base"}
+    assert sum(x.units for x in sp) == 61227
+
+
+def test_master_digita_e_a_soma_precisa_fechar(conn):
+    linhas = _linhas_hrv()
+    sp = md.split_candidates(conn, md.match_to_catalog(conn, linhas), linhas, "FEN2025")
+    icev = next(x for x in sp if x.powertrain == "ICEV")
+    md.apply_master_units(sp, {icev.idmv: 60000})
+    assert icev.method == "Master" and md.validate_split(sp) != []
+
+
+def test_grava_a_edicao_numa_copia_e_recusa_duplicata(conn, tmp_path):
+    copia = tmp_path / "b.sqlite"
+    destino = sqlite3.connect(copia)
+    conn.backup(destino)
+    destino.execute("PRAGMA foreign_keys = ON")
+    linhas = [md.SalesRow("V", 1, "VW", "POLO", 100000),
+              md.SalesRow("V", 9, "HONDA", "HR-V", 61227)]
+    sp = md.split_candidates(destino, md.match_to_catalog(destino, linhas), linhas, "FEN2025")
+    sec = md.SalesSection("YTD", "2026-03", "Ranking dos emplacamentos acumulados até Março/2026")
+    assert md.save_edition(destino, "FEN2026_03", sec, sp, "teste.pdf") == len(sp)
+    assert destino.execute("SELECT COUNT(*) FROM P47_MarketSales WHERE IDMSE='FEN2026_03'"
+                           ).fetchone()[0] == len(sp)
+    with pytest.raises(ValueError, match="ja existe"):
+        md.save_edition(destino, "FEN2026_03", sec, sp, "teste.pdf")
+    destino.close()
+
+
+def test_exportacao_xlsx_da_comparacao(conn, tmp_path):
+    out = tmp_path / "c.xlsx"
+    md.export_reference_xlsx(conn, str(out))
+    from openpyxl import load_workbook
+    wb = load_workbook(out)
+    assert wb.sheetnames == ["Reference parameters", "Units used"]
+    assert wb["Reference parameters"].max_row == 61              # cabecalho + 60 parametros

@@ -207,7 +207,7 @@ def duplicate_keys(registros: list[PBEVRecord]) -> dict[tuple, int]:
 
 
 def read_pdf_text(caminho: str) -> str:
-    """Texto com layout de um PDF. Exige `pdfplumber` (nao esta em requirements.txt; decisao 4)."""
+    """Texto com layout de um PDF. Exige `pdfplumber` (requirements.txt, decisao 4)."""
     try:
         import pdfplumber
     except ImportError as exc:  # pragma: no cover - depende do ambiente
@@ -382,3 +382,261 @@ def diff_pbev(conn: sqlite3.Connection, registros: list[PBEVRecord],
                        and abs(base[k] - novo[k]) > 1e-9)
     return {"base": len(base), "file": len(novo), "added": adicionados,
             "removed": removidos, "changed": alterados}
+
+
+# --------------------------------------------------------------------------
+# BLOCO MD8 -- tabelas do Anuario da ANFAVEA (emplacamento e frota estimada)
+#   Linhas "ano automoveis comerciais-leves caminhoes onibus total", com ponto de milhar.
+#   Tabelas: 2.3 (Anuario 2025, 1957-2024), 2.2.1 (Anuario 2026, 2016-2025) e 1.11 (frota
+#   estimada; Anuario 2025: 2000-2024; Anuario 2026: 2016-2025). Cada edicao revisa os anos
+#   anteriores: guarda-se a edicao de cada numero e vale a mais recente (decisao 14).
+# --------------------------------------------------------------------------
+ANFAVEA_CLASSES = ("Automobiles", "LightCommercials", "Trucks", "Buses", "Total")
+_ANF_NUM = r"\d{1,3}(?:\.\d{3})*"
+_ANF_ROW = re.compile(rf"(?<![\d.])((?:19[5-9]|20[0-3])\d)\s+({_ANF_NUM})\s+({_ANF_NUM})\s+"
+                      rf"({_ANF_NUM})\s+({_ANF_NUM})\s+({_ANF_NUM})(?![\d.])")
+
+
+def parse_anfavea_table(texto: str, titulo: str, janela: int = 500
+                        ) -> dict[int, tuple[int, int, int, int, int]]:
+    """{ano: (automoveis, comerciais leves, caminhoes, onibus, total)} da tabela de `titulo`.
+
+    `titulo` e o numero e o inicio do nome (ex.: "2.2.1 Emplacamento"). O titulo tambem
+    aparece no sumario; vale a ocorrencia que rende mais linhas. Linhas cuja soma difere do total
+    por mais de 5 unidades sao descartadas (erro de leitura do PDF; a fonte arredonda).
+    """
+    linhas = texto.splitlines()
+    melhor: dict[int, tuple[int, int, int, int, int]] = {}
+    for i, lin in enumerate(linhas):
+        if not re.match(rf"\s*{re.escape(titulo)}", lin):
+            continue
+        achados: dict[int, tuple[int, int, int, int, int]] = {}
+        for lin2 in linhas[i + 1:i + janela]:
+            if re.match(r"\s*(FONTE|SOURCE)\b", lin2):
+                break
+            for m in _ANF_ROW.finditer(lin2):
+                v = [int(g.replace(".", "")) for g in m.groups()[1:]]
+                if abs(sum(v[:4]) - v[4]) <= 5:          # arredondamento da fonte
+                    achados[int(m.group(1))] = tuple(v)          # type: ignore[assignment]
+        if len(achados) > len(melhor):
+            melhor = achados
+    return melhor
+
+
+# --------------------------------------------------------------------------
+# BLOCO MD9 -- divisao do modelo por motorizacao (decisao 9, 22/11/2026)
+#   O informativo da FENABRAVE traz o total do modelo; o modelo de calculo precisa de uma
+#   linha por modelo e motorizacao (P26: 'HR-V' ICEV e 'HR-V HEV'). Candidatas, em ordem:
+#     Reported  numeros que o proprio informativo da FENABRAVE/ANFAVEA da por variante;
+#     Previous  participacao da edicao anterior (P47.UnitsAdopted);
+#     PBEV      participacao pelo numero de versoes de cada motorizacao no PBEV (P50);
+#     Master    valor digitado pelo master (sobrepoe qualquer candidata).
+#   O master ve as tres candidatas lado a lado; a escolha e o campo SplitMethod.
+# --------------------------------------------------------------------------
+SPLIT_METHODS = ("Reported", "Previous", "PBEV", "Master", "Base", "Workbook")
+
+
+@dataclass
+class SplitLine:
+    sales_class: str
+    ranking: int | None
+    brand: str
+    model: str                        # modelo do informativo
+    bulletin_total: int               # unidades da linha do informativo
+    pool_total: int                   # unidades a repartir entre as motorizacoes do grupo
+    idmv: int
+    vehicle: str                      # DsMV do catalogo
+    powertrain: str
+    reported: int | None = None
+    previous: int | None = None
+    pbev: int | None = None
+    method: str = "Base"
+    units: int = 0
+    basis: str = ""
+
+
+def largest_remainder(total: int, pesos: list[float]) -> list[int]:
+    """Reparte `total` (inteiro) em partes proporcionais a `pesos`, somando exatamente `total`."""
+    soma = sum(pesos)
+    if total <= 0 or soma <= 0:
+        return [0] * len(pesos)
+    cotas = [total * p / soma for p in pesos]
+    base = [int(c) for c in cotas]
+    faltam = total - sum(base)
+    ordem = sorted(range(len(pesos)), key=lambda i: cotas[i] - base[i], reverse=True)
+    for i in ordem[:faltam]:
+        base[i] += 1
+    return base
+
+
+def split_candidates(conn: sqlite3.Connection, resultados: list[CatalogMatch],
+                     linhas: list[SalesRow], idmse_anterior: str | None = None
+                     ) -> list[SplitLine]:
+    """Uma `SplitLine` por modelo e motorizacao, com as candidatas e a escolha automatica.
+
+    Modelos sem par no catalogo (status 'none') nao entram: a tela os lista (decisao 10).
+    """
+    chaves = {r.key: r.units for r in linhas}
+    info = {i: (ds, pt, mk) for i, ds, pt, mk in conn.execute(
+        "SELECT IDMV, DsMV, IDVPT, Brand || '/' || Model FROM P26_MarketVehicle")}
+    chave_veic = {i: match_key(b, m) for i, b, m in conn.execute(
+        "SELECT IDMV, Brand, Model FROM P26_MarketVehicle")}
+    anterior: dict[int, int] = {}
+    if idmse_anterior:
+        anterior = dict(conn.execute("SELECT IDMV, UnitsAdopted FROM P47_MarketSales "
+                                     "WHERE IDMSE = ? AND IDMV IS NOT NULL", (idmse_anterior,)))
+    versoes = dict(conn.execute("SELECT IDMV, COUNT(*) FROM P50_MarketVehiclePBEV GROUP BY IDMV"))
+    saida: list[SplitLine] = []
+    for m in resultados:
+        if not m.idmvs:
+            continue
+        r = m.row
+        # variantes com linha propria no informativo sao "Reported" por si so
+        proprias = {i: chaves[chave_veic[i]] for i in m.idmvs
+                    if chave_veic[i] != r.key and chave_veic[i] in chaves}
+        pool = [i for i in m.idmvs if i not in proprias]
+        for i, un in proprias.items():
+            saida.append(SplitLine(r.sales_class, None, r.brand, r.model, un, un, i,
+                                   info[i][0], info[i][1], reported=un, method="Reported",
+                                   units=un, basis="linha propria no informativo"))
+        total = r.units
+        if len(pool) == 1:
+            i = pool[0]
+            saida.append(SplitLine(r.sales_class, r.ranking, r.brand, r.model, total, total, i,
+                                   info[i][0], info[i][1], reported=total, method="Reported",
+                                   units=total, basis="informativo"))
+            continue
+        prev_w = [anterior.get(i, 0) for i in pool]
+        pbev_w = [versoes.get(i, 0) for i in pool]
+        prev_u = largest_remainder(total, prev_w) if sum(prev_w) > 0 else [None] * len(pool)
+        pbev_u = largest_remainder(total, pbev_w) if sum(pbev_w) > 0 else [None] * len(pool)
+        for k, i in enumerate(pool):
+            if prev_u[k] is not None:
+                met, un, base = "Previous", prev_u[k], "participacao da edicao anterior"
+            elif pbev_u[k] is not None:
+                met, un, base = "PBEV", pbev_u[k], "numero de versoes no PBEV"
+            else:
+                met, un, base = "Base", total if k == 0 else 0, \
+                    "sem candidata: total na primeira motorizacao (ajustar)"
+            saida.append(SplitLine(r.sales_class, r.ranking if k == 0 else None, r.brand,
+                                   r.model, total, total, i, info[i][0], info[i][1],
+                                   previous=prev_u[k], pbev=pbev_u[k], method=met, units=un,
+                                   basis=base))
+    return saida
+
+
+def apply_master_units(linhas: list[SplitLine], unidades: dict[int, int]) -> list[SplitLine]:
+    """Sobrepoe as unidades digitadas pelo master ({IDMV: unidades}); marca `Master`."""
+    for ln in linhas:
+        if ln.idmv in unidades and unidades[ln.idmv] != ln.units:
+            ln.units, ln.method, ln.basis = int(unidades[ln.idmv]), "Master", "digitado pelo master"
+    return linhas
+
+
+def validate_split(linhas: list[SplitLine]) -> list[str]:
+    """Problemas que impedem gravar: as motorizacoes de um modelo devem somar o total a repartir."""
+    problemas: list[str] = []
+    grupos: dict[tuple, list[SplitLine]] = {}
+    for ln in linhas:
+        if ln.method == "Reported" and ln.basis.startswith("linha propria"):
+            continue
+        grupos.setdefault((ln.sales_class, ln.brand, ln.model), []).append(ln)
+    for (_c, marca, modelo), g in grupos.items():
+        if sum(x.units for x in g) != g[0].pool_total:
+            problemas.append(f"{marca} {modelo}: soma {sum(x.units for x in g)} "
+                             f"!= total {g[0].pool_total}")
+    return problemas
+
+
+def save_edition(conn: sqlite3.Connection, idmse: str, secao: SalesSection,
+                 linhas: list[SplitLine], arquivo: str, publicada: str | None = None,
+                 referencia: str | None = None, adotar: bool = False) -> int:
+    """Grava a edicao em P48 e P47 (somente o master, na base de referencia). Devolve nº de linhas.
+
+    Recusa edicao que ja existe e divisoes que nao fecham com o informativo.
+    """
+    if conn.execute("SELECT 1 FROM P48_MarketSalesEdition WHERE IDMSE = ?", (idmse,)).fetchone():
+        raise ValueError(f"a edicao {idmse} ja existe na base")
+    problemas = validate_split(linhas)
+    if problemas:
+        raise ValueError("divisao por motorizacao nao fecha: " + "; ".join(problemas))
+    from datetime import datetime
+    agora = datetime.now().isoformat(timespec="seconds")
+    if adotar:
+        conn.execute("UPDATE P48_MarketSalesEdition SET IsAdopted = 0")
+    conn.execute(
+        "INSERT INTO P48_MarketSalesEdition (IDMSE, SourceName, PeriodKind, PeriodStart, "
+        "PeriodEnd, EditionRef, SourceMSE, PublishedAt, ImportedAt, RecordCount, IsAdopted, "
+        "NotesMSE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        (idmse, "FENABRAVE", secao.kind, f"{secao.period_end[:4]}-01" if secao.kind == "YTD"
+         else secao.period_end, secao.period_end, referencia, arquivo, publicada, agora,
+         len(linhas), int(adotar), "Importada pelo master (T40)"))
+    prox = (conn.execute("SELECT COALESCE(MAX(IDMS),0) FROM P47_MarketSales").fetchone()[0]) + 1
+    for k, ln in enumerate(linhas):
+        conn.execute(
+            "INSERT INTO P47_MarketSales (IDMS, IDMSE, SalesClass, Ranking, Brand, Model, "
+            "MatchKey, UnitsSource, UnitsAdopted, IDMV, AdjustmentNote, UnitsReported, "
+            "UnitsPrevious, UnitsPBEV, SplitMethod, SplitBasis) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (prox + k, idmse, ln.sales_class, ln.ranking, ln.brand, ln.model,
+             match_key(ln.brand, ln.model), ln.bulletin_total, ln.units, ln.idmv,
+             ln.basis if ln.method not in ("Reported",) else None, ln.reported,
+             ln.previous, ln.pbev, ln.method, ln.basis))
+    conn.commit()
+    return len(linhas)
+
+
+# --------------------------------------------------------------------------
+# BLOCO MD10 -- quadro design x motorizacao (guia "FENABRAVE 2025 Categories", R2:AB11)
+# --------------------------------------------------------------------------
+def design_powertrain_pivot(conn: sqlite3.Connection, idmse: str
+                            ) -> dict[tuple[str, str], int]:
+    """{(grupo de mercado, motorizacao): unidades adotadas}; Van e Chassis vao para 'Other'."""
+    saida: dict[tuple[str, str], int] = {}
+    for grupo, dt_, pt, un in conn.execute(
+            "SELECT v.MarketGroup, v.IDVDT, v.IDVPT, SUM(s.UnitsAdopted) FROM P47_MarketSales s "
+            "JOIN P26_MarketVehicle v USING (IDMV) WHERE s.IDMSE = ? GROUP BY 1,2,3", (idmse,)):
+        chave = ("Other" if dt_ in ("Van", "Chassis") or not grupo else grupo.strip(), pt)
+        saida[chave] = saida.get(chave, 0) + un
+    return saida
+
+
+# --------------------------------------------------------------------------
+# BLOCO MD11 -- comparacao e exportacao da referencia ponderada (decisao 13)
+#   Planilha (valores 'Avg' gravados em P27) x recalculo do aplicativo (reference_params).
+# --------------------------------------------------------------------------
+def reference_comparison(conn: sqlite3.Connection,
+                         unidades: dict[int, int] | None = None) -> list[dict]:
+    """Uma linha por categoria e parametro: valor da planilha, recalculado e diferenca."""
+    nomes = dict(conn.execute("SELECT IDMP, DsMP FROM P54_MarketParam"))
+    saida: list[dict] = []
+    for idvc, idsel in conn.execute("SELECT IDVC, IDMVSelecao FROM P29_VehicleCategory "
+                                    "ORDER BY CaseDigit"):
+        guardado = dict(conn.execute("SELECT IDMP, Value FROM P27_MarketVehicleParam "
+                                     "WHERE IDMV = ? AND ValueClass = 'Avg'", (idsel,)))
+        calc = reference_params(conn, idvc, unidades)
+        for p in sorted(guardado):
+            x, y = guardado[p], calc.get(p)
+            saida.append({"IDVC": idvc, "IDMP": p, "Parameter": nomes.get(p, str(p)),
+                          "Excel model": x, "Recalculated": y,
+                          "Difference": None if x is None or y is None else y - x})
+    return saida
+
+
+def export_reference_xlsx(conn: sqlite3.Connection, destino, unidades: dict[int, int] | None = None
+                          ) -> None:
+    """Escreve o xlsx com a comparacao e as unidades usadas (`destino`: caminho ou buffer)."""
+    from openpyxl import Workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Reference parameters"
+    ws.append(["IDVC", "IDMP", "Parameter", "Excel model", "Recalculated", "Difference"])
+    for r in reference_comparison(conn, unidades):
+        ws.append([r["IDVC"], r["IDMP"], r["Parameter"], r["Excel model"], r["Recalculated"],
+                   r["Difference"]])
+    ws2 = wb.create_sheet("Units used")
+    ws2.append(["IDMV", "Vehicle", "Powertrain", "Units (base)", "Units (recalculation)"])
+    for i, ds, pt, un in conn.execute("SELECT IDMV, DsMV, IDVPT, COALESCE(SalesUnits,0) FROM "
+                                      "P26_MarketVehicle WHERE IsSelecao = 0 ORDER BY IDMV"):
+        ws2.append([i, ds, pt, un, (unidades or {}).get(i, un)])
+    wb.save(destino)

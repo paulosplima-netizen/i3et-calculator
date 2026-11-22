@@ -1,9 +1,11 @@
 """T40 · FENABRAVE import (master only).
 
 Shows the licensing edition in the reference base (P48, P47) and matches a new FENABRAVE
-bulletin (PDF or text) with the 154-vehicle catalogue. It does not write: it lists the models
-that match exactly, those split by powertrain, those whose units differ and those not in the
-catalogue. Source: FENABRAVE, Informativo Emplacamentos (all rights reserved; cite).
+bulletin (PDF or text) with the 154-vehicle catalogue. It lists the models that match exactly,
+those split by powertrain, those whose units differ and those not in the catalogue. For models
+that cover several powertrains it shows every candidate split side by side (reported by the
+source, previous edition, PBEV versions); the master picks one or types the units, and saves
+the edition. Source: FENABRAVE, Informativo Emplacamentos (all rights reserved; cite).
 """
 
 from __future__ import annotations
@@ -91,5 +93,56 @@ if up is not None:
     if mostrar == "Needs attention":
         tabela = tabela[tabela["Status"].isin(["differs", "none"])]
     st.dataframe(tabela, hide_index=True, use_container_width=True)
-    st.info("Nothing was written. “Split” rows need the powertrain shares (the workbook keeps "
-            "them by hand in its Powertrain breakdown sheet); see docs/11, decision 9.")
+    # ---- divisao por motorizacao (decisao 9) e gravacao da edicao
+    st.subheader("Split by powertrain")
+    with master.reference_conn() as conn:
+        anterior = conn.execute("SELECT IDMSE FROM P48_MarketSalesEdition WHERE IsAdopted = 1 "
+                                "ORDER BY PeriodEnd DESC").fetchone()
+        linhas = md.split_candidates(conn, res, sec.rows, anterior[0] if anterior else None)
+    st.caption("One row per model and powertrain, never grouped. Candidates, in order of "
+               "preference: reported by the source → previous edition → PBEV versions. Type "
+               "units in “Units adopted” to override; the sum of a model must equal its "
+               "bulletin total.")
+    quadro = pd.DataFrame([{
+        "IDMV": ln.idmv, "Model": ln.model, "Vehicle": ln.vehicle,
+        "Powertrain": ln.powertrain, "Bulletin total": ln.pool_total,
+        "Reported": ln.reported, "Previous edition": ln.previous, "PBEV versions": ln.pbev,
+        "Method": ln.method, "Units adopted": ln.units, "Basis": ln.basis} for ln in linhas])
+    so_dividir = st.checkbox("Only models with more than one powertrain", value=True)
+    if so_dividir and not quadro.empty:
+        conta = quadro.groupby("Model")["IDMV"].transform("count")
+        visivel = quadro[conta > 1]
+    else:
+        visivel = quadro
+    editado = st.data_editor(
+        visivel, hide_index=True, use_container_width=True, key="split_editor",
+        disabled=[c for c in visivel.columns if c != "Units adopted"])
+    digitado = {int(r["IDMV"]): int(r["Units adopted"]) for _, r in editado.iterrows()
+                if pd.notna(r["Units adopted"])}
+    linhas = md.apply_master_units(linhas, digitado)
+    problemas = md.validate_split(linhas)
+    if problemas:
+        st.error("The split does not add up: " + "; ".join(problemas))
+    sem_par = [m for m in res if not m.idmvs]
+    if sem_par:
+        st.caption(f"{len(sem_par)} bulletin models have no match in the catalogue and are not "
+                   "saved (decision 10): " + ", ".join(f"{m.row.brand} {m.row.model}"
+                                                      for m in sem_par))
+    c1, c2 = st.columns(2)
+    novo_id = c1.text_input("Edition ID", value=f"FEN{sec.period_end[:4]}_{sec.period_end[5:]}")
+    adotar = c2.checkbox("Adopt as the default edition", value=False)
+    if st.button("Save edition to the reference base", disabled=bool(problemas)):
+        try:
+            with master.reference_write_conn() as wconn:
+                n = md.save_edition(wconn, novo_id, sec, linhas, up.name, referencia=sec.title,
+                                    adotar=adotar)
+            st.success(f"Saved {n} rows as {novo_id}. On Streamlit Cloud the disk is "
+                       "temporary: commit the reference base to publish it to other users.")
+        except ValueError as exc:
+            st.error(str(exc))
+    import io
+    buf = io.BytesIO()
+    pd.DataFrame([ln.__dict__ for ln in linhas]).to_excel(buf, index=False)
+    st.download_button("Export this split to Excel", buf.getvalue(),
+                       file_name=f"{novo_id}_split.xlsx",
+                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")

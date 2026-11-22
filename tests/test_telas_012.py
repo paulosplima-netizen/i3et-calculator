@@ -56,10 +56,14 @@ def test_t42_recalcula_igual_ao_modelo_e_mostra_a_cobertura(monkeypatch):
     at = _abrir("T42_Weighted_references", master_ok=True)
     assert not at.exception, at.exception
     valores = {m.label: m.value for m in at.metric}
-    assert valores["Fleet total, 2025 (ANFAVEA)"] == "2,424,281"
-    assert valores["Coverage"] == "82.9%"
-    pesos = at.dataframe[1].value
+    assert valores["Market total, 2025 (FENABRAVE)"] == "2,549,462"
+    assert valores["Top 50 + top 50 (FENABRAVE)"] == "2,424,281"
+    assert valores["Segments / market"] == "78.8%"
+    quadro = next(d.value for d in at.dataframe if "Group" in d.value.columns)
+    assert int(quadro["Total"].sum()) == 2424281
+    pesos = next(d.value for d in at.dataframe if "Difference" in d.value.columns)
     assert pesos["Difference"].abs().max() < 1e-6
     at.selectbox[0].select("A4 · PUT Large Regular").run()
     assert not at.exception, at.exception
-    assert at.dataframe[1].value["Difference"].abs().max() < 1e-6
+    pesos = next(d.value for d in at.dataframe if "Difference" in d.value.columns)
+    assert pesos["Difference"].abs().max() < 1e-6

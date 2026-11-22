@@ -2,6 +2,14 @@
 
 ## Unreleased - Bloco B2 (imports and reference vehicles; in progress)
 
+### B2b (22/11/2026): divisao por motorizacao, ANFAVEA e FENABRAVE
+- Decisoes do autor: 4 (leitura direta do PDF; `pdfplumber==0.11.10` entra em `requirements.txt`), 5 (edicoes do master na base de referencia, publicadas por commit; edicoes do usuario por arquivo, Google Drive/OneDrive na Fase C), 9 (uma linha por modelo e motorizacao; candidatas: informativo → edicao anterior → PBEV → master), 13 (recalculo da C33 opcional e exportavel para Excel), 14 (Anuario ANFAVEA 2026; vale a edicao mais recente).
+- Esquema: `P47` ganha `UnitsReported`, `UnitsPrevious`, `UnitsPBEV`, `SplitMethod`, `SplitBasis`; `P60` passa a ter `SourceEdition` e `IsAdopted` (ANFAVEA 1957-2025 e total FENABRAVE 2025); nova `P71_FleetEstimate` (frota estimada 2000-2025). `ParamBaseHash` inalterado.
+- `core/market_data.py`: MD8 (tabelas do Anuario), MD9 (candidatas de divisao, gravacao da edicao), MD10 (quadro design x motorizacao), MD11 (comparacao e exportacao Excel). `tools/import_anfavea.py`.
+- T40: candidatas lado a lado, digitacao do master, gravacao e exportacao; T42: tres niveis de cobertura (6 referencias, 50+50, total FENABRAVE), quadro design x motorizacao e exportacao Excel.
+- Correcao: o 2.424.281 e a soma dos rankings 50+50 (inclui van e chassi), nao um total; o total de mercado e 2.549.462 (FENABRAVE Ed. 276).
+- 496 testes passam.
+
 Added (21/11/2026)
 - Schema 0.12, block S15: `P48_MarketSalesEdition`, `P47_MarketSales` (FENABRAVE licensing by
   model), `P60_FleetLicensingTotal` (ANFAVEA), `P70_ReferenceSegment`; editorial tables (outside

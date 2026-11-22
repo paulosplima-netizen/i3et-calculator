@@ -39,3 +39,14 @@ def reference_conn():
     import sqlite3
     conn = sqlite3.connect(f"file:{state.reference_db_path()}?mode=ro", uri=True)
     return conn
+
+
+def reference_write_conn():
+    """Conexao de escrita com a base de referencia (so o master grava edicoes importadas).
+
+    No Streamlit Cloud o disco e efemero: a gravacao vale no computador do master e chega
+    aos demais usuarios pelo commit da base no repositorio (decisao 5, 22/11/2026)."""
+    import sqlite3
+    conn = sqlite3.connect(state.reference_db_path())
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
