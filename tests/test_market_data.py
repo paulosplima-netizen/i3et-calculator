@@ -267,3 +267,24 @@ def test_exportacao_xlsx_da_comparacao(conn, tmp_path):
     wb = load_workbook(out)
     assert wb.sheetnames == ["Reference parameters", "Units used"]
     assert wb["Reference parameters"].max_row == 61              # cabecalho + 60 parametros
+
+
+def test_p72_motorizacao_anuario_2026(conn):
+    def u(tab, cls, cat, ano=2025):
+        return conn.execute(
+            "SELECT Units FROM P72_FleetLicensingByPowertrain WHERE SourceTable=? AND "
+            "VehicleClass=? AND Category=? AND RefYear=?", (tab, cls, cat, ano)).fetchone()[0]
+    assert u("2.2.8", "Automobiles", "FlexFuel") == 1592071
+    assert u("2.2.8", "LightCommercials", "Diesel") == 228019
+    assert u("2.2.9", "Automobiles", "BEV") == 79714
+    assert u("2.2.9", "Automobiles", "PHEV") == 94147
+    assert u("2.2.10", "Automobiles", "Upto1000cc") == 1078308
+    # 2.2.8: combustiveis somam o total da ANFAVEA (automoveis 1.997.264)
+    tot = conn.execute("SELECT SUM(Units) FROM P72_FleetLicensingByPowertrain WHERE "
+                       "SourceTable='2.2.8' AND VehicleClass='Automobiles' AND RefYear=2025"
+                       ).fetchone()[0]
+    assert tot == 1997264
+    # 2.2.9 abre exatamente a coluna Electrified da 2.2.8
+    eletr = sum(u("2.2.9", "Automobiles", c) for c in
+                ("BEV", "FlexHybrid", "GasolineHybrid", "DieselHybrid", "PHEV"))
+    assert eletr == u("2.2.8", "Automobiles", "Electrified") == 282895

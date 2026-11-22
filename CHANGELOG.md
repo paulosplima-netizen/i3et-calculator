@@ -3,6 +3,8 @@
 ## Unreleased - Bloco B2 (imports and reference vehicles; in progress)
 
 ### B2b (22/11/2026): divisao por motorizacao, ANFAVEA e FENABRAVE
+
+- P72_FleetLicensingByPowertrain (330 linhas): emplacamento ANFAVEA 2016-2025 por combustivel/tecnologia (2.2.8, 4 classes), eletrificados por tecnologia (2.2.9, automoveis e comerciais leves) e cilindrada (2.2.10, automoveis, sem eletricos); importada por `tools/import_anfavea.py`; formato longo, cada linha confere o total da fonte.
 - Decisoes do autor: 4 (leitura direta do PDF; `pdfplumber==0.11.10` entra em `requirements.txt`), 5 (edicoes do master na base de referencia, publicadas por commit; edicoes do usuario por arquivo, Google Drive/OneDrive na Fase C), 9 (uma linha por modelo e motorizacao; candidatas: informativo → edicao anterior → PBEV → master), 13 (recalculo da C33 opcional e exportavel para Excel), 14 (Anuario ANFAVEA 2026; vale a edicao mais recente).
 - Esquema: `P47` ganha `UnitsReported`, `UnitsPrevious`, `UnitsPBEV`, `SplitMethod`, `SplitBasis`; `P60` passa a ter `SourceEdition` e `IsAdopted` (ANFAVEA 1957-2025 e total FENABRAVE 2025); nova `P71_FleetEstimate` (frota estimada 2000-2025). `ParamBaseHash` inalterado.
 - `core/market_data.py`: MD8 (tabelas do Anuario), MD9 (candidatas de divisao, gravacao da edicao), MD10 (quadro design x motorizacao), MD11 (comparacao e exportacao Excel). `tools/import_anfavea.py`.

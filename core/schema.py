@@ -1386,7 +1386,8 @@ EDITORIAL_TABLES = ("P64_ParamRevision", "P65_ParamRevisionSource",
                     # B2: dados de mercado importados (so a tela do master e a referencia
                     # ponderada os leem; ver docs/11).
                     "P48_MarketSalesEdition", "P47_MarketSales", "P60_FleetLicensingTotal",
-                    "P70_ReferenceSegment", "P71_FleetEstimate")
+                    "P70_ReferenceSegment", "P71_FleetEstimate",
+                    "P72_FleetLicensingByPowertrain")
 
 #: Tabelas do usuario do B1, pais primeiro.
 USER_TABLES_011 = ["D10_MaintenanceScenario", "D10_Item", "D13_UserRecipe",
@@ -1472,6 +1473,21 @@ CREATE TABLE IF NOT EXISTS P71_FleetEstimate (
   NotesFE       TEXT
 );
 
+CREATE TABLE IF NOT EXISTS P72_FleetLicensingByPowertrain (
+  IDFP          INTEGER PRIMARY KEY,
+  SourceName    TEXT NOT NULL CHECK (SourceName IN ('ANFAVEA')),
+  SourceEdition TEXT NOT NULL,
+  SourceTable   TEXT NOT NULL,
+  RefYear       INTEGER NOT NULL,
+  VehicleClass  TEXT NOT NULL CHECK (VehicleClass IN ('Automobiles','LightCommercials',
+                                     'Trucks','Buses')),
+  Dimension     TEXT NOT NULL CHECK (Dimension IN ('Fuel','Electrified','Displacement')),
+  Category      TEXT NOT NULL,
+  Units         INTEGER NOT NULL CHECK (Units >= 0),
+  IsAdopted     INTEGER NOT NULL DEFAULT 1 CHECK (IsAdopted IN (0,1)),
+  NotesFP       TEXT
+);
+
 CREATE TABLE IF NOT EXISTS P70_ReferenceSegment (
   IDRS      INTEGER PRIMARY KEY,
   IDVC      TEXT REFERENCES P29_VehicleCategory(IDVC),
@@ -1486,7 +1502,7 @@ CREATE TABLE IF NOT EXISTS P70_ReferenceSegment (
 
 #: Tabelas de parametros do B2, pais primeiro.
 PARAM_TABLES_012 = ["P48_MarketSalesEdition", "P47_MarketSales", "P60_FleetLicensingTotal",
-                    "P70_ReferenceSegment", "P71_FleetEstimate"]
+                    "P70_ReferenceSegment", "P71_FleetEstimate", "P72_FleetLicensingByPowertrain"]
 TABLES_012 = PARAM_TABLES_012
 
 

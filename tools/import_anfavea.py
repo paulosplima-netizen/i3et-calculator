@@ -68,6 +68,13 @@ def serie(tabelas: list[tuple[str, dict]]) -> list[tuple]:
     return out
 
 
+P72_COLS = ["IDFP", "SourceName", "SourceEdition", "SourceTable", "RefYear", "VehicleClass",
+            "Dimension", "Category", "Units", "IsAdopted", "NotesFP"]
+NOTAS = {"2.2.8": "Emplacamento por combustivel/tecnologia de propulsao",
+         "2.2.9": "Emplacamento de leves eletrificados por tecnologia",
+         "2.2.10": "Emplacamento de automoveis por cilindrada (nao inclui eletricos)"}
+
+
 def main(argv: list[str]) -> int:
     f25 = argv[1] if len(argv) > 1 else DOC + "ANFAVEA_Anuário_2025.pdf"
     f26 = argv[2] if len(argv) > 2 else DOC + "ANFAVEA_Anuário_2026.pdf"
@@ -91,9 +98,15 @@ def main(argv: list[str]) -> int:
         ed, tab = rot.split(", tabela ")
         p71.append([i, "ANFAVEA", ed, ano, cls, un, ad, f"{ed}, tabela {tab}",
                     "Estimativa da frota de autoveiculos; a edicao nova revisa os anos anteriores"])
+    p72 = []
+    for tab in ("2.2.8", "2.2.9", "2.2.10"):
+        for ano, cls, dim, cat, un in md.parse_anfavea_columns(t26, tab):
+            p72.append([len(p72) + 1, "ANFAVEA", ED26, tab, ano, cls, dim, cat, un, 1,
+                        NOTAS[tab]])
+    write_csv("P72_FleetLicensingByPowertrain.csv", P72_COLS, p72)
     write_csv("P60_FleetLicensingTotal.csv", P60_COLS, p60)
     write_csv("P71_FleetEstimate.csv", P71_COLS, p71)
-    print(f"P60 {len(p60)} linhas | P71 {len(p71)} linhas")
+    print(f"P60 {len(p60)} linhas | P71 {len(p71)} linhas | P72 {len(p72)} linhas")
     return 0
 
 

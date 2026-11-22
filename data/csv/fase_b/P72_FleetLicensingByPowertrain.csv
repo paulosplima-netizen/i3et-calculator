@@ -1,0 +1,331 @@
+﻿IDFP;SourceName;SourceEdition;SourceTable;RefYear;VehicleClass;Dimension;Category;Units;IsAdopted;NotesFP
+1;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Automobiles;Fuel;Gasoline;79364;1;Emplacamento por combustivel/tecnologia de propulsao
+2;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Automobiles;Fuel;Ethanol;11;1;Emplacamento por combustivel/tecnologia de propulsao
+3;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Automobiles;Fuel;FlexFuel;1572738;1;Emplacamento por combustivel/tecnologia de propulsao
+4;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Automobiles;Fuel;Electrified;1272;1;Emplacamento por combustivel/tecnologia de propulsao
+5;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Automobiles;Fuel;Diesel;34903;1;Emplacamento por combustivel/tecnologia de propulsao
+6;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;LightCommercials;Fuel;Gasoline;1005;1;Emplacamento por combustivel/tecnologia de propulsao
+7;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;LightCommercials;Fuel;Ethanol;4;1;Emplacamento por combustivel/tecnologia de propulsao
+8;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;LightCommercials;Fuel;FlexFuel;177934;1;Emplacamento por combustivel/tecnologia de propulsao
+9;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;LightCommercials;Fuel;Electrified;7;1;Emplacamento por combustivel/tecnologia de propulsao
+10;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;LightCommercials;Fuel;Diesel;121358;1;Emplacamento por combustivel/tecnologia de propulsao
+11;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Automobiles;Fuel;Gasoline;68119;1;Emplacamento por combustivel/tecnologia de propulsao
+12;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Automobiles;Fuel;Ethanol;25;1;Emplacamento por combustivel/tecnologia de propulsao
+13;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Automobiles;Fuel;FlexFuel;1739005;1;Emplacamento por combustivel/tecnologia de propulsao
+14;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Automobiles;Fuel;Electrified;3315;1;Emplacamento por combustivel/tecnologia de propulsao
+15;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Automobiles;Fuel;Diesel;46122;1;Emplacamento por combustivel/tecnologia de propulsao
+16;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;LightCommercials;Fuel;Gasoline;758;1;Emplacamento por combustivel/tecnologia de propulsao
+17;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;LightCommercials;Fuel;Ethanol;4;1;Emplacamento por combustivel/tecnologia de propulsao
+18;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;LightCommercials;Fuel;FlexFuel;188177;1;Emplacamento por combustivel/tecnologia de propulsao
+19;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;LightCommercials;Fuel;Electrified;17;1;Emplacamento por combustivel/tecnologia de propulsao
+20;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;LightCommercials;Fuel;Diesel;130443;1;Emplacamento por combustivel/tecnologia de propulsao
+21;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Automobiles;Fuel;Gasoline;81486;1;Emplacamento por combustivel/tecnologia de propulsao
+22;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Automobiles;Fuel;Ethanol;20;1;Emplacamento por combustivel/tecnologia de propulsao
+23;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Automobiles;Fuel;FlexFuel;1969673;1;Emplacamento por combustivel/tecnologia de propulsao
+24;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Automobiles;Fuel;Electrified;3971;1;Emplacamento por combustivel/tecnologia de propulsao
+25;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Automobiles;Fuel;Diesel;46964;1;Emplacamento por combustivel/tecnologia de propulsao
+26;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;LightCommercials;Fuel;Gasoline;441;1;Emplacamento por combustivel/tecnologia de propulsao
+27;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;LightCommercials;Fuel;Ethanol;1;1;Emplacamento por combustivel/tecnologia de propulsao
+28;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;LightCommercials;Fuel;FlexFuel;198481;1;Emplacamento por combustivel/tecnologia de propulsao
+29;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;LightCommercials;Fuel;Electrified;5;1;Emplacamento por combustivel/tecnologia de propulsao
+30;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;LightCommercials;Fuel;Diesel;174296;1;Emplacamento por combustivel/tecnologia de propulsao
+31;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Automobiles;Fuel;Gasoline;73412;1;Emplacamento por combustivel/tecnologia de propulsao
+32;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Automobiles;Fuel;Ethanol;26;1;Emplacamento por combustivel/tecnologia de propulsao
+33;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Automobiles;Fuel;FlexFuel;2123842;1;Emplacamento por combustivel/tecnologia de propulsao
+34;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Automobiles;Fuel;Electrified;11860;1;Emplacamento por combustivel/tecnologia de propulsao
+35;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Automobiles;Fuel;Diesel;52933;1;Emplacamento por combustivel/tecnologia de propulsao
+36;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;LightCommercials;Fuel;Gasoline;425;1;Emplacamento por combustivel/tecnologia de propulsao
+37;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;LightCommercials;Fuel;Ethanol;2;1;Emplacamento por combustivel/tecnologia de propulsao
+38;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;LightCommercials;Fuel;FlexFuel;204780;1;Emplacamento por combustivel/tecnologia de propulsao
+39;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;LightCommercials;Fuel;Electrified;11;1;Emplacamento por combustivel/tecnologia de propulsao
+40;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;LightCommercials;Fuel;Diesel;198292;1;Emplacamento por combustivel/tecnologia de propulsao
+41;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Automobiles;Fuel;Gasoline;57060;1;Emplacamento por combustivel/tecnologia de propulsao
+42;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Automobiles;Fuel;Ethanol;18;1;Emplacamento por combustivel/tecnologia de propulsao
+43;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Automobiles;Fuel;FlexFuel;1490482;1;Emplacamento por combustivel/tecnologia de propulsao
+44;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Automobiles;Fuel;Electrified;20955;1;Emplacamento por combustivel/tecnologia de propulsao
+45;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Automobiles;Fuel;Diesel;47427;1;Emplacamento por combustivel/tecnologia de propulsao
+46;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;LightCommercials;Fuel;Gasoline;600;1;Emplacamento por combustivel/tecnologia de propulsao
+47;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;LightCommercials;Fuel;Ethanol;3;1;Emplacamento por combustivel/tecnologia de propulsao
+48;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;LightCommercials;Fuel;FlexFuel;174498;1;Emplacamento por combustivel/tecnologia de propulsao
+49;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;LightCommercials;Fuel;Electrified;58;1;Emplacamento por combustivel/tecnologia de propulsao
+50;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;LightCommercials;Fuel;Diesel;163709;1;Emplacamento por combustivel/tecnologia de propulsao
+51;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Automobiles;Fuel;Gasoline;50476;1;Emplacamento por combustivel/tecnologia de propulsao
+52;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Automobiles;Fuel;Ethanol;19;1;Emplacamento por combustivel/tecnologia de propulsao
+53;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Automobiles;Fuel;FlexFuel;1411649;1;Emplacamento por combustivel/tecnologia de propulsao
+54;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Automobiles;Fuel;Electrified;36465;1;Emplacamento por combustivel/tecnologia de propulsao
+55;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Automobiles;Fuel;Diesel;59858;1;Emplacamento por combustivel/tecnologia de propulsao
+56;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;LightCommercials;Fuel;Gasoline;1498;1;Emplacamento por combustivel/tecnologia de propulsao
+57;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;LightCommercials;Fuel;Ethanol;6;1;Emplacamento por combustivel/tecnologia de propulsao
+58;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;LightCommercials;Fuel;FlexFuel;212661;1;Emplacamento por combustivel/tecnologia de propulsao
+59;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;LightCommercials;Fuel;Electrified;151;1;Emplacamento por combustivel/tecnologia de propulsao
+60;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;LightCommercials;Fuel;Diesel;204317;1;Emplacamento por combustivel/tecnologia de propulsao
+61;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Automobiles;Fuel;Gasoline;43205;1;Emplacamento por combustivel/tecnologia de propulsao
+62;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Automobiles;Fuel;Ethanol;29;1;Emplacamento por combustivel/tecnologia de propulsao
+63;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Automobiles;Fuel;FlexFuel;1437647;1;Emplacamento por combustivel/tecnologia de propulsao
+64;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Automobiles;Fuel;Electrified;49894;1;Emplacamento por combustivel/tecnologia de propulsao
+65;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Automobiles;Fuel;Diesel;45887;1;Emplacamento por combustivel/tecnologia de propulsao
+66;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;LightCommercials;Fuel;Gasoline;4520;1;Emplacamento por combustivel/tecnologia de propulsao
+67;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;LightCommercials;Fuel;Ethanol;3;1;Emplacamento por combustivel/tecnologia de propulsao
+68;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;LightCommercials;Fuel;FlexFuel;195532;1;Emplacamento por combustivel/tecnologia de propulsao
+69;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;LightCommercials;Fuel;Electrified;517;1;Emplacamento por combustivel/tecnologia de propulsao
+70;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;LightCommercials;Fuel;Diesel;183216;1;Emplacamento por combustivel/tecnologia de propulsao
+71;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Automobiles;Fuel;Gasoline;47585;1;Emplacamento por combustivel/tecnologia de propulsao
+72;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Automobiles;Fuel;Ethanol;31;1;Emplacamento por combustivel/tecnologia de propulsao
+73;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Automobiles;Fuel;FlexFuel;1544936;1;Emplacamento por combustivel/tecnologia de propulsao
+74;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Automobiles;Fuel;Electrified;93872;1;Emplacamento por combustivel/tecnologia de propulsao
+75;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Automobiles;Fuel;Diesel;34991;1;Emplacamento por combustivel/tecnologia de propulsao
+76;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;LightCommercials;Fuel;Gasoline;12053;1;Emplacamento por combustivel/tecnologia de propulsao
+77;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;LightCommercials;Fuel;Ethanol;3;1;Emplacamento por combustivel/tecnologia de propulsao
+78;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;LightCommercials;Fuel;FlexFuel;264800;1;Emplacamento por combustivel/tecnologia de propulsao
+79;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;LightCommercials;Fuel;Electrified;1063;1;Emplacamento por combustivel/tecnologia de propulsao
+80;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;LightCommercials;Fuel;Diesel;180960;1;Emplacamento por combustivel/tecnologia de propulsao
+81;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Automobiles;Fuel;Gasoline;81645;1;Emplacamento por combustivel/tecnologia de propulsao
+82;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Automobiles;Fuel;Ethanol;14;1;Emplacamento por combustivel/tecnologia de propulsao
+83;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Automobiles;Fuel;FlexFuel;1664630;1;Emplacamento por combustivel/tecnologia de propulsao
+84;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Automobiles;Fuel;Electrified;174974;1;Emplacamento por combustivel/tecnologia de propulsao
+85;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Automobiles;Fuel;Diesel;27418;1;Emplacamento por combustivel/tecnologia de propulsao
+86;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;LightCommercials;Fuel;Gasoline;20649;1;Emplacamento por combustivel/tecnologia de propulsao
+87;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;LightCommercials;Fuel;Ethanol;4;1;Emplacamento por combustivel/tecnologia de propulsao
+88;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;LightCommercials;Fuel;FlexFuel;302621;1;Emplacamento por combustivel/tecnologia de propulsao
+89;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;LightCommercials;Fuel;Electrified;2541;1;Emplacamento por combustivel/tecnologia de propulsao
+90;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;LightCommercials;Fuel;Diesel;213125;1;Emplacamento por combustivel/tecnologia de propulsao
+91;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Automobiles;Fuel;Gasoline;95421;1;Emplacamento por combustivel/tecnologia de propulsao
+92;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Automobiles;Fuel;Ethanol;12;1;Emplacamento por combustivel/tecnologia de propulsao
+93;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Automobiles;Fuel;FlexFuel;1592071;1;Emplacamento por combustivel/tecnologia de propulsao
+94;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Automobiles;Fuel;Electrified;282895;1;Emplacamento por combustivel/tecnologia de propulsao
+95;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Automobiles;Fuel;Diesel;26865;1;Emplacamento por combustivel/tecnologia de propulsao
+96;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;LightCommercials;Fuel;Gasoline;18836;1;Emplacamento por combustivel/tecnologia de propulsao
+97;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;LightCommercials;Fuel;Ethanol;4;1;Emplacamento por combustivel/tecnologia de propulsao
+98;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;LightCommercials;Fuel;FlexFuel;305466;1;Emplacamento por combustivel/tecnologia de propulsao
+99;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;LightCommercials;Fuel;Electrified;2612;1;Emplacamento por combustivel/tecnologia de propulsao
+100;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;LightCommercials;Fuel;Diesel;228019;1;Emplacamento por combustivel/tecnologia de propulsao
+101;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Trucks;Fuel;Gasoline;1;1;Emplacamento por combustivel/tecnologia de propulsao
+102;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Trucks;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+103;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Trucks;Fuel;Electrified;1;1;Emplacamento por combustivel/tecnologia de propulsao
+104;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Trucks;Fuel;NaturalGas;0;1;Emplacamento por combustivel/tecnologia de propulsao
+105;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Trucks;Fuel;Diesel;50558;1;Emplacamento por combustivel/tecnologia de propulsao
+106;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Buses;Fuel;Gasoline;0;1;Emplacamento por combustivel/tecnologia de propulsao
+107;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+108;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Buses;Fuel;Electrified;37;1;Emplacamento por combustivel/tecnologia de propulsao
+109;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Buses;Fuel;NaturalGas;2;1;Emplacamento por combustivel/tecnologia de propulsao
+110;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2016;Buses;Fuel;Diesel;11122;1;Emplacamento por combustivel/tecnologia de propulsao
+111;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Trucks;Fuel;Gasoline;2;1;Emplacamento por combustivel/tecnologia de propulsao
+112;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Trucks;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+113;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Trucks;Fuel;Electrified;0;1;Emplacamento por combustivel/tecnologia de propulsao
+114;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Trucks;Fuel;NaturalGas;0;1;Emplacamento por combustivel/tecnologia de propulsao
+115;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Trucks;Fuel;Diesel;51941;1;Emplacamento por combustivel/tecnologia de propulsao
+116;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Buses;Fuel;Gasoline;1;1;Emplacamento por combustivel/tecnologia de propulsao
+117;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+118;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Buses;Fuel;Electrified;3;1;Emplacamento por combustivel/tecnologia de propulsao
+119;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Buses;Fuel;NaturalGas;0;1;Emplacamento por combustivel/tecnologia de propulsao
+120;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2017;Buses;Fuel;Diesel;11751;1;Emplacamento por combustivel/tecnologia de propulsao
+121;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Trucks;Fuel;Gasoline;12;1;Emplacamento por combustivel/tecnologia de propulsao
+122;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Trucks;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+123;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Trucks;Fuel;Electrified;3;1;Emplacamento por combustivel/tecnologia de propulsao
+124;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Trucks;Fuel;NaturalGas;1;1;Emplacamento por combustivel/tecnologia de propulsao
+125;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Trucks;Fuel;Diesel;75989;1;Emplacamento por combustivel/tecnologia de propulsao
+126;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Buses;Fuel;Gasoline;3;1;Emplacamento por combustivel/tecnologia de propulsao
+127;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+128;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Buses;Fuel;Electrified;7;1;Emplacamento por combustivel/tecnologia de propulsao
+129;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Buses;Fuel;NaturalGas;0;1;Emplacamento por combustivel/tecnologia de propulsao
+130;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2018;Buses;Fuel;Diesel;15071;1;Emplacamento por combustivel/tecnologia de propulsao
+131;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Trucks;Fuel;Gasoline;17;1;Emplacamento por combustivel/tecnologia de propulsao
+132;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Trucks;Fuel;Ethanol;2;1;Emplacamento por combustivel/tecnologia de propulsao
+133;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Trucks;Fuel;Electrified;29;1;Emplacamento por combustivel/tecnologia de propulsao
+134;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Trucks;Fuel;NaturalGas;10;1;Emplacamento por combustivel/tecnologia de propulsao
+135;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Trucks;Fuel;Diesel;101277;1;Emplacamento por combustivel/tecnologia de propulsao
+136;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Buses;Fuel;Gasoline;0;1;Emplacamento por combustivel/tecnologia de propulsao
+137;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+138;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Buses;Fuel;Electrified;42;1;Emplacamento por combustivel/tecnologia de propulsao
+139;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Buses;Fuel;NaturalGas;0;1;Emplacamento por combustivel/tecnologia de propulsao
+140;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2019;Buses;Fuel;Diesel;20890;1;Emplacamento por combustivel/tecnologia de propulsao
+141;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Trucks;Fuel;Gasoline;8;1;Emplacamento por combustivel/tecnologia de propulsao
+142;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Trucks;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+143;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Trucks;Fuel;Electrified;23;1;Emplacamento por combustivel/tecnologia de propulsao
+144;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Trucks;Fuel;NaturalGas;45;1;Emplacamento por combustivel/tecnologia de propulsao
+145;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Trucks;Fuel;Diesel;89611;1;Emplacamento por combustivel/tecnologia de propulsao
+146;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Buses;Fuel;Gasoline;1;1;Emplacamento por combustivel/tecnologia de propulsao
+147;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+148;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Buses;Fuel;Electrified;18;1;Emplacamento por combustivel/tecnologia de propulsao
+149;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Buses;Fuel;NaturalGas;0;1;Emplacamento por combustivel/tecnologia de propulsao
+150;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2020;Buses;Fuel;Diesel;13921;1;Emplacamento por combustivel/tecnologia de propulsao
+151;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Trucks;Fuel;Gasoline;9;1;Emplacamento por combustivel/tecnologia de propulsao
+152;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Trucks;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+153;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Trucks;Fuel;Electrified;293;1;Emplacamento por combustivel/tecnologia de propulsao
+154;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Trucks;Fuel;NaturalGas;93;1;Emplacamento por combustivel/tecnologia de propulsao
+155;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Trucks;Fuel;Diesel;128294;1;Emplacamento por combustivel/tecnologia de propulsao
+156;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Buses;Fuel;Gasoline;0;1;Emplacamento por combustivel/tecnologia de propulsao
+157;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+158;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Buses;Fuel;Electrified;20;1;Emplacamento por combustivel/tecnologia de propulsao
+159;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Buses;Fuel;NaturalGas;2;1;Emplacamento por combustivel/tecnologia de propulsao
+160;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2021;Buses;Fuel;Diesel;14040;1;Emplacamento por combustivel/tecnologia de propulsao
+161;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Trucks;Fuel;Gasoline;36;1;Emplacamento por combustivel/tecnologia de propulsao
+162;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Trucks;Fuel;Ethanol;1;1;Emplacamento por combustivel/tecnologia de propulsao
+163;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Trucks;Fuel;Electrified;714;1;Emplacamento por combustivel/tecnologia de propulsao
+164;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Trucks;Fuel;NaturalGas;356;1;Emplacamento por combustivel/tecnologia de propulsao
+165;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Trucks;Fuel;Diesel;125547;1;Emplacamento por combustivel/tecnologia de propulsao
+166;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Buses;Fuel;Gasoline;0;1;Emplacamento por combustivel/tecnologia de propulsao
+167;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+168;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Buses;Fuel;Electrified;35;1;Emplacamento por combustivel/tecnologia de propulsao
+169;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Buses;Fuel;NaturalGas;0;1;Emplacamento por combustivel/tecnologia de propulsao
+170;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2022;Buses;Fuel;Diesel;17322;1;Emplacamento por combustivel/tecnologia de propulsao
+171;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Trucks;Fuel;Gasoline;36;1;Emplacamento por combustivel/tecnologia de propulsao
+172;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Trucks;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+173;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Trucks;Fuel;Electrified;379;1;Emplacamento por combustivel/tecnologia de propulsao
+174;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Trucks;Fuel;NaturalGas;147;1;Emplacamento por combustivel/tecnologia de propulsao
+175;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Trucks;Fuel;Diesel;107398;1;Emplacamento por combustivel/tecnologia de propulsao
+176;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Buses;Fuel;Gasoline;0;1;Emplacamento por combustivel/tecnologia de propulsao
+177;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+178;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Buses;Fuel;Electrified;86;1;Emplacamento por combustivel/tecnologia de propulsao
+179;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Buses;Fuel;NaturalGas;2;1;Emplacamento por combustivel/tecnologia de propulsao
+180;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2023;Buses;Fuel;Diesel;20347;1;Emplacamento por combustivel/tecnologia de propulsao
+181;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Trucks;Fuel;Gasoline;39;1;Emplacamento por combustivel/tecnologia de propulsao
+182;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Trucks;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+183;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Trucks;Fuel;Electrified;531;1;Emplacamento por combustivel/tecnologia de propulsao
+184;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Trucks;Fuel;NaturalGas;290;1;Emplacamento por combustivel/tecnologia de propulsao
+185;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Trucks;Fuel;Diesel;123988;1;Emplacamento por combustivel/tecnologia de propulsao
+186;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Buses;Fuel;Gasoline;1;1;Emplacamento por combustivel/tecnologia de propulsao
+187;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Buses;Fuel;Ethanol;1;1;Emplacamento por combustivel/tecnologia de propulsao
+188;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Buses;Fuel;Electrified;314;1;Emplacamento por combustivel/tecnologia de propulsao
+189;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Buses;Fuel;NaturalGas;1;1;Emplacamento por combustivel/tecnologia de propulsao
+190;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2024;Buses;Fuel;Diesel;22118;1;Emplacamento por combustivel/tecnologia de propulsao
+191;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Trucks;Fuel;Gasoline;73;1;Emplacamento por combustivel/tecnologia de propulsao
+192;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Trucks;Fuel;Ethanol;2;1;Emplacamento por combustivel/tecnologia de propulsao
+193;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Trucks;Fuel;Electrified;411;1;Emplacamento por combustivel/tecnologia de propulsao
+194;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Trucks;Fuel;NaturalGas;665;1;Emplacamento por combustivel/tecnologia de propulsao
+195;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Trucks;Fuel;Diesel;112328;1;Emplacamento por combustivel/tecnologia de propulsao
+196;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Buses;Fuel;Gasoline;0;1;Emplacamento por combustivel/tecnologia de propulsao
+197;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Buses;Fuel;Ethanol;0;1;Emplacamento por combustivel/tecnologia de propulsao
+198;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Buses;Fuel;Electrified;845;1;Emplacamento por combustivel/tecnologia de propulsao
+199;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Buses;Fuel;NaturalGas;4;1;Emplacamento por combustivel/tecnologia de propulsao
+200;ANFAVEA;Anuario ANFAVEA 2026;2.2.8;2025;Buses;Fuel;Diesel;23105;1;Emplacamento por combustivel/tecnologia de propulsao
+201;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;Automobiles;Electrified;BEV;314;1;Emplacamento de leves eletrificados por tecnologia
+202;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;Automobiles;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+203;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;Automobiles;Electrified;GasolineHybrid;915;1;Emplacamento de leves eletrificados por tecnologia
+204;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;Automobiles;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+205;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;Automobiles;Electrified;PHEV;43;1;Emplacamento de leves eletrificados por tecnologia
+206;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;Automobiles;Electrified;BEV;156;1;Emplacamento de leves eletrificados por tecnologia
+207;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;Automobiles;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+208;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;Automobiles;Electrified;GasolineHybrid;2936;1;Emplacamento de leves eletrificados por tecnologia
+209;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;Automobiles;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+210;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;Automobiles;Electrified;PHEV;223;1;Emplacamento de leves eletrificados por tecnologia
+211;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;Automobiles;Electrified;BEV;177;1;Emplacamento de leves eletrificados por tecnologia
+212;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;Automobiles;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+213;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;Automobiles;Electrified;GasolineHybrid;3294;1;Emplacamento de leves eletrificados por tecnologia
+214;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;Automobiles;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+215;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;Automobiles;Electrified;PHEV;500;1;Emplacamento de leves eletrificados por tecnologia
+216;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;Automobiles;Electrified;BEV;530;1;Emplacamento de leves eletrificados por tecnologia
+217;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;Automobiles;Electrified;FlexHybrid;3635;1;Emplacamento de leves eletrificados por tecnologia
+218;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;Automobiles;Electrified;GasolineHybrid;5846;1;Emplacamento de leves eletrificados por tecnologia
+219;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;Automobiles;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+220;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;Automobiles;Electrified;PHEV;1849;1;Emplacamento de leves eletrificados por tecnologia
+221;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;Automobiles;Electrified;BEV;764;1;Emplacamento de leves eletrificados por tecnologia
+222;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;Automobiles;Electrified;FlexHybrid;9613;1;Emplacamento de leves eletrificados por tecnologia
+223;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;Automobiles;Electrified;GasolineHybrid;5497;1;Emplacamento de leves eletrificados por tecnologia
+224;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;Automobiles;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+225;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;Automobiles;Electrified;PHEV;5081;1;Emplacamento de leves eletrificados por tecnologia
+226;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;Automobiles;Electrified;BEV;2767;1;Emplacamento de leves eletrificados por tecnologia
+227;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;Automobiles;Electrified;FlexHybrid;18948;1;Emplacamento de leves eletrificados por tecnologia
+228;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;Automobiles;Electrified;GasolineHybrid;3216;1;Emplacamento de leves eletrificados por tecnologia
+229;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;Automobiles;Electrified;DieselHybrid;38;1;Emplacamento de leves eletrificados por tecnologia
+230;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;Automobiles;Electrified;PHEV;11496;1;Emplacamento de leves eletrificados por tecnologia
+231;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;Automobiles;Electrified;BEV;8105;1;Emplacamento de leves eletrificados por tecnologia
+232;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;Automobiles;Electrified;FlexHybrid;23577;1;Emplacamento de leves eletrificados por tecnologia
+233;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;Automobiles;Electrified;GasolineHybrid;6492;1;Emplacamento de leves eletrificados por tecnologia
+234;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;Automobiles;Electrified;DieselHybrid;1643;1;Emplacamento de leves eletrificados por tecnologia
+235;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;Automobiles;Electrified;PHEV;10077;1;Emplacamento de leves eletrificados por tecnologia
+236;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;Automobiles;Electrified;BEV;18729;1;Emplacamento de leves eletrificados por tecnologia
+237;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;Automobiles;Electrified;FlexHybrid;26131;1;Emplacamento de leves eletrificados por tecnologia
+238;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;Automobiles;Electrified;GasolineHybrid;13771;1;Emplacamento de leves eletrificados por tecnologia
+239;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;Automobiles;Electrified;DieselHybrid;3026;1;Emplacamento de leves eletrificados por tecnologia
+240;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;Automobiles;Electrified;PHEV;32215;1;Emplacamento de leves eletrificados por tecnologia
+241;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;Automobiles;Electrified;BEV;60312;1;Emplacamento de leves eletrificados por tecnologia
+242;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;Automobiles;Electrified;FlexHybrid;26491;1;Emplacamento de leves eletrificados por tecnologia
+243;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;Automobiles;Electrified;GasolineHybrid;22947;1;Emplacamento de leves eletrificados por tecnologia
+244;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;Automobiles;Electrified;DieselHybrid;3176;1;Emplacamento de leves eletrificados por tecnologia
+245;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;Automobiles;Electrified;PHEV;62048;1;Emplacamento de leves eletrificados por tecnologia
+246;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;Automobiles;Electrified;BEV;79714;1;Emplacamento de leves eletrificados por tecnologia
+247;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;Automobiles;Electrified;FlexHybrid;70935;1;Emplacamento de leves eletrificados por tecnologia
+248;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;Automobiles;Electrified;GasolineHybrid;35736;1;Emplacamento de leves eletrificados por tecnologia
+249;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;Automobiles;Electrified;DieselHybrid;2363;1;Emplacamento de leves eletrificados por tecnologia
+250;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;Automobiles;Electrified;PHEV;94147;1;Emplacamento de leves eletrificados por tecnologia
+251;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;LightCommercials;Electrified;BEV;6;1;Emplacamento de leves eletrificados por tecnologia
+252;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+253;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;LightCommercials;Electrified;GasolineHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+254;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+255;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2016;LightCommercials;Electrified;PHEV;1;1;Emplacamento de leves eletrificados por tecnologia
+256;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;LightCommercials;Electrified;BEV;17;1;Emplacamento de leves eletrificados por tecnologia
+257;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+258;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;LightCommercials;Electrified;GasolineHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+259;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+260;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2017;LightCommercials;Electrified;PHEV;0;1;Emplacamento de leves eletrificados por tecnologia
+261;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;LightCommercials;Electrified;BEV;5;1;Emplacamento de leves eletrificados por tecnologia
+262;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+263;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;LightCommercials;Electrified;GasolineHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+264;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+265;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2018;LightCommercials;Electrified;PHEV;0;1;Emplacamento de leves eletrificados por tecnologia
+266;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;LightCommercials;Electrified;BEV;11;1;Emplacamento de leves eletrificados por tecnologia
+267;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+268;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;LightCommercials;Electrified;GasolineHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+269;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+270;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2019;LightCommercials;Electrified;PHEV;0;1;Emplacamento de leves eletrificados por tecnologia
+271;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;LightCommercials;Electrified;BEV;58;1;Emplacamento de leves eletrificados por tecnologia
+272;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+273;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;LightCommercials;Electrified;GasolineHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+274;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+275;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2020;LightCommercials;Electrified;PHEV;0;1;Emplacamento de leves eletrificados por tecnologia
+276;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;LightCommercials;Electrified;BEV;151;1;Emplacamento de leves eletrificados por tecnologia
+277;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+278;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;LightCommercials;Electrified;GasolineHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+279;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+280;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2021;LightCommercials;Electrified;PHEV;0;1;Emplacamento de leves eletrificados por tecnologia
+281;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;LightCommercials;Electrified;BEV;514;1;Emplacamento de leves eletrificados por tecnologia
+282;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+283;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;LightCommercials;Electrified;GasolineHybrid;3;1;Emplacamento de leves eletrificados por tecnologia
+284;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+285;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2022;LightCommercials;Electrified;PHEV;0;1;Emplacamento de leves eletrificados por tecnologia
+286;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;LightCommercials;Electrified;BEV;775;1;Emplacamento de leves eletrificados por tecnologia
+287;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+288;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;LightCommercials;Electrified;GasolineHybrid;287;1;Emplacamento de leves eletrificados por tecnologia
+289;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+290;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2023;LightCommercials;Electrified;PHEV;1;1;Emplacamento de leves eletrificados por tecnologia
+291;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;LightCommercials;Electrified;BEV;1381;1;Emplacamento de leves eletrificados por tecnologia
+292;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+293;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;LightCommercials;Electrified;GasolineHybrid;847;1;Emplacamento de leves eletrificados por tecnologia
+294;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;LightCommercials;Electrified;DieselHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+295;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2024;LightCommercials;Electrified;PHEV;313;1;Emplacamento de leves eletrificados por tecnologia
+296;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;LightCommercials;Electrified;BEV;394;1;Emplacamento de leves eletrificados por tecnologia
+297;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;LightCommercials;Electrified;FlexHybrid;0;1;Emplacamento de leves eletrificados por tecnologia
+298;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;LightCommercials;Electrified;GasolineHybrid;727;1;Emplacamento de leves eletrificados por tecnologia
+299;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;LightCommercials;Electrified;DieselHybrid;359;1;Emplacamento de leves eletrificados por tecnologia
+300;ANFAVEA;Anuario ANFAVEA 2026;2.2.9;2025;LightCommercials;Electrified;PHEV;1132;1;Emplacamento de leves eletrificados por tecnologia
+301;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2016;Automobiles;Displacement;Upto1000cc;552684;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+302;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2016;Automobiles;Displacement;1001to2000cc;1096594;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+303;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2016;Automobiles;Displacement;Over2000cc;38696;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+304;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2017;Automobiles;Displacement;Upto1000cc;639189;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+305;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2017;Automobiles;Displacement;1001to2000cc;1183243;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+306;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2017;Automobiles;Displacement;Over2000cc;33998;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+307;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2018;Automobiles;Displacement;Upto1000cc;738841;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+308;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2018;Automobiles;Displacement;1001to2000cc;1329040;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+309;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2018;Automobiles;Displacement;Over2000cc;34056;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+310;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2019;Automobiles;Displacement;Upto1000cc;878811;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+311;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2019;Automobiles;Displacement;1001to2000cc;1347788;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+312;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2019;Automobiles;Displacement;Over2000cc;34944;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+313;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2020;Automobiles;Displacement;Upto1000cc;772549;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+314;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2020;Automobiles;Displacement;1001to2000cc;815877;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+315;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2020;Automobiles;Displacement;Over2000cc;26752;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+316;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2021;Automobiles;Displacement;Upto1000cc;676805;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+317;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2021;Automobiles;Displacement;1001to2000cc;848733;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+318;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2021;Automobiles;Displacement;Over2000cc;30162;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+319;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2022;Automobiles;Displacement;Upto1000cc;850379;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+320;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2022;Automobiles;Displacement;1001to2000cc;688777;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+321;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2022;Automobiles;Displacement;Over2000cc;29401;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+322;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2023;Automobiles;Displacement;Upto1000cc;931258;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+323;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2023;Automobiles;Displacement;1001to2000cc;738298;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+324;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2023;Automobiles;Displacement;Over2000cc;33130;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+325;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2024;Automobiles;Displacement;Upto1000cc;1007727;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+326;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2024;Automobiles;Displacement;1001to2000cc;841517;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+327;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2024;Automobiles;Displacement;Over2000cc;39125;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+328;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2025;Automobiles;Displacement;Upto1000cc;1078308;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+329;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2025;Automobiles;Displacement;1001to2000cc;795954;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)
+330;ANFAVEA;Anuario ANFAVEA 2026;2.2.10;2025;Automobiles;Displacement;Over2000cc;43288;1;Emplacamento de automoveis por cilindrada (nao inclui eletricos)

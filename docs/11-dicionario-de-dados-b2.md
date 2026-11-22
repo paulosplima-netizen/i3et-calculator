@@ -1,6 +1,6 @@
 # B2 — importações e veículos de referência: especificação, implementação e decisões (22/11/2026)
 
-Estado: **implementado; decisões 4, 5, 9, 13 e 14 tomadas em 22/11/2026.** Núcleo, fixtures, esquema 0.12 (S15 e S16), telas T39, T40 e T42 (só master; T40 grava a edição importada e exporta; T42 exporta a comparação para Excel), 496 testes passando, lint limpo. Commit `aee8c19` está no GitHub; o commit B2b (`858a870`) é local, o `git push` é seu. Falta: decisões restantes da seção 5, roteiro de teste do autor, `v0.12.0`.
+Estado: **implementado; decisões 4, 5, 9, 13 e 14 tomadas em 22/11/2026.** Núcleo, fixtures, esquema 0.12 (S15 e S16), telas T39, T40 e T42 (só master; T40 grava a edição importada e exporta; T42 exporta a comparação para Excel), 496 testes passando, lint limpo. Commit `aee8c19` está no GitHub; os commits B2b (`858a870` e `89fe65d`) são locais, o `git push` é seu. Falta: decisões restantes da seção 5, roteiro de teste do autor, `v0.12.0`.
 
 Base: `b2-decisoes-fontes-de-dados` (fontes e termos de uso), `FaseB_Plano_20261121c`, itens do Monday (P47, P48, P60/P59, C33, T39, T40, T42), planilha `LCA_LV_i3ET_20261119.xlsx`, arquivos da pasta Documentação (PBEV INMETRO, FENABRAVE, ANFAVEA).
 
@@ -98,3 +98,12 @@ Divergência registrada: o fator `0,85` da área frontal está como constante em
 ## 6. O que falta para fechar o B2
 
 Decisões abertas: 1–3, 6–8, 10–12, 15 (texto), 16–21 e 23 (nenhuma bloqueia a gravação das edições). Entregas: roteiro de teste do autor (comparar Excel × aplicativo com tabelas do mesmo ano, gravar uma edição de teste, exportar), `v0.12.0` (atualizar `.zenodo.json`, `CITATION.cff`, `core.__version__` antes da tag), `git push` do commit B2b, conferir a instalação do `pdfplumber` no Streamlit Cloud, edição de 25/ago do PBEV quando disponível.
+
+
+## P72_FleetLicensingByPowertrain (B2b)
+
+Emplacamento ANFAVEA por motorizacao. Colunas: IDFP, SourceName, SourceEdition, SourceTable
+(2.2.8, 2.2.9, 2.2.10), RefYear, VehicleClass (Automobiles, LightCommercials, Trucks, Buses),
+Dimension (Fuel, Electrified, Displacement), Category, Units, IsAdopted, NotesFP.
+Tabela editorial (fora do ParamBaseHash). A 2.2.9 detalha a coluna Electrified da 2.2.8;
+a 2.2.10 cobre so automoveis e nao inclui eletricos.

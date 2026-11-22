@@ -640,3 +640,69 @@ def export_reference_xlsx(conn: sqlite3.Connection, destino, unidades: dict[int,
                                       "P26_MarketVehicle WHERE IsSelecao = 0 ORDER BY IDMV"):
         ws2.append([i, ds, pt, un, (unidades or {}).get(i, un)])
     wb.save(destino)
+
+
+# --------------------------------------------------------------------------
+# BLOCO MD8b -- emplacamento por motorizacao e cilindrada (Anuario ANFAVEA 2026)
+#   2.2.8 combustivel/tecnologia (4 classes), 2.2.9 eletrificados por tecnologia (automoveis
+#   e comerciais leves), 2.2.10 cilindrada (automoveis, sem eletricos). Formato longo: uma
+#   linha por ano, classe, dimensao e categoria; o total da fonte confere cada linha.
+# --------------------------------------------------------------------------
+_F6 = ["Gasoline", "Ethanol", "FlexFuel", "Electrified", "Diesel", "Total"]
+_T6 = ["Gasoline", "Ethanol", "Electrified", "NaturalGas", "Diesel", "Total"]
+_E6 = ["BEV", "FlexHybrid", "GasolineHybrid", "DieselHybrid", "PHEV", "Total"]
+#: tabela -> (dimensao, [blocos de linhas], cada bloco = [(classe, categorias)] lado a lado)
+ANFAVEA_LAYOUTS = {
+    "2.2.8": ("Fuel", [[("Automobiles", _F6), ("LightCommercials", _F6)],
+                       [("Trucks", _T6), ("Buses", _T6)]]),
+    "2.2.9": ("Electrified", [[("Automobiles", _E6)], [("LightCommercials", _E6)]]),
+    "2.2.10": ("Displacement", [[("Automobiles", ["Upto1000cc", "1001to2000cc", "Over2000cc",
+                                                   "Total"])]]),
+}
+_ANF_TOK = r"(?:\d{1,3}(?:\.\d{3})*|-)"
+_ANF_DATA = re.compile(rf"^\s*((?:19|20)\d\d)((?:\s+{_ANF_TOK})+)\s*$")
+
+
+def parse_anfavea_columns(texto: str, tabela: str, janela: int = 300
+                          ) -> list[tuple[int, str, str, str, int]]:
+    """[(ano, classe, dimensao, categoria, unidades)] de 2.2.8, 2.2.9 ou 2.2.10.
+
+    Cada linha confere a soma das categorias com o total da fonte (tolerancia 5); linha que
+    nao fecha e descartada. A ultima categoria de cada classe (Total) nao e devolvida.
+    """
+    dimensao, blocos = ANFAVEA_LAYOUTS[tabela]
+    larg = sum(len(c) for _, c in blocos[0])
+    linhas = texto.splitlines()
+    melhor: list[list[tuple[int, list[int]]]] = []
+    for i, lin in enumerate(linhas):
+        if not re.match(rf"\s*{re.escape(tabela)} (Emplacamento|Registration)", lin):
+            continue
+        grupos: list[list[tuple[int, list[int]]]] = []
+        for lin2 in linhas[i + 1:i + janela]:
+            outra = re.match(r"\s*(\d\.\d+(?:\.\d+)?) [A-Za-z]", lin2)
+            if outra and outra.group(1) != tabela:
+                break
+            m = _ANF_DATA.match(lin2)
+            if not m:
+                continue
+            tok = [0 if t == "-" else int(t.replace(".", "")) for t in m.group(2).split()]
+            if len(tok) != larg:
+                continue
+            ano = int(m.group(1))
+            if not grupos or ano <= grupos[-1][-1][0]:
+                grupos.append([])
+            grupos[-1].append((ano, tok))
+        if len(grupos) >= len(blocos) and sum(map(len, grupos)) > sum(map(len, melhor)):
+            melhor = grupos
+    saida: list[tuple[int, str, str, str, int]] = []
+    for bloco, grupo in zip(blocos, melhor, strict=False):
+        for ano, tok in grupo:
+            pos = 0
+            for classe, cats in bloco:
+                v = tok[pos:pos + len(cats)]
+                pos += len(cats)
+                if abs(sum(v[:-1]) - v[-1]) > 5:
+                    continue
+                saida += [(ano, classe, dimensao, c, u) for c, u in zip(cats[:-1], v[:-1],
+                                                                         strict=True)]
+    return saida
