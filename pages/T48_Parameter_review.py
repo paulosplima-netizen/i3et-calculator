@@ -24,7 +24,7 @@ import streamlit as st
 from core import control_params as cp
 from core import param_review as pr
 from core import project as project_core
-from ui import flow, navigation, state
+from ui import auth, flow, navigation, state
 
 flow.begin("Parameter review", needs_project=False)
 
@@ -181,18 +181,8 @@ def _alert_html(a: pr.Alert) -> str:
 
 
 def _master_access() -> bool:
-    """Acesso do usuario master (so existe se houver senha configurada)."""
-    esperada = state.master_password()
-    if not esperada:
-        return False
-    if not st.session_state.get("master_ok"):
-        with st.expander("Master access"):
-            senha = st.text_input("Master password", type="password", key="master_pwd")
-            if senha and pr.verify_master(senha, esperada):
-                st.session_state["master_ok"] = True
-                st.rerun()
-            elif senha:
-                st.error("Wrong password.")
+    """Acesso do usuario master (conta com papel Master, entrada na T01)."""
+    if not auth.is_master():
         return False
     st.caption("Master mode: you can accept or undo the suggested ruler (min, most "
                "frequent, max). The adopted value is never changed.")

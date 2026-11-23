@@ -1,9 +1,12 @@
 # Roteiro de teste manual do B2 (v0.12)
 
-**Data:** 22/11/2026; revisto em 23/11/2026 (b: série por ano) · Para o autor conferir no navegador antes da tag `v0.12.0`. Comando: `streamlit run app.py` na pasta do repositório. Use um projeto novo (T01). As tabelas de mercado (FENABRAVE, ANFAVEA, PBEV) aparecem só para o usuário Master. Boletim FENABRAVE: o PDF da pasta Documentação; Anuário: `ANFAVEA_Anuário_2026.pdf`.
+**Data:** 22/11/2026; revisto em 23/11/2026 (c: entrada por e-mail e senha) · Para o autor conferir no navegador antes da tag `v0.12.0`. Comando: `streamlit run app.py` na pasta do repositório. Use um projeto novo (T01). As tabelas de mercado (FENABRAVE, ANFAVEA, PBEV) aparecem só para quem entrou com uma conta Master (passo 0). Boletim FENABRAVE: o PDF da pasta Documentação; Anuário: `ANFAVEA_Anuário_2026.pdf`.
 
 | # | Tela | O que fazer | O que deve acontecer |
 |---|---|---|---|
+| 0 | T01 | Antes de abrir o app, defina a senha de instalação: no PowerShell `$env:I3ET_MASTER_PASSWORD="sua-senha"` e depois `.\rodar_app.bat` (ou `master_password = "…"` em `.streamlit\secrets.toml`). Na T01, abra "Sign in · master access", aba "First master", informe e-mail, nova senha e a senha de instalação | Entra como Master ("Signed in as … · Master"); aparece "Manage users (master)". Depois disso a senha de instalação não é mais pedida |
+| 0b | T01 | Sair ("Sign out"), criar uma segunda conta (aba "Create account") e abrir a T40 | A conta nova é User; a T40 diz que é só para o Master e não mostra tabelas nem campo de senha |
+| 0c | T01 | Entrar de novo como Master, em "Manage users" escolher a segunda conta e "Make master"; depois "Make user" | O papel muda; o último Master não pode ser rebaixado ("The last master cannot be demoted") |
 | 1 | T40 | Enviar o PDF do boletim FENABRAVE | As tabelas do boletim aparecem; a seleção "Table" lista os rankings de automóveis e comerciais leves |
 | 2 | T40 | Ver "Needs attention" e "All" | Cada modelo tem uma linha por motorização; os totais por modelo batem com o boletim; a divisão mostra a origem (Reported, Previous, PBEV, Master, Base) |
 | 3 | T40 | Em um modelo, ver as candidatas e ajustar as unidades por motorização (Master) | Todas as candidatas ficam visíveis; se a soma das variantes difere do total do boletim, "Save edition" fica desabilitado |

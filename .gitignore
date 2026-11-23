@@ -234,3 +234,7 @@ relatorio_preview.html
 
 local_settings.json
 projetos/
+
+# Contas locais (e-mail e hash de senha): nunca versionar
+local_accounts.sqlite
+local_accounts.sqlite-journal

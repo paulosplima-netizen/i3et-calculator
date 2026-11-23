@@ -11,29 +11,30 @@ TELAS = ["T39_PBEV_import", "T40_FENABRAVE_import", "T42_Weighted_references"]
 
 
 @pytest.mark.parametrize("tela", TELAS)
-def test_sem_senha_configurada_a_tela_explica_e_nao_mostra_dados(tela, monkeypatch):
-    monkeypatch.delenv("I3ET_MASTER_PASSWORD", raising=False)
+def test_sem_entrar_como_master_a_tela_explica_e_nao_mostra_dados(tela):
     at = _abrir(tela)
+    assert not at.exception, at.exception
+    assert any("master user only" in i.value for i in at.info)
+    assert len(at.dataframe) == 0 and len(at.metric) == 0
+    assert len(at.text_input) == 0                       # nao ha campo de senha nas telas
+
+
+@pytest.mark.parametrize("tela", TELAS)
+def test_usuario_comum_nao_ve_as_tabelas(tela):
+    at = _abrir(tela, user_email="u@x.org", user_role="User", master_ok=False)
     assert not at.exception, at.exception
     assert any("master user only" in i.value for i in at.info)
     assert len(at.dataframe) == 0 and len(at.metric) == 0
 
 
 @pytest.mark.parametrize("tela", TELAS)
-def test_com_senha_so_o_master_ve_as_tabelas(tela, monkeypatch):
-    monkeypatch.setenv("I3ET_MASTER_PASSWORD", "segredo")
-    at = _abrir(tela)
-    assert not at.exception, at.exception
-    assert len(at.dataframe) == 0                                  # ainda sem acesso
-    at.text_input(key="master_pwd").set_value("errada").run()
-    assert any("Wrong password" in e.value for e in at.error) and len(at.dataframe) == 0
-    at.text_input(key="master_pwd").set_value("segredo").run()
+def test_master_ve_as_tabelas(tela):
+    at = _abrir(tela, user_email="m@x.org", user_role="Master", master_ok=True)
     assert not at.exception, at.exception
     assert len(at.dataframe) > 0
 
 
-def test_t39_mostra_a_edicao_e_o_vinculo(monkeypatch):
-    monkeypatch.setenv("I3ET_MASTER_PASSWORD", "x")
+def test_t39_mostra_a_edicao_e_o_vinculo():
     at = _abrir("T39_PBEV_import", master_ok=True)
     assert not at.exception, at.exception
     ed = at.dataframe[0].value
@@ -41,8 +42,7 @@ def test_t39_mostra_a_edicao_e_o_vinculo(monkeypatch):
     assert any("market vehicles are linked" in c.value for c in at.caption)
 
 
-def test_t40_lista_os_111_modelos_e_os_ajustados(monkeypatch):
-    monkeypatch.setenv("I3ET_MASTER_PASSWORD", "x")
+def test_t40_lista_os_111_modelos_e_os_ajustados():
     at = _abrir("T40_FENABRAVE_import", master_ok=True)
     assert not at.exception, at.exception
     assert len(at.dataframe[1].value) == 111
@@ -51,8 +51,7 @@ def test_t40_lista_os_111_modelos_e_os_ajustados(monkeypatch):
     assert (ajustados["Units (source)"] != ajustados["Units (adopted)"]).all()
 
 
-def test_t42_recalcula_igual_ao_modelo_e_mostra_a_cobertura(monkeypatch):
-    monkeypatch.setenv("I3ET_MASTER_PASSWORD", "x")
+def test_t42_recalcula_igual_ao_modelo_e_mostra_a_cobertura():
     at = _abrir("T42_Weighted_references", master_ok=True)
     assert not at.exception, at.exception
     valores = {m.label: m.value for m in at.metric}

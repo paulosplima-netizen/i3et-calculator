@@ -350,11 +350,9 @@ def test_t48_sem_projeto_o_titulo_e_o_do_modelo_excel():
     assert "edited in this project" not in _html(at)
 
 
-def test_t48_sem_senha_configurada_nao_ha_controle_de_master(monkeypatch):
-    monkeypatch.delenv("I3ET_MASTER_PASSWORD", raising=False)
+def test_t48_sem_master_nao_ha_controle_de_master():
     at = _abrir("T48_Parameter_review")
     assert not at.exception, at.exception
-    assert not any("Master" in e.label for e in at.expander)
     assert not any(b.key == "accept_ruler" for b in at.button)
 
 
@@ -366,13 +364,11 @@ def test_t48_master_aceita_e_desfaz_a_regua_sem_mexer_no_adotado(monkeypatch, tm
     base = str(tmp_path / "base.sqlite")
     shutil.copyfile(state.REFERENCE_DB, base)
     monkeypatch.setenv("I3ET_REFERENCE_DB", base)
-    monkeypatch.setenv("I3ET_MASTER_PASSWORD", "segredo")
     at = _abrir("T48_Parameter_review")
     assert not at.exception, at.exception
-    assert not any(b.key == "accept_ruler" for b in at.button)       # ainda sem acesso
-    at.text_input(key="master_pwd").set_value("errada").run()
-    assert any("Wrong password" in e.value for e in at.error)
-    at.text_input(key="master_pwd").set_value("segredo").run()
+    assert not any(b.key == "accept_X75" for b in at.button)         # ainda sem acesso
+    at = _abrir("T48_Parameter_review", user_email="m@x.org", user_role="Master",
+                master_ok=True)
     assert not at.exception, at.exception
     assert any("Suggestions to accept (1)" in e.label for e in at.expander)
     antes = sqlite3.connect(base).execute(

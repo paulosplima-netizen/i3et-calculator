@@ -7,7 +7,7 @@ import shutil
 import streamlit as st
 
 from core import __version__, project
-from ui import blocks, flow, navigation, state, storage, theme
+from ui import auth, blocks, flow, navigation, state, storage, theme
 
 flow.begin("Home", needs_project=False, show_title=False)
 theme.inject()
@@ -23,6 +23,8 @@ st.caption("Light vehicle carbon footprint, cradle to gate · modules M1 and M2 
 if not state.reference_exists():
     st.error("The reference database is missing. Build it with `python tools/make_db.py`.")
     st.stop()
+
+auth.panel()
 
 ANALYSES = {   # tipo de analise -> (tela de destino, situacao)
     "GHG LCA and LCC": ("T03", ""),

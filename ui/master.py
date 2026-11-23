@@ -1,7 +1,7 @@
 """Acesso do usuario master as telas de dados de mercado (T39, T40, T42).
 
 As tabelas do PBEV, da FENABRAVE e da ANFAVEA so sao mostradas ao master (decisao de
-21/11/2026, docs/11). Sem senha configurada ninguem e master e a tela explica isso.
+21/11/2026, docs/11). O papel vem da conta (T01, core/accounts.py); sem Master a tela explica isso.
 Importa Streamlit; `core/` nao.
 """
 
@@ -9,28 +9,15 @@ from __future__ import annotations
 
 import streamlit as st
 
-from core import param_review as pr
-
-from . import state
+from . import auth, state
 
 
 def require_master(title: str) -> None:
-    """Para a pagina se o usuario nao for master. Mostra o campo de senha quando ha senha."""
-    esperada = state.master_password()
-    if st.session_state.get("master_ok") and esperada:
+    """Para a pagina se quem entrou nao tiver o papel Master (T01: e-mail e senha)."""
+    if auth.is_master():
         st.caption("Master mode. The tables on this screen are visible to the master user only.")
         return
-    if not esperada:
-        st.info(f"{title} is available to the master user only, and no master password is "
-                "configured in this installation.")
-        st.stop()
-    st.info(f"{title} is available to the master user only.")
-    senha = st.text_input("Master password", type="password", key="master_pwd")
-    if senha and pr.verify_master(senha, esperada):
-        st.session_state["master_ok"] = True
-        st.rerun()
-    elif senha:
-        st.error("Wrong password.")
+    auth.require_master_message(title)
     st.stop()
 
 

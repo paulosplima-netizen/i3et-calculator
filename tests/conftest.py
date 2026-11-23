@@ -30,6 +30,12 @@ def _projetos_temporarios(monkeypatch):
     monkeypatch.setenv("I3ET_PROJECTS_DIR", "")
 
 
+@pytest.fixture(autouse=True)
+def _contas_temporarias(monkeypatch, tmp_path):
+    """Os testes nunca tocam o arquivo de contas do usuario (local_accounts.sqlite)."""
+    monkeypatch.setenv("I3ET_ACCOUNTS_DB", str(tmp_path / "contas.sqlite"))
+
+
 @pytest.fixture(scope="session")
 def base():
     return loader.load_sqlite(DB)

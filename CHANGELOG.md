@@ -2,6 +2,10 @@
 
 ## Unreleased - Bloco B2 (imports and reference vehicles; in progress)
 
+## B2d (23/11/2026)
+
+- Contas locais e papéis na T01 (antecipado da Fase C): e-mail e senha (PBEV, FENABRAVE e ANFAVEA só para o Master), cadastro como User, Master promove, rebaixa e transfere o papel, o último Master é protegido, bloqueio após 5 erros; senha em PBKDF2 no arquivo local `local_accounts.sqlite` (fora do git). A senha de instalação (`I3ET_MASTER_PASSWORD`) só cria o primeiro Master. T39, T40, T42 e T48 não têm mais campo de senha.
+
 ## B2c (23/11/2026)
 
 - Decisão 18: o fator da área frontal (0,85) é o parâmetro `FRONTAL_AREA_FACTOR` da P59; o `ParamBaseHash` mudou para `c972269f…` e a regressão congelada foi atualizada.
