@@ -392,3 +392,11 @@ def test_motorizacoes_do_mesmo_modelo_ficam_uma_embaixo_da_outra():
     ordem = [(x.sales_class, x.model, x.powertrain) for x in md.sort_split_lines(linhas)]
     assert ordem == [("V", "C", "BEV"), ("V", "C", "ICEV"), ("V", "A", "HEV"),
                      ("V", "A", "ICEV"), ("CL", "B", "ICEV")]
+
+
+def test_semitotais_do_informativo_na_edicao_gravada(conn):
+    tot = {t["Class"]: t for t in md.edition_totals(conn)}
+    assert tot["V (cars)"]["Units (source)"] == 1872220       # soma das linhas do boletim
+    assert tot["V (cars)"]["Units (adopted)"] == 1872219      # SONG: 42.181 x 42.180
+    assert tot["V + CL"]["Units (adopted)"] == 2424281 and tot["V + CL"]["Difference"] == 1
+    assert tot["CL (light commercials)"]["Difference"] == 0

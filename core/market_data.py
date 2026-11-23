@@ -727,10 +727,12 @@ def save_edition(conn: sqlite3.Connection, idmse: str, secao: SalesSection,
     conn.execute(
         "INSERT INTO P48_MarketSalesEdition (IDMSE, SourceName, PeriodKind, PeriodStart, "
         "PeriodEnd, EditionRef, SourceMSE, PublishedAt, ImportedAt, RecordCount, IsAdopted, "
-        "NotesMSE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        "NotesMSE, BulletinUnitsV, BulletinUnitsCL) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         (idmse, "FENABRAVE", secao.kind, f"{secao.period_end[:4]}-01" if secao.kind == "YTD"
          else secao.period_end, secao.period_end, referencia, arquivo, publicada, agora,
-         len(linhas), int(adotar), nota))
+         len(linhas), int(adotar), nota,
+         sum(r.units for r in secao.rows if r.sales_class == "V"),
+         sum(r.units for r in secao.rows if r.sales_class == "CL")))
     prox = (conn.execute("SELECT COALESCE(MAX(IDMS),0) FROM P47_MarketSales").fetchone()[0]) + 1
     for k, ln in enumerate(linhas):
         conn.execute(
@@ -887,4 +889,27 @@ def parse_anfavea_columns(texto: str, tabela: str, janela: int = 300
                     continue
                 saida += [(ano, classe, dimensao, c, u) for c, u in zip(cats[:-1], v[:-1],
                                                                          strict=True)]
+    return saida
+
+
+def edition_totals(conn: sqlite3.Connection) -> list[dict]:
+    """Por edicao e classe (V, CL, V+CL): semitotal do informativo (`Source`) x unidades
+    adotadas. `Source` e a soma das linhas lidas do informativo (P48); fica vazio nas edicoes
+    gravadas antes de 23/11/2026. Nao se soma `UnitsSource` de P47: o modelo repartido entre
+    motorizacoes repete o total do informativo na linha principal."""
+    saida = []
+    for idmse, v, cl in conn.execute(
+            "SELECT IDMSE, BulletinUnitsV, BulletinUnitsCL FROM P48_MarketSalesEdition "
+            "ORDER BY PeriodEnd, IDMSE"):
+        adot = dict(conn.execute("SELECT SalesClass, SUM(UnitsAdopted) FROM P47_MarketSales "
+                                 "WHERE IDMSE = ? GROUP BY SalesClass", (idmse,)))
+        fonte = {"V": v, "CL": cl}
+        for rotulo, classes in (("V (cars)", ("V",)), ("CL (light commercials)", ("CL",)),
+                                ("V + CL", ("V", "CL"))):
+            f = (None if any(fonte[c] is None for c in classes)
+                 else sum(fonte[c] for c in classes))
+            a = sum(int(adot.get(c) or 0) for c in classes)
+            saida.append({"Edition": idmse, "Class": rotulo, "Units (source)": f,
+                          "Units (adopted)": a,
+                          "Difference": None if f is None else f - a})
     return saida

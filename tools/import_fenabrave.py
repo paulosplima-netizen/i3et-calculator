@@ -39,7 +39,8 @@ SEGMENT_CATEGORY = {207: "A0", 208: "A0", 209: "A1", 210: "A2", 211: "A2", 212: 
                     213: "A3", 214: "A3", 215: "A4", 219: "A5", 220: "A5", 221: "A5"}
 LABELS = {"Hatch": "Hatchback", "SubCompact": "Subcompact"}
 P48_COLS = ["IDMSE", "SourceName", "PeriodKind", "PeriodStart", "PeriodEnd", "EditionRef",
-            "SourceMSE", "PublishedAt", "ImportedAt", "RecordCount", "IsAdopted", "NotesMSE"]
+            "SourceMSE", "PublishedAt", "ImportedAt", "RecordCount", "IsAdopted", "NotesMSE",
+            "BulletinUnitsV", "BulletinUnitsCL"]
 P47_COLS = ["IDMS", "IDMSE", "SalesClass", "Ranking", "Brand", "Model", "MatchKey",
             "UnitsSource", "UnitsAdopted", "IDMV", "AdjustmentNote", "SheetRow",
             "UnitsReported", "UnitsPrevious", "UnitsPBEV", "SplitMethod", "SplitBasis"]
@@ -66,9 +67,13 @@ def main(argv: list[str]) -> int:
         "SELECT IDMV, Brand, Model FROM P26_MarketVehicle WHERE IsSelecao = 0")}
 
     origem: dict[str, int] = {}
+    semitotais = [None, None]            # soma das linhas do informativo: V e CL
     if len(argv) > 2:
         secao = md.adopted_section(md.parse_fenabrave_text(open(argv[2], encoding="utf-8").read()))
         origem = {r.key: r.units for r in secao.rows} if secao else {}
+        if secao:
+            semitotais = [sum(r.units for r in secao.rows if r.sales_class == c)
+                          for c in ("V", "CL")]
 
     # FB2 -- P47
     p47, n = [], 0
@@ -97,7 +102,7 @@ def main(argv: list[str]) -> int:
     p48 = [[IDMSE, "FENABRAVE", "YTD", "2025-01", "2025-12", "Ed. 276",
             "LCA_LV_i3ET_20261119.xlsx, guia 'Most Licensed 2025'"
             + ("; informativo Ed. 276" if origem else ""), "2026-01", None, len(p47), 1,
-            "Acumulado de 2025; UnitsAdopted e o valor usado pelo modelo"]]
+            "Acumulado de 2025; UnitsAdopted e o valor usado pelo modelo", *semitotais]]
     write_csv("P48_MarketSalesEdition.csv", P48_COLS, p48)
     write_csv("P47_MarketSales.csv", P47_COLS, p47)
 

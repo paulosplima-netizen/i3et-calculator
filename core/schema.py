@@ -1507,12 +1507,15 @@ PARAM_TABLES_012 = ["P48_MarketSalesEdition", "P47_MarketSales", "P60_FleetLicen
 TABLES_012 = PARAM_TABLES_012
 
 
-#: S16: colunas de divisao por motorizacao em P47 (decisao 9, 22/11/2026).
+#: S16: colunas de divisao por motorizacao em P47 (decisao 9, 22/11/2026) e, em 23/11, os
+#: semitotais do informativo (V e CL) em P48, para conferir com o adotado.
 COLUMNS_012B = [("P47_MarketSales", "UnitsReported", "INTEGER"),
                 ("P47_MarketSales", "UnitsPrevious", "INTEGER"),
                 ("P47_MarketSales", "UnitsPBEV", "INTEGER"),
                 ("P47_MarketSales", "SplitMethod", "TEXT"),
                 ("P47_MarketSales", "SplitBasis", "TEXT"),
+                ("P48_MarketSalesEdition", "BulletinUnitsV", "INTEGER"),
+                ("P48_MarketSalesEdition", "BulletinUnitsCL", "INTEGER"),
                 ("P70_ReferenceSegment", "Origin",
                  "TEXT NOT NULL DEFAULT 'Workbook' CHECK (Origin IN ('Workbook','Master'))")]
 

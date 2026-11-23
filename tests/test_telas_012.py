@@ -45,8 +45,10 @@ def test_t39_mostra_a_edicao_e_o_vinculo():
 def test_t40_lista_os_111_modelos_e_os_ajustados():
     at = _abrir("T40_FENABRAVE_import", master_ok=True)
     assert not at.exception, at.exception
-    tot = at.dataframe[1].value                       # totais adotados por classe
-    assert tot["Units adopted"].tolist() == [1872219, 552062, 2424281]
+    tot = at.dataframe[1].value                       # semitotais do boletim x adotado
+    assert tot["Units (source)"].tolist() == [1872220, 552062, 2424282]
+    assert tot["Units (adopted)"].tolist() == [1872219, 552062, 2424281]
+    assert tot["Difference"].tolist() == [1, 0, 1]
     assert tot["Class"].tolist() == ["V (cars)", "CL (light commercials)", "V + CL"]
     assert len(at.dataframe[2].value) == 111
     ajustados = at.dataframe[3].value

@@ -1,6 +1,6 @@
 # Roteiro de teste manual do B2 (v0.12)
 
-**Data:** 22/11/2026; revisto em 23/11/2026 (d: conferência de totais na T40) · Para o autor conferir no navegador antes da tag `v0.12.0`. Comando: `streamlit run app.py` na pasta do repositório. Use um projeto novo (T01). As tabelas de mercado (FENABRAVE, ANFAVEA, PBEV) aparecem só para quem entrou com uma conta Master (passo 0). Boletim FENABRAVE: o PDF da pasta Documentação; Anuário: `ANFAVEA_Anuário_2026.pdf`.
+**Data:** 22/11/2026; revisto em 23/11/2026 (e: semitotais do boletim × adotado no topo da T40) · Para o autor conferir no navegador antes da tag `v0.12.0`. Comando: `streamlit run app.py` na pasta do repositório. Use um projeto novo (T01). As tabelas de mercado (FENABRAVE, ANFAVEA, PBEV) aparecem só para quem entrou com uma conta Master (passo 0). Boletim FENABRAVE: o PDF da pasta Documentação; Anuário: `ANFAVEA_Anuário_2026.pdf`.
 
 | # | Tela | O que fazer | O que deve acontecer |
 |---|---|---|---|
@@ -10,7 +10,7 @@
 | 1 | T40 | Enviar o PDF do boletim FENABRAVE | As tabelas do boletim aparecem; a seleção "Table" lista os rankings de automóveis e comerciais leves |
 | 2 | T40 | Ver "Needs attention" e "All" | Cada modelo tem uma linha por motorização; os totais por modelo batem com o boletim; a divisão mostra a origem (Reported, Previous, PBEV, Master, Base) |
 | 3 | T40 | Em "Split by powertrain", ver o quadro "Check: bulletin totals × adopted units" e o "Check by model". Em um modelo (por exemplo HR-V), ajustar as unidades por motorização (Master) | As motorizações de cada modelo aparecem uma embaixo da outra e só a motorização muda. O quadro de totais mostra V, CL e V+CL (Bulletin, Adopted, Not in catalogue, Difference); com o boletim de dez/2025: V 1.872.220, CL 552.062, V+CL 2.424.282, e Difference = 0 em todas. Ao digitar um valor errado, a diferença aparece na hora (modelo e classe), o aviso fica vermelho e "Save edition" fica desabilitado |
-| 3b | T40 | No topo da tela (edições gravadas), ver os totais adotados por classe | V 1.872.219; CL 552.062; V+CL 2.424.281 (o V do boletim tem 1 unidade a mais: SONG 42.181 no boletim e 42.180 no modelo) |
+| 3b | T40 | No topo da tela, abaixo de "Editions in the reference base", ver o quadro de totais por classe | Units (source) à esquerda e Units (adopted) à direita: V 1.872.220 × 1.872.219 (diferença 1: SONG 42.181 no boletim e 42.180 no modelo); CL 552.062 × 552.062; V+CL 2.424.282 × 2.424.281 |
 | 4 | T40 | "Save edition to the reference base" | A edição é gravada (commit do Master); "Export this split to Excel" baixa a divisão |
 | 5 | T42 | Abrir Weighted references; ver os três níveis de cobertura | Seis referências = 2.008.914 (78,8% do mercado); ranking 50+50 = 2.424.281; total FENABRAVE = 2.549.462 |
 | 6 | T42 | Escolher uma categoria (A0 a A5) | O veículo de referência ponderado aparece; compara com o valor do Excel (C33) |

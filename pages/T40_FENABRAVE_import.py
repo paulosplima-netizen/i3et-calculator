@@ -35,17 +35,13 @@ with master.reference_conn() as conn:
         "s.AdjustmentNote AS Adjustment, v.IDVPT AS Powertrain FROM P47_MarketSales s "
         "LEFT JOIN P26_MarketVehicle v USING (IDMV) ORDER BY s.SalesClass DESC, s.Ranking",
         conn)
+with master.reference_conn() as conn_tot:
+    quadro_edicoes = pd.DataFrame(md.edition_totals(conn_tot))
 st.subheader("Editions in the reference base")
 st.dataframe(ed, hide_index=True, use_container_width=True)
-tot = sales.groupby("Class")["Units (adopted)"].agg(["count", "sum"])
-quadro_tot = pd.DataFrame([
-    {"Class": nome, "Models": int(tot.loc[c, "count"]) if c in tot.index else 0,
-     "Units adopted": int(tot.loc[c, "sum"]) if c in tot.index else 0}
-    for nome, c in (("V (cars)", "V"), ("CL (light commercials)", "CL"))])
-quadro_tot.loc[len(quadro_tot)] = ["V + CL", int(quadro_tot["Models"].sum()),
-                                   int(quadro_tot["Units adopted"].sum())]
-st.caption("Totals of the units adopted by the model, by class:")
-st.dataframe(quadro_tot, hide_index=True, use_container_width=True)
+st.caption("Totals by class: the bulletin subtotals (left) × the units adopted by the model "
+           "(right). A difference means the model departs from the bulletin.")
+st.dataframe(quadro_edicoes, hide_index=True, use_container_width=True)
 adj = sales[sales["Units (source)"] != sales["Units (adopted)"]]
 st.caption(f"{len(sales)} models; {len(adj)} with units redistributed by the author between "
            "powertrains (adopted ≠ source).")
