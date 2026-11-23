@@ -615,6 +615,61 @@ def split_candidates(conn: sqlite3.Connection, resultados: list[CatalogMatch],
     return saida
 
 
+def sort_split_lines(linhas: list[SplitLine]) -> list[SplitLine]:
+    """Ordem de exibicao: classe (V, CL), posicao do modelo no informativo e, dentro do modelo,
+    as motorizacoes uma embaixo da outra (o que difere entre elas e a motorizacao/versao)."""
+    primeira: dict[tuple, int] = {}
+    for ln in linhas:
+        if ln.ranking is not None:
+            k = (ln.sales_class, ln.brand, ln.model)
+            primeira[k] = min(primeira.get(k, ln.ranking), ln.ranking)
+    classe = {"V": 0, "CL": 1}
+    return sorted(linhas, key=lambda ln: (
+        classe.get(ln.sales_class, 9),
+        primeira.get((ln.sales_class, ln.brand, ln.model), 10 ** 6),
+        ln.brand, ln.model, ln.powertrain, ln.idmv))
+
+
+def reconcile_totals(rows: list[SalesRow], resultados: list[CatalogMatch],
+                     linhas: list[SplitLine]) -> list[dict]:
+    """Conferencia dos semitotais do informativo (V, CL) e do total (V+CL) com o adotado.
+
+    Informativo = soma das linhas lidas; Adotado = soma das unidades das motorizacoes; Fora do
+    catalogo = linhas do informativo sem par (nao gravadas, decisao 10). A diferenca
+    (informativo - adotado - fora do catalogo) deve ser zero."""
+    sem_par: dict[str, int] = {}
+    for m in resultados:
+        if not m.idmvs:
+            sem_par[m.row.sales_class] = sem_par.get(m.row.sales_class, 0) + m.row.units
+    saida = []
+    for rotulo, classes in (("V (cars)", ("V",)), ("CL (light commercials)", ("CL",)),
+                            ("V + CL", ("V", "CL"))):
+        boletim = sum(r.units for r in rows if r.sales_class in classes)
+        adotado = sum(ln.units for ln in linhas if ln.sales_class in classes)
+        fora = sum(sem_par.get(c, 0) for c in classes)
+        saida.append({"Class": rotulo, "Bulletin": boletim, "Adopted": adotado,
+                      "Not in catalogue": fora, "Difference": boletim - adotado - fora})
+    return saida
+
+
+def model_checks(linhas: list[SplitLine]) -> list[dict]:
+    """Por modelo repartido entre motorizacoes: total do informativo x soma adotada."""
+    grupos: dict[tuple, list[SplitLine]] = {}
+    for ln in linhas:
+        if ln.method == "Reported" and ln.basis.startswith("linha propria"):
+            continue
+        grupos.setdefault((ln.sales_class, ln.brand, ln.model), []).append(ln)
+    saida = []
+    for (classe, marca, modelo), g in grupos.items():
+        if len(g) < 2:
+            continue
+        soma = sum(x.units for x in g)
+        saida.append({"Class": classe, "Brand": marca, "Model": modelo,
+                      "Powertrains": len(g), "Bulletin total": g[0].pool_total,
+                      "Sum adopted": soma, "Difference": g[0].pool_total - soma})
+    return saida
+
+
 def apply_master_units(linhas: list[SplitLine], unidades: dict[int, int]) -> list[SplitLine]:
     """Sobrepoe as unidades digitadas pelo master ({IDMV: unidades}); marca `Master`."""
     for ln in linhas:

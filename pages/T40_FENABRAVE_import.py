@@ -37,6 +37,15 @@ with master.reference_conn() as conn:
         conn)
 st.subheader("Editions in the reference base")
 st.dataframe(ed, hide_index=True, use_container_width=True)
+tot = sales.groupby("Class")["Units (adopted)"].agg(["count", "sum"])
+quadro_tot = pd.DataFrame([
+    {"Class": nome, "Models": int(tot.loc[c, "count"]) if c in tot.index else 0,
+     "Units adopted": int(tot.loc[c, "sum"]) if c in tot.index else 0}
+    for nome, c in (("V (cars)", "V"), ("CL (light commercials)", "CL"))])
+quadro_tot.loc[len(quadro_tot)] = ["V + CL", int(quadro_tot["Models"].sum()),
+                                   int(quadro_tot["Units adopted"].sum())]
+st.caption("Totals of the units adopted by the model, by class:")
+st.dataframe(quadro_tot, hide_index=True, use_container_width=True)
 adj = sales[sales["Units (source)"] != sales["Units (adopted)"]]
 st.caption(f"{len(sales)} models; {len(adj)} with units redistributed by the author between "
            "powertrains (adopted ≠ source).")
@@ -100,14 +109,17 @@ if up is not None:
                     or md.adopted_edition(conn))
         linhas = md.split_candidates(conn, res, sec.rows, anterior)
     st.caption("One row per model and powertrain, never grouped. Candidates, in order of "
-               "preference: reported by the source → previous edition → PBEV versions. Type "
-               "units in “Units adopted” to override; the sum of a model must equal its "
-               "bulletin total.")
+               "preference: reported by the source → previous edition → PBEV versions. The "
+               "powertrains of a model are listed one under the other; only the powertrain "
+               "(vehicle) differs. Type units in “Units adopted” to override; the sum of a "
+               "model must equal its bulletin total.")
+    reconc = st.container()          # preenchido depois da edicao: reflete o que foi digitado
     quadro = pd.DataFrame([{
         "IDMV": ln.idmv, "Model": ln.model, "Vehicle": ln.vehicle,
         "Powertrain": ln.powertrain, "Bulletin total": ln.pool_total,
         "Reported": ln.reported, "Previous edition": ln.previous, "PBEV versions": ln.pbev,
-        "Method": ln.method, "Units adopted": ln.units, "Basis": ln.basis} for ln in linhas])
+        "Method": ln.method, "Units adopted": ln.units, "Basis": ln.basis}
+        for ln in md.sort_split_lines(linhas)])
     so_dividir = st.checkbox("Only models with more than one powertrain", value=True)
     if so_dividir and not quadro.empty:
         conta = quadro.groupby("Model")["IDMV"].transform("count")
@@ -121,6 +133,21 @@ if up is not None:
                 if pd.notna(r["Units adopted"])}
     linhas = md.apply_master_units(linhas, digitado)
     problemas = md.validate_split(linhas)
+    with reconc:
+        st.markdown("**Check: bulletin totals × adopted units**")
+        tot_rec = pd.DataFrame(md.reconcile_totals(sec.rows, res, linhas))
+        st.dataframe(tot_rec, hide_index=True, use_container_width=True)
+        if (tot_rec["Difference"] != 0).any():
+            st.error("The adopted units do not match the bulletin totals. Check the models "
+                     "below.")
+        else:
+            st.success("Bulletin totals = adopted units + models not in the catalogue.")
+        por_modelo = pd.DataFrame(md.model_checks(linhas))
+        if not por_modelo.empty:
+            por_modelo = por_modelo.sort_values("Difference", key=abs, ascending=False,
+                                                kind="stable")
+            st.markdown("**Check by model (models split between powertrains)**")
+            st.dataframe(por_modelo, hide_index=True, use_container_width=True)
     if problemas:
         st.error("The split does not add up: " + "; ".join(problemas))
     sem_par = [m for m in res if not m.idmvs]

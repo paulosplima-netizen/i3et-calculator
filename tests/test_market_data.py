@@ -363,3 +363,32 @@ def test_uma_serie_por_ano_e_so_acumulado(conn, tmp_path):
     assert md.adopted_edition(destino, 2026) == "FEN2026_03"
     assert [a for a, _, p in md.adopted_years(destino) if p] == [2026]
     destino.close()
+
+
+def test_conferencia_de_totais_e_por_modelo(conn):
+    linhas = _linhas_hrv() + [md.SalesRow("CL", 3, "MARCA", "SEM PAR", 1000)]
+    res = md.match_to_catalog(conn, linhas)
+    sp = md.split_candidates(conn, res, linhas, "FEN2025")
+    tot = {t["Class"]: t for t in md.reconcile_totals(linhas, res, sp)}
+    assert tot["V (cars)"]["Bulletin"] == 61227 and tot["V (cars)"]["Adopted"] == 61227
+    assert tot["CL (light commercials)"]["Not in catalogue"] == 1000
+    assert all(t["Difference"] == 0 for t in tot.values())
+    assert tot["V + CL"]["Bulletin"] == 62227
+    # o master digita errado: a conferencia mostra a diferenca por classe e por modelo
+    icev = next(x for x in sp if x.powertrain == "ICEV")
+    sp = md.apply_master_units(sp, {icev.idmv: icev.units + 100})
+    assert {t["Class"]: t["Difference"] for t in md.reconcile_totals(linhas, res, sp)
+            }["V (cars)"] == -100
+    chk = md.model_checks(sp)
+    assert len(chk) == 1 and chk[0]["Model"] == "HR-V" and chk[0]["Difference"] == -100
+    assert chk[0]["Powertrains"] == 2
+
+
+def test_motorizacoes_do_mesmo_modelo_ficam_uma_embaixo_da_outra():
+    def ln(cls, rk, model, pt, idmv):
+        return md.SplitLine(cls, rk, "M", model, 10, 10, idmv, "v", pt)
+    linhas = [ln("CL", 1, "B", "ICEV", 5), ln("V", 2, "A", "ICEV", 1), ln("V", 1, "C", "ICEV", 3),
+              ln("V", None, "A", "HEV", 2), ln("V", None, "C", "BEV", 4)]
+    ordem = [(x.sales_class, x.model, x.powertrain) for x in md.sort_split_lines(linhas)]
+    assert ordem == [("V", "C", "BEV"), ("V", "C", "ICEV"), ("V", "A", "HEV"),
+                     ("V", "A", "ICEV"), ("CL", "B", "ICEV")]
