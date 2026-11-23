@@ -36,6 +36,16 @@ def _contas_temporarias(monkeypatch, tmp_path):
     monkeypatch.setenv("I3ET_ACCOUNTS_DB", str(tmp_path / "contas.sqlite"))
 
 
+@pytest.fixture(autouse=True)
+def _sem_segredos_do_usuario(monkeypatch):
+    """Os testes nao leem o `secrets.toml` real do usuario (a senha de instalacao dele)."""
+    try:
+        from ui import state
+    except ModuleNotFoundError:        # interface nao instalada neste ambiente
+        return
+    monkeypatch.setattr(state, "_arquivos_de_segredos", lambda: ())
+
+
 @pytest.fixture(scope="session")
 def base():
     return loader.load_sqlite(DB)

@@ -45,14 +45,36 @@ def master_password() -> str | None:
     senha = os.environ.get("I3ET_MASTER_PASSWORD")
     if senha:
         return senha
-    arquivos = (os.path.join(os.path.expanduser("~"), ".streamlit", "secrets.toml"),
-                os.path.join(REPO, ".streamlit", "secrets.toml"))
-    if not any(os.path.exists(a) for a in arquivos):
+    for arquivo in _arquivos_de_segredos():
+        valor = _segredo_do_arquivo(arquivo, "master_password")
+        if valor:
+            return valor
+    return None
+
+
+def _arquivos_de_segredos() -> tuple[str, ...]:
+    return (os.path.join(os.path.expanduser("~"), ".streamlit", "secrets.toml"),
+            os.path.join(REPO, ".streamlit", "secrets.toml"))
+
+
+def _segredo_do_arquivo(arquivo: str, chave: str) -> str | None:
+    """Le uma chave de um `secrets.toml` sem passar por `st.secrets`. Aceita o BOM que o
+    PowerShell 5 grava com `Set-Content -Encoding UTF8` (o Streamlit recusa o arquivo assim)."""
+    if not os.path.exists(arquivo):
         return None
     try:
-        return st.secrets.get("master_password")
-    except Exception:  # arquivo ilegivel ou sem a chave
+        with open(arquivo, encoding="utf-8-sig") as fh:
+            texto = fh.read()
+        try:
+            import tomllib
+            dados = tomllib.loads(texto)
+        except ModuleNotFoundError:
+            import toml                       # dependencia do Streamlit
+            dados = toml.loads(texto)
+    except Exception:                         # arquivo ilegivel ou TOML invalido
         return None
+    valor = dados.get(chave)
+    return str(valor) if valor else None
 
 
 def reference_exists() -> bool:

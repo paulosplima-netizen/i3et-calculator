@@ -70,3 +70,15 @@ def test_t01_senha_errada_nao_entra(monkeypatch):
     _botao(at, "Sign in").click().run()
     assert any("Wrong e-mail or password" in e.value for e in at.error)
     assert "user_email" not in at.session_state
+
+
+def test_senha_de_instalacao_lida_do_secrets_com_bom(tmp_path, monkeypatch):
+    """O PowerShell 5 grava `Set-Content -Encoding UTF8` com BOM; o app tem de aceitar."""
+    from ui import state
+    monkeypatch.delenv("I3ET_MASTER_PASSWORD", raising=False)
+    arq = tmp_path / "secrets.toml"
+    arq.write_bytes(b'\xef\xbb\xbfmaster_password = "abc123"\r\n')
+    assert state._segredo_do_arquivo(str(arq), "master_password") == "abc123"
+    arq.write_text("isto nao e toml [[", encoding="utf-8")
+    assert state._segredo_do_arquivo(str(arq), "master_password") is None
+    assert state._segredo_do_arquivo(str(tmp_path / "nao-existe.toml"), "master_password") is None
