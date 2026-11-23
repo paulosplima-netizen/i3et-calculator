@@ -63,7 +63,8 @@ def test_t42_recalcula_igual_ao_modelo_e_mostra_a_cobertura(monkeypatch):
     assert int(quadro["Total"].sum()) == 2424281
     pesos = next(d.value for d in at.dataframe if "Difference" in d.value.columns)
     assert pesos["Difference"].abs().max() < 1e-6
-    at.selectbox[0].select("A4 · PUT Large Regular").run()
+    categoria = next(b for b in at.selectbox if b.label == "Category")
+    categoria.select("A4 · PUT Large Regular").run()
     assert not at.exception, at.exception
     pesos = next(d.value for d in at.dataframe if "Difference" in d.value.columns)
     assert pesos["Difference"].abs().max() < 1e-6

@@ -640,11 +640,18 @@ def validate_split(linhas: list[SplitLine]) -> list[str]:
 
 def save_edition(conn: sqlite3.Connection, idmse: str, secao: SalesSection,
                  linhas: list[SplitLine], arquivo: str, publicada: str | None = None,
-                 referencia: str | None = None, adotar: bool = False) -> int:
+                 referencia: str | None = None, adotar: bool | None = None) -> int:
     """Grava a edicao em P48 e P47 (somente o master, na base de referencia). Devolve nº de linhas.
 
-    Recusa edicao que ja existe e divisoes que nao fecham com o informativo.
+    Regra do periodo (decisao 11, 23/11): so entram acumulados de janeiro (YTD) e ha uma
+    serie por ano: a edicao de periodo mais recente do ano fica adotada e as demais do mesmo
+    ano ficam guardadas com `IsAdopted = 0`. Acumulado que termina antes de dezembro recebe a
+    observacao de dados parciais. `adotar=False` grava sem adotar.
+    Recusa edicao que ja existe, periodo que nao seja YTD e divisoes que nao fecham.
     """
+    if secao.kind != "YTD":
+        raise ValueError("so entram relatorios acumulados de janeiro (YTD); o mensal nao e "
+                         "usado")
     if conn.execute("SELECT 1 FROM P48_MarketSalesEdition WHERE IDMSE = ?", (idmse,)).fetchone():
         raise ValueError(f"a edicao {idmse} ja existe na base")
     problemas = validate_split(linhas)
@@ -652,15 +659,23 @@ def save_edition(conn: sqlite3.Connection, idmse: str, secao: SalesSection,
         raise ValueError("divisao por motorizacao nao fecha: " + "; ".join(problemas))
     from datetime import datetime
     agora = datetime.now().isoformat(timespec="seconds")
+    ano, mes = secao.period_end[:4], int(secao.period_end[5:7])
+    atual = conn.execute("SELECT MAX(PeriodEnd) FROM P48_MarketSalesEdition WHERE "
+                         "substr(PeriodEnd,1,4) = ? AND IsAdopted = 1", (ano,)).fetchone()[0]
+    adotar = (atual is None or secao.period_end >= atual) if adotar is None else adotar
     if adotar:
-        conn.execute("UPDATE P48_MarketSalesEdition SET IsAdopted = 0")
+        conn.execute("UPDATE P48_MarketSalesEdition SET IsAdopted = 0 WHERE "
+                     "substr(PeriodEnd,1,4) = ?", (ano,))
+    nota = "Importada pelo master (T40)"
+    if mes < 12:
+        nota += f"; dados parciais de janeiro a {secao.period_end[5:7]}/{ano}"
     conn.execute(
         "INSERT INTO P48_MarketSalesEdition (IDMSE, SourceName, PeriodKind, PeriodStart, "
         "PeriodEnd, EditionRef, SourceMSE, PublishedAt, ImportedAt, RecordCount, IsAdopted, "
         "NotesMSE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
         (idmse, "FENABRAVE", secao.kind, f"{secao.period_end[:4]}-01" if secao.kind == "YTD"
          else secao.period_end, secao.period_end, referencia, arquivo, publicada, agora,
-         len(linhas), int(adotar), "Importada pelo master (T40)"))
+         len(linhas), int(adotar), nota))
     prox = (conn.execute("SELECT COALESCE(MAX(IDMS),0) FROM P47_MarketSales").fetchone()[0]) + 1
     for k, ln in enumerate(linhas):
         conn.execute(
@@ -674,6 +689,28 @@ def save_edition(conn: sqlite3.Connection, idmse: str, secao: SalesSection,
              ln.previous, ln.pbev, ln.method, ln.basis))
     conn.commit()
     return len(linhas)
+
+
+def adopted_edition(conn: sqlite3.Connection, year: int | None = None) -> str | None:
+    """Edicao adotada da FENABRAVE: a do `year`; sem ele, a do ultimo ano completo (acumulado
+    ate dezembro) e, se nao houver, a mais recente (decisao 11)."""
+    if year is not None:
+        r = conn.execute("SELECT IDMSE FROM P48_MarketSalesEdition WHERE IsAdopted = 1 AND "
+                         "substr(PeriodEnd,1,4) = ?", (str(year),)).fetchone()
+        return r[0] if r else None
+    for filtro in ("AND substr(PeriodEnd,6,2) = '12' ", ""):
+        r = conn.execute("SELECT IDMSE FROM P48_MarketSalesEdition WHERE IsAdopted = 1 "
+                         f"{filtro}ORDER BY PeriodEnd DESC").fetchone()
+        if r:
+            return r[0]
+    return None
+
+
+def adopted_years(conn: sqlite3.Connection) -> list[tuple[int, str, bool]]:
+    """[(ano, IDMSE, parcial)] das edicoes adotadas, do mais recente ao mais antigo."""
+    return [(int(pe[:4]), i, pe[5:7] != "12") for i, pe in conn.execute(
+        "SELECT IDMSE, PeriodEnd FROM P48_MarketSalesEdition WHERE IsAdopted = 1 "
+        "ORDER BY PeriodEnd DESC")]
 
 
 # --------------------------------------------------------------------------

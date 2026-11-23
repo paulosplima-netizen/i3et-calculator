@@ -32,9 +32,18 @@ with master.reference_conn() as conn:
                          (fonte, classe)).fetchone()
         return r[0] if r else None
     total = _p60("FENABRAVE", "LightVehicles")
-    ranking = conn.execute("SELECT COALESCE(SUM(UnitsAdopted),0) FROM P47_MarketSales s "
-                           "JOIN P48_MarketSalesEdition e USING (IDMSE) "
-                           "WHERE e.IsAdopted = 1").fetchone()[0]
+    anos = md.adopted_years(conn)
+    padrao = md.adopted_edition(conn)
+    rotulo = {i: f"{a}" + (" (partial)" if parc else "") for a, i, parc in anos}
+    ed_id = (st.selectbox("Sales year (FENABRAVE)", [i for _, i, _ in anos],
+                          index=[i for _, i, _ in anos].index(padrao) if padrao else 0,
+                          format_func=lambda i: rotulo[i],
+                          help="One series per year; the default is the latest complete year.")
+             if anos else None)
+    if ed_id and rotulo[ed_id].endswith("(partial)"):
+        st.warning("Partial year: the units cover January to the latest bulletin only.")
+    ranking = conn.execute("SELECT COALESCE(SUM(UnitsAdopted),0) FROM P47_MarketSales "
+                           "WHERE IDMSE = ?", (ed_id,)).fetchone()[0]
     anf = [_p60("ANFAVEA", c) for c in ("Automobiles", "LightCommercials")]
     cob = md.segment_coverage(conn, total) if total else None
     if cob:
@@ -50,7 +59,7 @@ with master.reference_conn() as conn:
                        "uses FENABRAVE throughout; ANFAVEA is kept for the fleet module.")
         st.caption("The top-50 lists include vans and chassis; only hatch, sedan, SUV and "
                    "pickup segments enter the reference vehicles.")
-    ed = conn.execute("SELECT IDMSE FROM P48_MarketSalesEdition WHERE IsAdopted = 1").fetchone()
+    ed = (ed_id,) if ed_id else None
     if ed:
         piv = md.design_powertrain_pivot(conn, ed[0])
         grupos = sorted({g for g, _ in piv}, key=lambda g: (g == "Other", g))

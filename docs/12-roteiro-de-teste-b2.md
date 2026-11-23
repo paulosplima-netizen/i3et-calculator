@@ -1,6 +1,6 @@
 # Roteiro de teste manual do B2 (v0.12)
 
-**Data:** 22/11/2026; revisto em 23/11/2026 · Para o autor conferir no navegador antes da tag `v0.12.0`. Comando: `streamlit run app.py` na pasta do repositório. Use um projeto novo (T01). As tabelas de mercado (FENABRAVE, ANFAVEA, PBEV) aparecem só para o usuário Master. Boletim FENABRAVE: o PDF da pasta Documentação; Anuário: `ANFAVEA_Anuário_2026.pdf`.
+**Data:** 22/11/2026; revisto em 23/11/2026 (b: série por ano) · Para o autor conferir no navegador antes da tag `v0.12.0`. Comando: `streamlit run app.py` na pasta do repositório. Use um projeto novo (T01). As tabelas de mercado (FENABRAVE, ANFAVEA, PBEV) aparecem só para o usuário Master. Boletim FENABRAVE: o PDF da pasta Documentação; Anuário: `ANFAVEA_Anuário_2026.pdf`.
 
 | # | Tela | O que fazer | O que deve acontecer |
 |---|---|---|---|
@@ -16,6 +16,8 @@
 | 10 | T42 | Em uma categoria, editar um segmento (por exemplo remover uma linha), "Save segments (master)" e depois "Restore the Excel model's segments" | Os parâmetros ponderados mudam ao salvar e voltam ao padrão do Excel ao restaurar (60/60) |
 | 11 | T42 | Escolher outra motorização em "Powertrain of the reference"; ver "Market vehicles closest to the weighted reference" | No ICEV, A0 mostra ARGO e A5 mostra STRADA como mais próximos; a tabela deixa claro que é só ilustração |
 | 12 | P72 | Conferir 1957 (automóveis, gasolina: 9.478, origem i3EF) e 2025 (95.421 do Anuário; 79.039 do i3EF só como comparação) | Antes de 2016 vale o i3EF; de 2016 em diante vale o Anuário |
-| 13 | Base | `python tools/load_b2.py` e conferir o final da saída | `foreign_key_check: 0 violações`, `integrity: ok`, ParamBaseHash `c972269f…` (mudou em 23/11 com o parâmetro `FRONTAL_AREA_FACTOR`; as tabelas do B2 não o alteram) |
+| 13 | T42 | Ver o seletor "Sales year (FENABRAVE)" | Só 2025 aparece, como ano completo (padrão); o ano corrente parcial só aparece depois de importar um relatório de 2026, com o aviso de parcial |
+| 14 | T40 | Importar um relatório mensal acumulado (por exemplo até março) e gravar | Fica adotado como a série do ano e a observação diz "dados parciais de janeiro a 03/…"; um relatório que não seja acumulado é recusado; um acumulado mais recente do mesmo ano substitui o anterior, que fica como histórico |
+| 15 | Base | `python tools/load_b2.py` e conferir o final da saída | `foreign_key_check: 0 violações`, `integrity: ok`, ParamBaseHash `c972269f…` (mudou em 23/11 com o parâmetro `FRONTAL_AREA_FACTOR`; as tabelas do B2 não o alteram) |
 
 Se algo falhar, anote o número do passo e a mensagem na tela.

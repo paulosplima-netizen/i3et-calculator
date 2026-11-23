@@ -96,9 +96,9 @@ if up is not None:
     # ---- divisao por motorizacao (decisao 9) e gravacao da edicao
     st.subheader("Split by powertrain")
     with master.reference_conn() as conn:
-        anterior = conn.execute("SELECT IDMSE FROM P48_MarketSalesEdition WHERE IsAdopted = 1 "
-                                "ORDER BY PeriodEnd DESC").fetchone()
-        linhas = md.split_candidates(conn, res, sec.rows, anterior[0] if anterior else None)
+        anterior = (md.adopted_edition(conn, int(sec.period_end[:4]) - 1)
+                    or md.adopted_edition(conn))
+        linhas = md.split_candidates(conn, res, sec.rows, anterior)
     st.caption("One row per model and powertrain, never grouped. Candidates, in order of "
                "preference: reported by the source → previous edition → PBEV versions. Type "
                "units in “Units adopted” to override; the sum of a model must equal its "
@@ -128,14 +128,14 @@ if up is not None:
         st.caption(f"{len(sem_par)} bulletin models have no match in the catalogue and are not "
                    "saved (decision 10): " + ", ".join(f"{m.row.brand} {m.row.model}"
                                                       for m in sem_par))
-    c1, c2 = st.columns(2)
-    novo_id = c1.text_input("Edition ID", value=f"FEN{sec.period_end[:4]}_{sec.period_end[5:]}")
-    adotar = c2.checkbox("Adopt as the default edition", value=False)
+    novo_id = st.text_input("Edition ID", value=f"FEN{sec.period_end[:4]}_{sec.period_end[5:]}")
+    st.caption("One series per year: the cumulative January-to-latest-month edition. Saving "
+               "it replaces the adopted edition of the same year (the old one stays in the "
+               "base as history). Months before December are marked as partial.")
     if st.button("Save edition to the reference base", disabled=bool(problemas)):
         try:
             with master.reference_write_conn() as wconn:
-                n = md.save_edition(wconn, novo_id, sec, linhas, up.name, referencia=sec.title,
-                                    adotar=adotar)
+                n = md.save_edition(wconn, novo_id, sec, linhas, up.name, referencia=sec.title)
             st.success(f"Saved {n} rows as {novo_id}. On Streamlit Cloud the disk is "
                        "temporary: commit the reference base to publish it to other users.")
         except ValueError as exc:

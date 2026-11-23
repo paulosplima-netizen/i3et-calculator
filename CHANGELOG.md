@@ -7,6 +7,7 @@
 - Decisão 18: o fator da área frontal (0,85) é o parâmetro `FRONTAL_AREA_FACTOR` da P59; o `ParamBaseHash` mudou para `c972269f…` e a regressão congelada foi atualizada.
 - Decisão 17: os segmentos da P70 são editáveis pelo Master na T42 (coluna `Origin`); o padrão é o do Excel e pode ser restaurado.
 - Decisão 19: a T42 calcula a referência de qualquer motorização e mostra os veículos de mercado mais próximos da referência ponderada (a título de ilustração).
+- Decisão 11: uma série FENABRAVE por ano (`save_edition` só aceita acumulado de janeiro, adota a edição mais recente de cada ano e marca parcial); a T42 escolhe o ano.
 - Decisão 24: P72 recebe a série 1957–2025 da aba Fleet Characteristics do i3EF (`SourceName = 'i3EF'`; antes de 2016 vale o i3EF, de 2016 em diante fica só para comparação); `tools/import_fleet_characteristics.py`.
 
 ### B2b (22/11/2026): divisao por motorizacao, ANFAVEA e FENABRAVE

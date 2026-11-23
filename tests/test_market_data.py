@@ -341,3 +341,25 @@ def test_area_frontal_vem_do_parametro_p59(conn):
     fator = conn.execute("SELECT ValueEC FROM P59_EquationConstant WHERE "
                          "IDEC='FRONTAL_AREA_FACTOR'").fetchone()[0]
     assert fator == 0.85
+
+
+def test_uma_serie_por_ano_e_so_acumulado(conn, tmp_path):
+    destino = sqlite3.connect(tmp_path / "b.sqlite")
+    conn.backup(destino)
+    destino.execute("PRAGMA foreign_keys = ON")
+    linhas = [md.SalesRow("V", 1, "VW", "POLO", 100000)]
+    sp = md.split_candidates(destino, md.match_to_catalog(destino, linhas), linhas, "FEN2025")
+    with pytest.raises(ValueError, match="acumulados"):
+        md.save_edition(destino, "M", md.SalesSection("Month", "2026-03", "t"), sp, "a.pdf")
+    md.save_edition(destino, "FEN2026_02", md.SalesSection("YTD", "2026-02", "t"), sp, "a.pdf")
+    md.save_edition(destino, "FEN2026_03", md.SalesSection("YTD", "2026-03", "t"), sp, "b.pdf")
+    adotadas = destino.execute("SELECT IDMSE FROM P48_MarketSalesEdition WHERE IsAdopted=1 "
+                               "AND substr(PeriodEnd,1,4)='2026'").fetchall()
+    assert adotadas == [("FEN2026_03",)]                  # a mais recente do ano substitui
+    nota = destino.execute("SELECT NotesMSE FROM P48_MarketSalesEdition WHERE IDMSE="
+                           "'FEN2026_03'").fetchone()[0]
+    assert "parciais de janeiro a 03/2026" in nota
+    assert md.adopted_edition(destino) == "FEN2025"       # o padrao e o ultimo ano completo
+    assert md.adopted_edition(destino, 2026) == "FEN2026_03"
+    assert [a for a, _, p in md.adopted_years(destino) if p] == [2026]
+    destino.close()
