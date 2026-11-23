@@ -5,7 +5,9 @@ vehicles in them with their licensed units and weights, the weighted parameters 
 from the units (C33) against the values stored in the base (from the Excel model), and the
 coverage of the segments against the FENABRAVE market total, the design × powertrain
 split of the licensed units and an Excel export comparing the Excel model with the app's
-recalculation. Read-only.
+recalculation. The master can edit the segments of a category (the default is the Excel
+model's definition and can be restored), compute the reference of another powertrain and see
+which market vehicles come closest to the weighted reference.
 """
 
 from __future__ import annotations
@@ -72,8 +74,44 @@ with master.reference_conn() as conn:
                             "IDVPT AS Powertrain, SheetRow AS 'Workbook row' FROM "
                             "P70_ReferenceSegment WHERE IDVC = ?", conn, params=(idvc,))
     st.subheader("Segments")
-    st.dataframe(seg, hide_index=True, use_container_width=True)
-    ref = md.reference_params(conn, idvc)
+    origem = conn.execute("SELECT COUNT(*) FROM P70_ReferenceSegment WHERE IDVC = ? AND "
+                          "Origin = 'Master'", (idvc,)).fetchone()[0]
+    st.caption("Definition edited by the master." if origem else
+               "Default: the definition of the Excel model.")
+    ed_seg = st.data_editor(
+        seg[["Design", "Size", "Fuel group", "Powertrain"]], num_rows="dynamic",
+        hide_index=True, use_container_width=True, key=f"seg_{idvc}",
+        column_config={"Fuel group": st.column_config.SelectboxColumn(
+            options=["EG", "D", "X"], help="EG = flex and gasoline; D = diesel; X = others")})
+    b1, b2 = st.columns(2)
+    if b1.button("Save segments (master)"):
+        linhas = [{"IDVDT": r["Design"], "IDVS": r["Size"], "FuelGroup": r["Fuel group"],
+                   "IDVPT": r["Powertrain"] or "ICEV"} for _, r in ed_seg.dropna(
+                       subset=["Design", "Size", "Fuel group"]).iterrows()]
+        try:
+            n = md.save_segments(conn, idvc, linhas)
+            st.success(f"{n} segments saved; the weighted parameters below use them.")
+            st.rerun()
+        except ValueError as e:
+            st.error(str(e))
+    if b2.button("Restore the Excel model's segments"):
+        md.restore_workbook_segments(conn, idvc)
+        st.rerun()
+    pts = [r[0] for r in conn.execute("SELECT DISTINCT IDVPT FROM P26_MarketVehicle "
+                                      "WHERE IsSelecao = 0 ORDER BY IDVPT")]
+    pt = st.selectbox("Powertrain of the reference", pts,
+                      index=pts.index("ICEV") if "ICEV" in pts else 0,
+                      help="The Excel model computes only the ICEV reference; the other "
+                           "powertrains are derived by equivalence.")
+    ref = md.reference_params(conn, idvc, powertrain=None if pt == "ICEV" else pt)
+    prox = md.closest_vehicles(conn, idvc, pt)
+    if prox:
+        st.subheader("Market vehicles closest to the weighted reference")
+        st.dataframe(pd.DataFrame(prox).drop(columns=["IDMV"]), hide_index=True,
+                     use_container_width=True,
+                     column_config={"Distance": st.column_config.NumberColumn(format="%.3f")})
+        st.caption("Illustration only: the adopted parameters are the weighted ones. "
+                   "Distance = root mean square of the relative deviations.")
     idsel = int(cats.loc[cats["IDVC"] == idvc, "IDMVSelecao"].iloc[0])
     stored = dict(conn.execute("SELECT IDMP, Value FROM P27_MarketVehicleParam "
                                "WHERE IDMV = ? AND ValueClass = 'Avg'", (idsel,)))

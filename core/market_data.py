@@ -292,10 +292,13 @@ IDMP_WIDTH, IDMP_HEIGHT, IDMP_FRONTAL_AREA = 8, 27, 50
 
 
 def reference_params(conn: sqlite3.Connection, idvc: str,
-                     unidades: dict[int, int] | None = None) -> dict[int, float]:
+                     unidades: dict[int, int] | None = None,
+                     powertrain: str | None = None) -> dict[int, float]:
     """Parametros medios do veiculo SELECAO da categoria `idvc`.
 
     `unidades`: {IDMV: unidades}; se omitido, usa P26.SalesUnits (a edicao da planilha).
+    `powertrain`: motorizacao a ponderar (decisao 19); por padrao a dos segmentos (ICEV, como
+    na planilha, que calcula so o ICEV e deriva as demais por equivalencia).
     """
     sel = conn.execute("SELECT IDMVSelecao FROM P29_VehicleCategory WHERE IDVC = ?",
                        (idvc,)).fetchone()
@@ -311,6 +314,8 @@ def reference_params(conn: sqlite3.Connection, idvc: str,
         if any(norm(dt_) == norm(d) and norm(sz) == norm(s) and fuel_group(fuel) == g
                and pt == p for d, s, g, p in segmentos):
             membros.append((idmv, (unidades or {}).get(idmv, un) if unidades else un))
+    if powertrain:
+        membros = _members_by_powertrain(conn, idvc, powertrain, unidades)
     params = [r[0] for r in conn.execute(
         "SELECT DISTINCT IDMP FROM P27_MarketVehicleParam "
         "WHERE IDMV = ? AND ValueClass = 'Avg'", (idsel,))]
@@ -336,6 +341,87 @@ def reference_params(conn: sqlite3.Connection, idvc: str,
             fator = (equation_constants()[FRONTAL_AREA_KEY],)
         saida[IDMP_FRONTAL_AREA] = fator[0] * saida[IDMP_WIDTH] * saida[IDMP_HEIGHT]
     return saida
+
+
+def _members_by_powertrain(conn: sqlite3.Connection, idvc: str, powertrain: str,
+                           unidades: dict[int, int] | None) -> list[tuple[int, int]]:
+    """Veiculos dos segmentos da categoria na motorizacao pedida (design, porte e grupo de
+    combustivel dos segmentos; a motorizacao vem do argumento)."""
+    segmentos = conn.execute("SELECT IDVDT, IDVS, FuelGroup FROM P70_ReferenceSegment "
+                             "WHERE IDVC = ?", (idvc,)).fetchall()
+    saida: list[tuple[int, int]] = []
+    for idmv, dt_, sz, fuel, pt, un in conn.execute(
+            "SELECT IDMV, IDVDT, IDVS, Fuel, IDVPT, COALESCE(SalesUnits,0) FROM P26_MarketVehicle "
+            "WHERE IsSelecao = 0"):
+        if pt != powertrain:
+            continue
+        if any(norm(dt_) == norm(d) and norm(sz) == norm(s) and (g == "X" or
+                                                                 fuel_group(fuel) == g)
+               for d, s, g in segmentos):
+            saida.append((idmv, (unidades or {}).get(idmv, un)))
+    return saida
+
+
+def closest_vehicles(conn: sqlite3.Connection, idvc: str, powertrain: str = "ICEV",
+                     limite: int = 5) -> list[dict]:
+    """Veiculos de mercado mais proximos da referencia ponderada (decisao 19).
+
+    Distancia = raiz da media dos quadrados do desvio relativo nos parametros medios que o
+    veiculo tem. Serve a titulo de ilustracao: os parametros adotados sao os ponderados.
+    """
+    ref = reference_params(conn, idvc, powertrain=None if powertrain == "ICEV" else powertrain)
+    ref = {p: v for p, v in ref.items() if p != IDMP_FRONTAL_AREA and v}
+    valores = {(i, p): v for i, p, v in conn.execute(
+        "SELECT IDMV, IDMP, Value FROM P27_MarketVehicleParam WHERE Value IS NOT NULL")}
+    ranking = []
+    for idmv, un in _members_by_powertrain(conn, idvc, powertrain, None):
+        desv = [((valores[(idmv, p)] - v) / v) ** 2 for p, v in ref.items()
+                if (idmv, p) in valores]
+        if not desv:
+            continue
+        marca, modelo = conn.execute("SELECT Brand, Model FROM P26_MarketVehicle WHERE IDMV = ?",
+                                     (idmv,)).fetchone()
+        ranking.append({"IDMV": idmv, "Brand": marca, "Model": modelo, "Units": un,
+                        "Distance": (sum(desv) / len(desv)) ** 0.5})
+    return sorted(ranking, key=lambda r: r["Distance"])[:limite]
+
+
+def save_segments(conn: sqlite3.Connection, idvc: str, linhas: list[dict]) -> int:
+    """Substitui os segmentos de uma categoria (so o Master; decisao 17). Cada linha:
+    IDVDT, IDVS, FuelGroup (EG, D ou X) e IDVPT. Devolve o numero de segmentos gravados."""
+    for r in linhas:
+        if r["FuelGroup"] not in ("EG", "D", "X"):
+            raise ValueError(f"grupo de combustivel invalido: {r['FuelGroup']}")
+        if not r.get("IDVDT") or not r.get("IDVS"):
+            raise ValueError("segmento sem design ou porte")
+    proximo = (conn.execute("SELECT COALESCE(MAX(IDRS), 0) FROM P70_ReferenceSegment"
+                            ).fetchone()[0])
+    conn.execute("DELETE FROM P70_ReferenceSegment WHERE IDVC = ?", (idvc,))
+    for i, r in enumerate(linhas, 1):
+        conn.execute("INSERT INTO P70_ReferenceSegment (IDRS, IDVC, IDVDT, IDVS, FuelGroup, "
+                     "IDVPT, Origin) VALUES (?,?,?,?,?,?, 'Master')",
+                     (proximo + i, idvc, r["IDVDT"], r["IDVS"], r["FuelGroup"],
+                      r.get("IDVPT") or "ICEV"))
+    conn.commit()
+    return len(linhas)
+
+
+def restore_workbook_segments(conn: sqlite3.Connection, idvc: str) -> int:
+    """Devolve os segmentos de uma categoria ao padrao do Excel (CSV da fixture)."""
+    import csv
+    import os
+    caminho = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                           "data", "csv", "fase_b", "P70_ReferenceSegment.csv")
+    with open(caminho, encoding="utf-8-sig", newline="") as fh:
+        base = [r for r in csv.DictReader(fh, delimiter=";") if r["IDVC"] == idvc]
+    conn.execute("DELETE FROM P70_ReferenceSegment WHERE IDVC = ?", (idvc,))
+    for r in base:
+        conn.execute("INSERT INTO P70_ReferenceSegment (IDRS, IDVC, IDVDT, IDVS, FuelGroup, "
+                     "IDVPT, SheetRow, NotesRS, Origin) VALUES (?,?,?,?,?,?,?,?, 'Workbook')",
+                     (int(r["IDRS"]), idvc, r["IDVDT"], r["IDVS"], r["FuelGroup"], r["IDVPT"],
+                      int(r["SheetRow"]) if r["SheetRow"] else None, r["NotesRS"] or None))
+    conn.commit()
+    return len(base)
 
 
 def segment_coverage(conn: sqlite3.Connection, total: int) -> dict[str, float]:

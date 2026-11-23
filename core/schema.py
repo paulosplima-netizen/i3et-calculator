@@ -1475,7 +1475,7 @@ CREATE TABLE IF NOT EXISTS P71_FleetEstimate (
 
 CREATE TABLE IF NOT EXISTS P72_FleetLicensingByPowertrain (
   IDFP          INTEGER PRIMARY KEY,
-  SourceName    TEXT NOT NULL CHECK (SourceName IN ('ANFAVEA')),
+  SourceName    TEXT NOT NULL CHECK (SourceName IN ('ANFAVEA','i3EF')),
   SourceEdition TEXT NOT NULL,
   SourceTable   TEXT NOT NULL,
   RefYear       INTEGER NOT NULL,
@@ -1496,7 +1496,8 @@ CREATE TABLE IF NOT EXISTS P70_ReferenceSegment (
   FuelGroup TEXT NOT NULL CHECK (FuelGroup IN ('EG','D','X')),
   IDVPT     TEXT NOT NULL DEFAULT 'ICEV',
   SheetRow  INTEGER,
-  NotesRS   TEXT
+  NotesRS   TEXT,
+  Origin    TEXT NOT NULL DEFAULT 'Workbook' CHECK (Origin IN ('Workbook','Master'))
 );
 """
 
@@ -1511,7 +1512,9 @@ COLUMNS_012B = [("P47_MarketSales", "UnitsReported", "INTEGER"),
                 ("P47_MarketSales", "UnitsPrevious", "INTEGER"),
                 ("P47_MarketSales", "UnitsPBEV", "INTEGER"),
                 ("P47_MarketSales", "SplitMethod", "TEXT"),
-                ("P47_MarketSales", "SplitBasis", "TEXT")]
+                ("P47_MarketSales", "SplitBasis", "TEXT"),
+                ("P70_ReferenceSegment", "Origin",
+                 "TEXT NOT NULL DEFAULT 'Workbook' CHECK (Origin IN ('Workbook','Master'))")]
 
 
 def apply_012(conn: sqlite3.Connection) -> list[str]:
@@ -1527,6 +1530,12 @@ def apply_012(conn: sqlite3.Connection) -> list[str]:
         if "SourceEdition" not in cols:
             conn.execute("DROP TABLE P60_FleetLicensingTotal")
             msgs.append("recriada P60_FleetLicensingTotal")
+    if "P72_FleetLicensingByPowertrain" in antes:
+        sql = conn.execute("SELECT sql FROM sqlite_master WHERE name = "
+                           "'P72_FleetLicensingByPowertrain'").fetchone()[0]
+        if "'i3EF'" not in sql:        # P72 do B2b aceitava so ANFAVEA; recarregada pelo load_b2
+            conn.execute("DROP TABLE P72_FleetLicensingByPowertrain")
+            msgs.append("recriada P72_FleetLicensingByPowertrain")
     conn.executescript(DDL_PARAMS_012)
     for tabela, coluna, decl in COLUMNS_012B:
         cols = {r[1] for r in conn.execute(f"PRAGMA table_info({tabela})")}

@@ -288,3 +288,56 @@ def test_p72_motorizacao_anuario_2026(conn):
     eletr = sum(u("2.2.9", "Automobiles", c) for c in
                 ("BEV", "FlexHybrid", "GasolineHybrid", "DieselHybrid", "PHEV"))
     assert eletr == u("2.2.8", "Automobiles", "Electrified") == 282895
+
+
+def test_p72_serie_historica_do_i3ef(conn):
+    def u(ano, cls, dim, cat):
+        return conn.execute(
+            "SELECT Units, IsAdopted FROM P72_FleetLicensingByPowertrain WHERE SourceName='i3EF' "
+            "AND RefYear=? AND VehicleClass=? AND Dimension=? AND Category=?",
+            (ano, cls, dim, cat)).fetchone()
+    assert u(1957, "Automobiles", "Fuel", "Gasoline") == (9478, 1)   # antes de 2016 vale o i3EF
+    assert u(2025, "Automobiles", "Fuel", "Gasoline") == (79039, 0)  # 2016+: so comparacao
+    anos = conn.execute("SELECT MIN(RefYear), MAX(RefYear) FROM P72_FleetLicensingByPowertrain "
+                        "WHERE SourceName='i3EF'").fetchone()
+    assert anos == (1957, 2025)
+    # HEV+PHEV+BEV do i3EF fecham com a coluna Electrified (decisao 25)
+    for ano in (1990, 2020, 2025):
+        el = conn.execute("SELECT SUM(Units) FROM P72_FleetLicensingByPowertrain WHERE "
+                          "SourceName='i3EF' AND RefYear=? AND VehicleClass='Automobiles' "
+                          "AND Dimension='Electrified'", (ano,)).fetchone()[0]
+        assert el == u(ano, "Automobiles", "Fuel", "Electrified")[0]
+
+
+def test_segmentos_editaveis_e_restauracao(conn):
+    import shutil
+    import sqlite3
+    import tempfile
+    tmp = tempfile.mkdtemp() + "/b.sqlite"
+    shutil.copy(conn.execute("PRAGMA database_list").fetchone()[2], tmp)
+    c = sqlite3.connect(tmp)
+    antes = md.reference_params(c, "A0")
+    n = c.execute("SELECT COUNT(*) FROM P70_ReferenceSegment WHERE IDVC='A0'").fetchone()[0]
+    md.save_segments(c, "A0", [{"IDVDT": "Hatchback", "IDVS": "Compact", "FuelGroup": "EG",
+                                "IDVPT": "ICEV"}])
+    assert c.execute("SELECT COUNT(*) FROM P70_ReferenceSegment WHERE IDVC='A0' AND "
+                     "Origin='Master'").fetchone()[0] == 1
+    assert md.reference_params(c, "A0") != antes
+    with pytest.raises(ValueError):
+        md.save_segments(c, "A0", [{"IDVDT": "Hatchback", "IDVS": "Compact", "FuelGroup": "Z"}])
+    assert md.restore_workbook_segments(c, "A0") == n
+    assert md.reference_params(c, "A0") == antes     # o padrao do Excel volta (60/60)
+    c.close()
+
+
+def test_veiculo_mais_proximo_da_referencia(conn):
+    prox = md.closest_vehicles(conn, "A0", limite=3)
+    assert prox[0]["Model"] == "ARGO"                # o representativo escolhido no Excel
+    assert prox == sorted(prox, key=lambda r: r["Distance"])
+    assert md.closest_vehicles(conn, "A5", limite=1)[0]["Model"] == "STRADA"
+
+
+def test_area_frontal_vem_do_parametro_p59(conn):
+    fator = conn.execute("SELECT ValueEC FROM P59_EquationConstant WHERE "
+                         "IDEC='FRONTAL_AREA_FACTOR'").fetchone()[0]
+    assert fator == 0.85
