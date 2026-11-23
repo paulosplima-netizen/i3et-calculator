@@ -1,6 +1,6 @@
 # Roteiro de teste manual do B2 (v0.12)
 
-**Data:** 22/11/2026 · Para o autor conferir no navegador antes da tag `v0.12.0`. Comando: `streamlit run app.py` na pasta do repositório. Use um projeto novo (T01). As tabelas de mercado (FENABRAVE, ANFAVEA, PBEV) aparecem só para o usuário Master. Boletim FENABRAVE: o PDF da pasta Documentação; Anuário: `ANFAVEA_Anuário_2026.pdf`.
+**Data:** 22/11/2026; revisto em 23/11/2026 · Para o autor conferir no navegador antes da tag `v0.12.0`. Comando: `streamlit run app.py` na pasta do repositório. Use um projeto novo (T01). As tabelas de mercado (FENABRAVE, ANFAVEA, PBEV) aparecem só para o usuário Master. Boletim FENABRAVE: o PDF da pasta Documentação; Anuário: `ANFAVEA_Anuário_2026.pdf`.
 
 | # | Tela | O que fazer | O que deve acontecer |
 |---|---|---|---|
@@ -13,6 +13,9 @@
 | 7 | T42 | "Export comparison to Excel (Excel model × recalculation)" | O arquivo traz as duas versões; com tabelas do mesmo ano elas coincidem (60/60 no C33) |
 | 8 | Importação ANFAVEA | Rodar `python tools/import_anfavea.py` com os textos dos Anuários 2025 e 2026 | P60 (393 linhas), P71 (175) e P72 (330) geradas sem erro |
 | 9 | P72 | Conferir 2025, automóveis: Flex 1.592.071; BEV 79.714; PHEV 94.147; até 1.000 cc 1.078.308 | Valores iguais ao Anuário 2026 (2.2.8, 2.2.9, 2.2.10); a soma da 2.2.8 dá 1.997.264 |
-| 10 | Base | `python tools/load_b2.py` e conferir o final da saída | `foreign_key_check: 0 violações`, `integrity: ok`, ParamBaseHash `401f68e3…` inalterado |
+| 10 | T42 | Em uma categoria, editar um segmento (por exemplo remover uma linha), "Save segments (master)" e depois "Restore the Excel model's segments" | Os parâmetros ponderados mudam ao salvar e voltam ao padrão do Excel ao restaurar (60/60) |
+| 11 | T42 | Escolher outra motorização em "Powertrain of the reference"; ver "Market vehicles closest to the weighted reference" | No ICEV, A0 mostra ARGO e A5 mostra STRADA como mais próximos; a tabela deixa claro que é só ilustração |
+| 12 | P72 | Conferir 1957 (automóveis, gasolina: 9.478, origem i3EF) e 2025 (95.421 do Anuário; 79.039 do i3EF só como comparação) | Antes de 2016 vale o i3EF; de 2016 em diante vale o Anuário |
+| 13 | Base | `python tools/load_b2.py` e conferir o final da saída | `foreign_key_check: 0 violações`, `integrity: ok`, ParamBaseHash `c972269f…` (mudou em 23/11 com o parâmetro `FRONTAL_AREA_FACTOR`; as tabelas do B2 não o alteram) |
 
 Se algo falhar, anote o número do passo e a mensagem na tela.
