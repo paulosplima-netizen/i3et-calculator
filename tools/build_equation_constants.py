@@ -33,6 +33,10 @@ ROWS = [
     ["HP_PER_KW", 1.34102, "hp/kW",
      "i3ET, Market Vehicles M257:AW299 (faixas de potencia em hp)",
      "Reproduz a matriz sem divergencia; 1,35962 deixa 2 veiculos fora no parametro 4.", 0],
+    ["FRONTAL_AREA_FACTOR", 0.85, "-",
+     "i3ET, Control Panel AM16:AR16 (area frontal da SELECAO = fator x largura media x altura media)",
+     "Usado por core.market_data.reference_params (decisao 18 do B2, 23/11/2026: parametro; "
+     "antes era constante no codigo).", 0],
 ]
 
 

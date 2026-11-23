@@ -286,9 +286,8 @@ def match_to_catalog(conn: sqlite3.Connection, linhas: list[SalesRow]) -> list[C
 #   segmentos (P70). Parametros medios = os que hoje tem classe 'Avg' em P27.
 #   Area frontal (IDMP 50) = FRONTAL_AREA_FACTOR x largura media (8) x altura media (27).
 # --------------------------------------------------------------------------
-#: Fator da area frontal da SELECAO (Control Panel AM16:AR16). Constante no codigo ate a
-#: decisao 18 (mudar P59 muda o ParamBaseHash).
-FRONTAL_AREA_FACTOR = 0.85
+#: Fator da area frontal da SELECAO (Control Panel AM16:AR16): parametro P59 (decisao 18, 23/11).
+FRONTAL_AREA_KEY = "FRONTAL_AREA_FACTOR"
 IDMP_WIDTH, IDMP_HEIGHT, IDMP_FRONTAL_AREA = 8, 27, 50
 
 
@@ -330,7 +329,12 @@ def reference_params(conn: sqlite3.Connection, idvc: str,
         if den:
             saida[p] = num / den
     if IDMP_WIDTH in saida and IDMP_HEIGHT in saida and IDMP_FRONTAL_AREA in params:
-        saida[IDMP_FRONTAL_AREA] = FRONTAL_AREA_FACTOR * saida[IDMP_WIDTH] * saida[IDMP_HEIGHT]
+        fator = conn.execute("SELECT ValueEC FROM P59_EquationConstant WHERE IDEC = ?",
+                             (FRONTAL_AREA_KEY,)).fetchone()
+        if fator is None:      # base anterior ao B2: o CSV de origem traz o mesmo valor
+            from core.params import equation_constants
+            fator = (equation_constants()[FRONTAL_AREA_KEY],)
+        saida[IDMP_FRONTAL_AREA] = fator[0] * saida[IDMP_WIDTH] * saida[IDMP_HEIGHT]
     return saida
 
 
