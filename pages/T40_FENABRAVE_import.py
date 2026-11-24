@@ -156,12 +156,19 @@ if up is not None:
     st.caption("One series per year: the cumulative January-to-latest-month edition. Saving "
                "it replaces the adopted edition of the same year (the old one stays in the "
                "base as history). Months before December are marked as partial.")
+    adotar = st.checkbox(
+        "Adopt this edition (use it as the weighting for the reference vehicles)", value=True,
+        help="Untick to save it only as history: the edition currently adopted for the year "
+             "keeps being used.")
     if st.button("Save edition to the reference base", disabled=bool(problemas)):
         try:
             with master.reference_write_conn() as wconn:
-                n = md.save_edition(wconn, novo_id, sec, linhas, up.name, referencia=sec.title)
-            st.success(f"Saved {n} rows as {novo_id}. On Streamlit Cloud the disk is "
-                       "temporary: commit the reference base to publish it to other users.")
+                n = md.save_edition(wconn, novo_id, sec, linhas, up.name, referencia=sec.title,
+                                    adotar=None if adotar else False)
+            estado = "adopted if it is the latest of the year" if adotar else "not adopted"
+            st.success(f"Saved {n} rows as {novo_id} ({estado}). On Streamlit Cloud the "
+                       "disk is temporary: commit the reference base to publish it to other "
+                       "users.")
         except ValueError as exc:
             st.error(str(exc))
     import io

@@ -4,6 +4,7 @@
 
 ## B2d (23/11/2026)
 
+- T40: caixa "Adopt this edition" ao salvar a edicao; desmarcada, a edicao fica so como historico e a adotada do ano continua valendo.
 - Contas locais e papéis na T01 (antecipado da Fase C): e-mail e senha (PBEV, FENABRAVE e ANFAVEA só para o Master), cadastro como User, Master promove, rebaixa e transfere o papel, o último Master é protegido, bloqueio após 5 erros; senha em PBKDF2 no arquivo local `local_accounts.sqlite` (fora do git). A senha de instalação (`I3ET_MASTER_PASSWORD`) só cria o primeiro Master. T39, T40, T42 e T48 não têm mais campo de senha.
 
 - T40: o topo mostra, por edição, o semitotal do informativo (V, CL, V+CL; novas colunas `BulletinUnitsV` e `BulletinUnitsCL` na P48) × o adotado. Conferência dos totais do boletim × adotado (V, CL, V+CL, mais os modelos fora do catálogo) e por modelo, que reage ao que o Master digita; as motorizações de cada modelo ficam uma embaixo da outra; a edição gravada mostra os totais adotados por classe. A senha de instalação é lida do `secrets.toml` mesmo com BOM (PowerShell 5).

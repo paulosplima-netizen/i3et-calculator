@@ -362,6 +362,12 @@ def test_uma_serie_por_ano_e_so_acumulado(conn, tmp_path):
     assert md.adopted_edition(destino) == "FEN2025"       # o padrao e o ultimo ano completo
     assert md.adopted_edition(destino, 2026) == "FEN2026_03"
     assert [a for a, _, p in md.adopted_years(destino) if p] == [2026]
+    # salvar sem adotar: guarda como historico e a adotada continua a mesma
+    md.save_edition(destino, "FEN2026_04", md.SalesSection("YTD", "2026-04", "t"), sp, "c.pdf",
+                    adotar=False)
+    assert md.adopted_edition(destino, 2026) == "FEN2026_03"
+    assert destino.execute("SELECT IsAdopted FROM P48_MarketSalesEdition WHERE IDMSE="
+                           "'FEN2026_04'").fetchone()[0] == 0
     destino.close()
 
 
