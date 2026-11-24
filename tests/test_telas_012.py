@@ -45,6 +45,7 @@ def test_t39_mostra_a_edicao_e_o_vinculo():
 def test_t40_lista_os_111_modelos_e_os_ajustados():
     at = _abrir("T40_FENABRAVE_import", master_ok=True)
     assert not at.exception, at.exception
+    assert at.dataframe[0].value["Adopted"].tolist() == ["Yes"]      # Sim/Nao, nao 1/0
     tot = at.dataframe[1].value                       # semitotais do boletim x adotado
     assert tot["Units (source)"].tolist() == [1872220, 552062, 2424282]
     assert tot["Units (adopted)"].tolist() == [1872219, 552062, 2424281]

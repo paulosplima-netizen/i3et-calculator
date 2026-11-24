@@ -27,8 +27,9 @@ st.caption("Source: FENABRAVE, Informativo Emplacamentos. Cite the source and th
 with master.reference_conn() as conn:
     ed = pd.read_sql_query(
         "SELECT IDMSE AS Edition, PeriodKind AS Kind, PeriodStart AS Start, PeriodEnd AS End, "
-        "EditionRef AS Bulletin, RecordCount AS Records, IsAdopted AS Adopted FROM "
-        "P48_MarketSalesEdition", conn)
+        "EditionRef AS Bulletin, RecordCount AS Records, "
+        "CASE WHEN IsAdopted = 1 THEN 'Yes' ELSE 'No' END AS Adopted "
+        "FROM P48_MarketSalesEdition", conn)
     sales = pd.read_sql_query(
         "SELECT s.SalesClass AS Class, s.Ranking AS Rank, s.Brand, s.Model, "
         "s.UnitsSource AS \"Units (source)\", s.UnitsAdopted AS \"Units (adopted)\", "
